@@ -1,8 +1,8 @@
 ---
 name: "⚙️Setting - 작업할 것"
 about: Setting Template
-title: ''
-labels: ''
+title: "⚙️Setting - "
+labels: 진행중
 assignees: ''
 
 ---

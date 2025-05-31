@@ -1,8 +1,8 @@
 ---
 name: "✨Feat - 작업할 것"
 about: Feat Template
-title: ''
-labels: ''
+title: "✨Feature - "
+labels: 진행중
 assignees: ''
 
 ---
