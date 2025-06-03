@@ -58,21 +58,21 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation" }
 
-coil = {group = "io.coil-kt", name = "coil-compose", version.ref = "coil"}
+coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
-androidx-navigation = {group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation"}
-androidx-navigation-test = {group = "androidx.navigation", name = "navigation-testing", version.ref = "navigation"}
+androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+androidx-navigation-test = { group = "androidx.navigation", name = "navigation-testing", version.ref = "navigation" }
 
-androidx-viewmodel = {group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewModel"}
+androidx-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "viewModel" }
 
-room-runtime = {group = "androidx.room", name = "room-runtime", version.ref = "room"}
-room-compiler = {group = "androidx.room", name = "room-compiler", version.ref = "room"}
-room-ktx = {group = "androidx.room", name = "room-ktx", version.ref = "room"}
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
-serialization-json = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json"}
+serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
 
-kotlinx-coroutine = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine"}
-kotlinx-coroutines-test = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test"}
+kotlinx-coroutine = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 [plugins]
@@ -81,6 +81,6 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
-kotlin-serialization = {id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization"}
-dagger-hilt-root = {id = "com.google.dagger.hilt.android", version.ref = "hilt"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
+dagger-hilt-root = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
