@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapConcat
 
-class ReadSampleUseCase(
+class ReadSampleUseCase private constructor(
     private val userRepository: UserRepository,
     private val sampleRepository: SampleRepository
 ) : suspend () -> Flow<Sample> {
