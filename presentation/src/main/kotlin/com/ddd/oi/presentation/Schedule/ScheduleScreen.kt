@@ -1,9 +1,9 @@
-package com.ddd.oi.presentation.feature2
+package com.ddd.oi.presentation.Schedule
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun Feature2Screen(modifier: Modifier = Modifier) {
+fun ScheduleScreen(modifier: Modifier = Modifier) {
 
 }
