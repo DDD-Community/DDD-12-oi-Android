@@ -1,4 +1,4 @@
-package com.ddd.oi.ui.theme
+package com.ddd.oi.presentation.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
