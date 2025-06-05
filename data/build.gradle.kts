@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.dagger.hilt.root)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -33,6 +36,17 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+    //hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    //retrofit
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.retrofit.converter.json)
+    //serialization
+    implementation(libs.serialization.json)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
