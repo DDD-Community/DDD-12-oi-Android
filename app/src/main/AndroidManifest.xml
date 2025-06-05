@@ -14,7 +14,7 @@
         android:theme="@style/Theme.Oi"
         tools:targetApi="35">
         <activity
-            android:name=".MainActivity"
+            android:name=".presentation.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Oi">
             <intent-filter>
