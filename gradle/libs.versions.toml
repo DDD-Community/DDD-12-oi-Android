@@ -13,6 +13,9 @@ ksp = "2.0.21-1.0.27"
 
 okhttp = "4.12.0"
 logging-interceptor = "4.12.0"
+orbitCompose = "10.0.0"
+orbitCore = "10.0.0"
+orbitViewmodel = "10.0.0"
 retrofit = "2.11.0"
 retrofit-serialization = "1.0.0"
 
@@ -68,6 +71,10 @@ androidx-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+
+orbit-compose = { module = "org.orbit-mvi:orbit-compose", version.ref = "orbitCompose" }
+orbit-core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbitCore" }
+orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbitViewmodel" }
 
 serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
 
