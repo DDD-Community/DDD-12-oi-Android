@@ -11,8 +11,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.ddd.oi.presentation.CreateSchedule.navigateToCreateSchedule
-import com.ddd.oi.presentation.Schedule.navigateToSchedule
+import com.ddd.oi.presentation.createSchedule.navigateToCreateSchedule
+import com.ddd.oi.presentation.schedule.navigateToSchedule
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -34,13 +34,11 @@ class OiNavigator(
             } ?: previousDestination.value
         }
 
-    // 현재 선택된 탭
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
             currentDestination?.hasRoute(tab::class) == true
         }
 
-    // 탭 리스트(불변 타입)
     val mainTabList: PersistentList<MainTab> = MainTab.entries.toPersistentList()
 
     @Composable
@@ -48,7 +46,6 @@ class OiNavigator(
         currentDestination?.hasRoute(it::class) == true
     }
 
-    // 탭 navigate
     fun navigate(tab: MainTab) {
         val navOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
