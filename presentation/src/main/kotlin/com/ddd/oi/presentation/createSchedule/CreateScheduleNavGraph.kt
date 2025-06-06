@@ -1,10 +1,8 @@
-package com.ddd.oi.presentation.CreateSchedule
+package com.ddd.oi.presentation.createSchedule
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.ddd.oi.presentation.core.navigation.MainTab
 import com.ddd.oi.presentation.core.navigation.Route
 
 fun NavController.navigateToCreateSchedule() {
@@ -12,5 +10,5 @@ fun NavController.navigateToCreateSchedule() {
 }
 
 fun NavGraphBuilder.createScheduleNavGraph() {
-    composable<Route.CreateSchedule> {  }
+    composable<Route.CreateSchedule> { }
 }
