@@ -1,28 +1,22 @@
 package com.ddd.oi.presentation.core.designsystem.theme
 
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.platform.LocalContext
 
 val lightColorScheme = OiColors(
     textPrimary = TextPrimary,
     textSecondary = TextSecondary,
     textTertiary = TextTertiary,
     textDisabled = TextDisabled,
-    textonPrimary = TextonPrimary,
-    textonSecondary = TextonSecondary,
+    textonPrimary = TextOnPrimary,
+    textonSecondary = TextOnSecondary,
     backgroundBrand = BackgroundBrand,
     backgroundBrandSecondary = BackgroundBrandSecondary,
     backgroundPrimary = BackgroundPrimary,
     backgroundSecondary = BackgroundSecondary,
-    backgroundTetiary = BackgroundTetiary,
+    backgroundTetiary = BackgroundTertiary,
     borderPrimary = BorderPrimary,
     borderBrand = BorderBrand,
     iconPrimary = IconPrimary,
@@ -43,13 +37,13 @@ val darkColorScheme = OiColors(
     textSecondary = TextSecondary,
     textTertiary = TextTertiary,
     textDisabled = TextDisabled,
-    textonPrimary = TextonPrimary,
-    textonSecondary = TextonSecondary,
+    textonPrimary = TextOnPrimary,
+    textonSecondary = TextOnSecondary,
     backgroundBrand = BackgroundBrand,
     backgroundBrandSecondary = BackgroundBrandSecondary,
     backgroundPrimary = BackgroundPrimary,
     backgroundSecondary = BackgroundSecondary,
-    backgroundTetiary = BackgroundTetiary,
+    backgroundTetiary = BackgroundTertiary,
     borderPrimary = BorderPrimary,
     borderBrand = BorderBrand,
     iconPrimary = IconPrimary,
