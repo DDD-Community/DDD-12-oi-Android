@@ -11,7 +11,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.ddd.oi.presentation.createSchedule.navigateToCreateSchedule
+import com.ddd.oi.presentation.createschedule.navigateToCreateSchedule
 import com.ddd.oi.presentation.schedule.navigateToSchedule
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
