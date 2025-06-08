@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.createSchedule
+package com.ddd.oi.presentation.createschedule
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

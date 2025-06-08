@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.createSchedule.contract
+package com.ddd.oi.presentation.createschedule.contract
 
 data class CreateScheduleState(
     val title: String = ""

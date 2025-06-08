@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.createSchedule
+package com.ddd.oi.presentation.createschedule
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
