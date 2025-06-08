@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation
+package com.ddd.oi
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
