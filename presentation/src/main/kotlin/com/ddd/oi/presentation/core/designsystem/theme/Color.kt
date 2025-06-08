@@ -22,10 +22,10 @@ val BorderBrand = Color(0xFF039D58)
 
 val IconPrimary = Color(0xFF171717)
 val IconSecondary = Color(0xFF404040)
-val IconTetiary = Color(0xFFA1A1A1)
+val IconTertiary = Color(0xFFA1A1A1)
 val IconDisabled = Color(0xFFD4D4D4)
-val IcononPrimary = Color(0xFFFFFFFF)
-val IcononSecondary = Color(0xFF039D58)
+val IconOnPrimary = Color(0xFFFFFFFF)
+val IconOnSecondary = Color(0xFF039D58)
 
 val error = Color(0xFFFB2C36)
 val caution = Color(0xFFF0B100)
