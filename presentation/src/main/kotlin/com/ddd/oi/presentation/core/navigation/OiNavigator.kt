@@ -12,7 +12,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.ddd.oi.presentation.createschedule.navigateToCreateSchedule
+import com.ddd.oi.presentation.home.navigateToHome
 import com.ddd.oi.presentation.schedule.navigateToSchedule
+import com.ddd.oi.presentation.scheduledetail.navigateToScheduleDetail
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -40,6 +42,7 @@ class OiNavigator(
         }
 
     val mainTabList: PersistentList<MainTab> = MainTab.entries.toPersistentList()
+    val startDestination: Route = MainTabRoute.Home
 
     @Composable
     fun shouldShowBottomBar(): Boolean = MainTab.contains {
@@ -56,13 +59,13 @@ class OiNavigator(
         }
 
         when (tab) {
-            MainTab.HOME -> TODO()
+            MainTab.HOME -> navController.navigateToHome(navOptions)
             MainTab.SCHEDULE -> navController.navigateToSchedule(navOptions)
         }
     }
 
     fun navigateToCreateSchedule() = navController.navigateToCreateSchedule()
-
+    fun navigateToScheduleDetail() = navController.navigateToScheduleDetail()
     fun popBackStack() {
         navController.popBackStack()
     }
