@@ -11,5 +11,7 @@ fun NavController.navigateToSchedule(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.scheduleNavGraph() {
-    composable<MainTabRoute.Schedule> {  }
+    composable<MainTabRoute.Schedule> {
+        ScheduleScreen()
+    }
 }
