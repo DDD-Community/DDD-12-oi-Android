@@ -75,8 +75,8 @@ fun OiApp(
                     containerColor = OiTheme.colors.iconOnSecondary,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp),
                     modifier = Modifier
-                        .size(Dimens.FabSize)
-                        .offset(y = Dimens.FabOffset)
+                        .size(Dimens.fabSize)
+                        .offset(y = Dimens.fabOffset)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
