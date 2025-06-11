@@ -11,7 +11,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.ddd.oi.presentation.createschedule.navigateToCreateSchedule
+import com.ddd.oi.presentation.upsertschedule.navigateToUpsertSchedule
 import com.ddd.oi.presentation.home.navigateToHome
 import com.ddd.oi.presentation.schedule.navigateToSchedule
 import com.ddd.oi.presentation.scheduledetail.navigateToScheduleDetail
@@ -64,7 +64,7 @@ class OiNavigator(
         }
     }
 
-    fun navigateToCreateSchedule() = navController.navigateToCreateSchedule()
+    fun navigateToUpsertSchedule() = navController.navigateToUpsertSchedule()
     fun navigateToScheduleDetail() = navController.navigateToScheduleDetail()
     fun popBackStack() {
         navController.popBackStack()
