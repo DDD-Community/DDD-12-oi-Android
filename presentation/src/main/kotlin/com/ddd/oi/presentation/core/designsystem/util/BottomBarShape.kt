@@ -5,14 +5,14 @@ import androidx.compose.ui.unit.Dp
 
 /**
  * 가운데 곡선이 있는 커스텀 바텀 바.
- * https://developer.android.com/reference/kotlin/androidx/compose/foundation/shape/GenericShape/
+ * [GenericShape](https://developer.android.com/reference/kotlin/androidx/compose/foundation/shape/GenericShape/)
  * @return 가운데 커브가 들어간 바텀 바
  */
 fun bottomBarShape(
-    widthDp: Dp = BottomBarShapeDimens.Width,
-    heightDp: Dp = BottomBarShapeDimens.Height,
-    point1Dp: Dp = BottomBarShapeDimens.CurveStart,
-    point2Dp: Dp = BottomBarShapeDimens.CurveEnd
+    widthDp: Dp = BottomBarShapeDimens.width,
+    heightDp: Dp = BottomBarShapeDimens.height,
+    point1Dp: Dp = BottomBarShapeDimens.curveStart,
+    point2Dp: Dp = BottomBarShapeDimens.curveEnd
 ) = GenericShape { size, _ ->
     val widthPx = widthDp.value
     val heightPx = heightDp.value
