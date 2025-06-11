@@ -17,8 +17,6 @@ object Dimens {
 
 object BottomBarDimens {
     val bottomBarHeight = 40.dp
-    val bottomMenuWidth = 132.dp
-    val bottomMenuHeight = 28.dp
 }
 
 object BottomBarShapeDimens {
