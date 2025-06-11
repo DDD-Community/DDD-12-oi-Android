@@ -7,21 +7,18 @@ import com.ddd.oi.presentation.R
 
 enum class MainTab(
     @DrawableRes val iconResId: Int,
-    @DrawableRes val selectedResId: Int,
     @StringRes val contentDescription: Int,
     val route: MainTabRoute
 ) {
     HOME(
-        iconResId = 0,
-        selectedResId = 0,
-        contentDescription = 0,
+        iconResId = R.drawable.ic_home,
+        contentDescription = R.string.home,
         route = MainTabRoute.Home
     ),
 
     SCHEDULE(
-        iconResId = 0,
-        selectedResId = 0,
-        contentDescription = 0,
+        iconResId = R.drawable.ic_schedule,
+        contentDescription = R.string.schedule,
         route = MainTabRoute.Schedule
     );
 

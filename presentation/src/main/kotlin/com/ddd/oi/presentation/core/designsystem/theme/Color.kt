@@ -13,7 +13,7 @@ val TextOnSecondary = Color(0xFF039D58)
 
 val BackgroundBrand = Color(0xFF039D58)
 val BackgroundBrandSecondary = Color(0xFFE5F8EE)
-val BackgroundPrimary = Color(0xFF171717)
+val BackgroundPrimary = Color(0xFFFFFFFF)
 val BackgroundSecondary = Color(0xFFFAFAFA)
 val BackgroundTertiary = Color(0xFFE5E5E5)
 

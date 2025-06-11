@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.schedule
+package com.ddd.oi.presentation.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -9,12 +9,12 @@ import androidx.compose.ui.Modifier
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 
 @Composable
-fun ScheduleScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxSize()) {
         Column(modifier = modifier
             .weight(1f)
             .fillMaxSize()) {
-            Text("캘린더 영역")
+            Text("홈 영역")
         }
         Column(
             modifier = modifier
@@ -22,7 +22,7 @@ fun ScheduleScreen(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .background(OiTheme.colors.backgroundTertiary)
         ) {
-            Text("일정 리스트 영역")
+            Text("홈 영역2")
         }
     }
 }

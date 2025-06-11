@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 sealed interface Route {
     @Serializable
     data object CreateSchedule: Route
+
+    @Serializable
+    data object ScheduleDetail: Route
 }
 
 sealed interface MainTabRoute : Route {

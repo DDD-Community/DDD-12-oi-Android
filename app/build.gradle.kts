@@ -50,6 +50,12 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
+    //compose-navigation
+    implementation(libs.androidx.navigation)
+
+    //immutable
+    implementation(libs.kotlinx.immutable)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

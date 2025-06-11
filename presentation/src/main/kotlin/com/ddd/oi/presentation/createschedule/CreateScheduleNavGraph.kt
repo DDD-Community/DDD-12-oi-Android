@@ -9,6 +9,10 @@ fun NavController.navigateToCreateSchedule() {
     navigate(Route.CreateSchedule)
 }
 
-fun NavGraphBuilder.createScheduleNavGraph() {
-    composable<Route.CreateSchedule> { }
+fun NavGraphBuilder.createScheduleNavGraph(
+    navigateToScheduleDetail: () -> Unit
+) {
+    composable<Route.CreateSchedule> {
+        CreateScheduleScreen()
+    }
 }
