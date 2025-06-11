@@ -47,7 +47,7 @@ fun OiApp(
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
-        containerColor = OiTheme.colors.backgroundTertiary,
+        containerColor = OiTheme.colors.backgroundPrimary,
         snackbarHost = {
             SnackbarHost(
                 hostState = snackBarHostState,
