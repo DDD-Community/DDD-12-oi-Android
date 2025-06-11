@@ -3,22 +3,27 @@ package com.ddd.oi.presentation.core.designsystem.util
 import androidx.compose.ui.unit.dp
 
 object Dimens {
-    val PaddingXSmall = 4.dp
-    val PaddingSmall = 8.dp
-    val PaddingMediumSmall = 12.dp
-    val PaddingMedium = 16.dp
-    val PaddingMediumLarge = 20.dp
-    val PaddingLargeSmall = 24.dp
-    val PaddingLargeMedium = 28.dp
-    val PaddingLarge = 32.dp
-    val BottomBarHeight = 40.dp
-    val FabSize = 48.dp
-    val FabOffset = (FabSize / 2) + PaddingMedium
+    val paddingXSmall = 4.dp
+    val paddingSmall = 8.dp
+    val paddingMediumSmall = 12.dp
+    val paddingMedium = 16.dp
+    val paddingMediumLarge = 20.dp
+    val paddingLargeSmall = 24.dp
+    val paddingLargeMedium = 28.dp
+    val paddingLarge = 32.dp
+    val fabSize = 48.dp
+    val fabOffset = (fabSize / 2) + paddingMedium
+}
+
+object BottomBarDimens {
+    val bottomBarHeight = 40.dp
+    val bottomMenuWidth = 132.dp
+    val bottomMenuHeight = 28.dp
 }
 
 object BottomBarShapeDimens {
-    val Width = 150.dp
-    val Height = 90.dp
-    val CurveStart = 75.dp
-    val CurveEnd = 85.dp
+    val width = 150.dp
+    val height = 90.dp
+    val curveStart = 75.dp
+    val curveEnd = 85.dp
 }
