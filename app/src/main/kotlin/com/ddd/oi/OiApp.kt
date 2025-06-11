@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.ddd.oi.navigation.OiNavHost
 import com.ddd.oi.presentation.core.designsystem.component.MainBottomBar
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
+import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.navigation.OiNavigator
 
 @Composable
@@ -42,18 +44,19 @@ fun OiApp(
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize(),
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        containerColor = OiTheme.colors.backgroundPrimary,
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+        containerColor = OiTheme.colors.backgroundTertiary,
         snackbarHost = {
             SnackbarHost(
-                snackBarHostState,
+                hostState = snackBarHostState,
                 modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
             )
         },
         bottomBar = {
             MainBottomBar(
-                modifier = Modifier.navigationBarsPadding(),
+                modifier = Modifier,
                 visible = navigator.shouldShowBottomBar(),
                 tabs = navigator.mainTabList,
                 currentTab = navigator.currentTab,
@@ -62,18 +65,21 @@ fun OiApp(
         },
         floatingActionButton = {
             AnimatedVisibility(
-                navigator.shouldShowBottomBar(),
+                visible = navigator.shouldShowBottomBar(),
                 enter = fadeIn() + slideIn { IntOffset(0, it.height) },
-                exit = fadeOut() + slideOut { IntOffset(0, it.height) }) {
+                exit = fadeOut() + slideOut { IntOffset(0, it.height) }
+            ) {
                 FloatingActionButton(
                     onClick = navigator::navigateToCreateSchedule,
                     shape = CircleShape,
                     containerColor = OiTheme.colors.iconOnSecondary,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                    modifier = Modifier.offset(y = 38.dp)
+                    modifier = Modifier
+                        .size(Dimens.FabSize)
+                        .offset(y = Dimens.FabOffset)
                 ) {
                     Icon(
-                        Icons.Default.Add,
+                        imageVector = Icons.Default.Add,
                         contentDescription = null,
                         tint = OiTheme.colors.textOnPrimary
                     )
@@ -82,11 +88,7 @@ fun OiApp(
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(padding)
-        ) {
+        Column(modifier = Modifier.padding(padding)) {
             OiNavHost(navigator)
         }
     }
