@@ -1,42 +1,46 @@
 package com.ddd.oi.presentation.core.designsystem.util
 
 import androidx.compose.foundation.shape.GenericShape
+import androidx.compose.ui.unit.Dp
 
 /**
  * 가운데 곡선이 있는 커스텀 바텀 바.
- * 참고 자료: https://victorbrandalise.com/curved-bottom-bar-in-jetpack-compose/
+ * https://developer.android.com/reference/kotlin/androidx/compose/foundation/shape/GenericShape/
  * @return 가운데 커브가 들어간 바텀 바
  */
-fun bottomBarShape() = GenericShape { size, _ ->
-    reset()
+fun bottomBarShape(
+    widthDp: Dp = BottomBarShapeDimens.Width,
+    heightDp: Dp = BottomBarShapeDimens.Height,
+    point1Dp: Dp = BottomBarShapeDimens.CurveStart,
+    point2Dp: Dp = BottomBarShapeDimens.CurveEnd
+) = GenericShape { size, _ ->
+    val widthPx = widthDp.value
+    val heightPx = heightDp.value
+    val point1Px = point1Dp.value
+    val point2Px = point2Dp.value
 
+    reset()
     moveTo(0f, 0f)
 
-    val width = 150f
-    val height = 90f
+    // 왼쪽 직선
+    lineTo(size.width / 2 - widthPx, 0f)
 
-    val point1 = 75f
-    val point2 = 85f
-
-    lineTo(size.width / 2 - width, 0f)
-
+    // 왼쪽 곡선
     cubicTo(
-        size.width / 2 - point1, 0f,
-        size.width / 2 - point2, height,
-        size.width / 2, height
+        size.width / 2 - point1Px, 0f,
+        size.width / 2 - point2Px, heightPx,
+        size.width / 2, heightPx
+    )
+    // 오른쪽 곡선
+    cubicTo(
+        size.width / 2 + point2Px, heightPx,
+        size.width / 2 + point1Px, 0f,
+        size.width / 2 + widthPx, 0f
     )
 
-    cubicTo(
-        size.width / 2 + point2, height,
-        size.width / 2 + point1, 0f,
-        size.width / 2 + width, 0f
-    )
-
-    lineTo(size.width / 2 + width, 0f)
 
     lineTo(size.width, 0f)
     lineTo(size.width, size.height)
     lineTo(0f, size.height)
-
     close()
 }
