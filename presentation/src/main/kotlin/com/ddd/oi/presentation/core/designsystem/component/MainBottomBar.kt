@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.BottomBarDimens
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
@@ -53,7 +54,7 @@ fun MainBottomBar(
         ) {
             tabs.forEach { tab ->
                 MainBottomBarItem(
-                    modifier = Modifier.padding(horizontal = Dimens.paddingMedium),
+                    modifier = Modifier.weight(1f).padding(horizontal = Dimens.paddingMedium),
                     tab = tab,
                     selected = tab == currentTab,
                     onClick = { onTabSelected(tab) },
@@ -71,7 +72,7 @@ private fun MainBottomBarItem(
     onClick: () -> Unit,
 ) {
     IconButton(
-        modifier = modifier.size(width = BottomBarDimens.bottomMenuWidth, height = BottomBarDimens.bottomMenuHeight),
+        modifier = modifier,
         onClick = onClick,
     ) {
         Icon(
