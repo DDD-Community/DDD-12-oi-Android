@@ -61,7 +61,7 @@ fun OiHeader(
 
 @Preview
 @Composable
-fun OiHeaderPreview() {
+private fun OiHeaderPreview() {
     OiHeader(
         titleStringRes = R.string.create_schedule,
         leftButtonDrawableRes = R.drawable.ic_arrow_left
