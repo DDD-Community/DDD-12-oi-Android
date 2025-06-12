@@ -34,6 +34,17 @@ object OiButtonDimens {
     val componentMargin = 4.dp
 }
 
+object OiChipDimens {
+    val iconSize = 14.dp
+
+    val horizontalPadding = 12.dp
+    val verticalPadding = 7.dp
+
+    val ovalRadius = 999.dp
+
+    val componentMargin = 2.dp
+}
+
 object BottomBarDimens {
     val bottomBarHeight = 40.dp
 }
