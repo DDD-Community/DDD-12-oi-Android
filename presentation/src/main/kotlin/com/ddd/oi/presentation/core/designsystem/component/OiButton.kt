@@ -70,7 +70,7 @@ fun OiButton(
 
             Text(
                 text = stringResource(textStringRes),
-                style = style.textStyle(),
+                style = style.getTextStyle(),
             )
 
             Icon(
@@ -147,7 +147,7 @@ sealed interface OiButtonStyle {
         }
 
     @Composable
-    fun textStyle(): TextStyle = when (this) {
+    fun getTextStyle(): TextStyle = when (this) {
         Small32Oval, Small32Rect -> OiTheme.typography.bodySmallBold
         Medium40Rect, Medium40Oval -> OiTheme.typography.bodyMediumBold
         Large48Oval, Large48Rect -> OiTheme.typography.bodyLargeBold
