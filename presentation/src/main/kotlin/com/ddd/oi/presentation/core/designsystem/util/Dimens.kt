@@ -22,6 +22,18 @@ object OiHeaderDimens {
     val padding = (size - iconSize).div(2)
 }
 
+object OiButtonDimens {
+    val smallHeight = 32.dp
+    val mediumHeight = 40.dp
+    val largeHeight = 48.dp
+    val xlargeHeight = 56.dp
+
+    val roundedRectRadius = 8.dp
+    val ovalRadius = 999.dp
+
+    val componentMargin = 4.dp
+}
+
 object BottomBarDimens {
     val bottomBarHeight = 40.dp
 }
