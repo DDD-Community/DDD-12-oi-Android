@@ -15,7 +15,7 @@ object Dimens {
     val fabOffset = (fabSize / 2) + paddingMedium
 }
 
-object Header {
+object OiHeaderDimens {
     val size = 60.dp
     private val iconSize = 24.dp
 

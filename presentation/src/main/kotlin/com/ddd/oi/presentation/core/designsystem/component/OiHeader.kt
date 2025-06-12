@@ -21,10 +21,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
-import com.ddd.oi.presentation.core.designsystem.util.Header
+import com.ddd.oi.presentation.core.designsystem.util.OiHeaderDimens
 
 @Composable
-fun Header(
+fun OiHeader(
     modifier: Modifier = Modifier,
     onLeftClick: () -> Unit = {},
     @StringRes titleStringRes: Int,
@@ -33,13 +33,13 @@ fun Header(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(Header.size),
+            .height(OiHeaderDimens.size),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
             modifier = Modifier
-                .size(Header.size)
-                .padding(Header.padding),
+                .size(OiHeaderDimens.size)
+                .padding(OiHeaderDimens.padding),
             onClick = onLeftClick
         ) {
             Icon(
@@ -61,8 +61,8 @@ fun Header(
 
 @Preview
 @Composable
-fun HeaderPreview() {
-    Header(
+fun OiHeaderPreview() {
+    OiHeader(
         titleStringRes = R.string.create_schedule,
         leftButtonDrawableRes = R.drawable.ic_arrow_left
     )
