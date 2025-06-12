@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.core.designsystem.component
+package com.ddd.oi.presentation.core.designsystem.component.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
