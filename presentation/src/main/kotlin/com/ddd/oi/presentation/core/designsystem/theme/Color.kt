@@ -9,6 +9,7 @@ val asamo900 = Color(0xFF095E3A)
 
 val neutral100 = Color(0xFFF5F5F5)
 val neutral300 = Color(0xFFD4D4D4)
+val neutral800 = Color(0xFF262626)
 
 val white = Color(0xFFFFFFFF)
 
