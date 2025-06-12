@@ -41,6 +41,7 @@ fun OiButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     style: OiButtonStyle,
+    enabled: Boolean = true,
     @StringRes textStringRes: Int,
     @DrawableRes leftIconDrawableRes: Int,
     @DrawableRes rightIconDrawableRes: Int,
@@ -53,6 +54,7 @@ fun OiButton(
             .fillMaxWidth()
             .height(style.height),
         shape = style.shape,
+        enabled = enabled,
         colors = getButtonColors(isPressed),
         onClick = onClick
     ) {
