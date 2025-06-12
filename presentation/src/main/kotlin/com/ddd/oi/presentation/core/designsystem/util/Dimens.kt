@@ -15,6 +15,13 @@ object Dimens {
     val fabOffset = (fabSize / 2) + paddingMedium
 }
 
+object Header {
+    val size = 60.dp
+    private val iconSize = 24.dp
+
+    val padding = (size - iconSize).div(2)
+}
+
 object BottomBarDimens {
     val bottomBarHeight = 40.dp
 }
