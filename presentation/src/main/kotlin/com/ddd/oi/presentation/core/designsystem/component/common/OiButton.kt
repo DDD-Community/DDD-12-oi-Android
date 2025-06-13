@@ -43,8 +43,8 @@ fun OiButton(
     style: OiButtonStyle,
     enabled: Boolean = true,
     @StringRes textStringRes: Int,
-    @DrawableRes leftIconDrawableRes: Int?,
-    @DrawableRes rightIconDrawableRes: Int?,
+    @DrawableRes leftIconDrawableRes: Int? = null,
+    @DrawableRes rightIconDrawableRes: Int? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
