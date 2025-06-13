@@ -18,28 +18,35 @@ val TextSecondary = Color(0XFF262626)
 val TextTertiary = Color(0xFFA1A1A1)
 val TextDisabled = Color(0xFFD4D4D4)
 val TextOnPrimary = white
-val TextOnSecondary = asamo700
+val TextBrand = Color(0xFF039D58)
 
-val BackgroundBrand = asamo700
-val BackgroundBrandSecondary = Color(0xFFE5F8EE)
-val BackgroundPrimary = white
-val BackgroundSecondary = Color(0xFFFAFAFA)
-val BackgroundTertiary = Color(0xFFE5E5E5)
+val BackgroundContents = Color(0xFFFAFAFA)
+val BackgroundDisabled = Color(0xFFE5E5E5)
+val BackgroundError = Color(0xFFFB2C36)
+val BackgroundInfo = Color(0xFF2B7FFF)
+val BackgroundPressed = Color(0xFF097244)
+val BackgroundPrimary = Color(0xFF00A75C)
+val BackgroundSecondary = Color(0xFFE5F8EE)
+val BackgroundSelected = Color(0xFF262626)
+val BackgroundSuccess = Color(0xFF00C950)
+val BackgroundUnselected = Color(0xFFF5F5F5)
+val BackgroundWarning = Color(0xFFFE9A00)
 
 val BorderPrimary = Color(0xFFE5E5E5)
-val BorderBrand = asamo700
+val BorderBrand = Color(0xFF00A75C)
+val BorderSecondary = Color(0xFFF5F5F5)
 
+val IconBrand = Color(0xFF00A75C)
+val IconDisabled = Color(0xFFE5E5E5)
+val IconError = Color(0xFFFB2C36)
+val IconInfo = Color(0xFF2B7FFF)
+val IconOnPrimary = white
 val IconPrimary = Color(0xFF171717)
 val IconSecondary = Color(0xFF404040)
+val IconSuccess = Color(0xFF00C950)
 val IconTertiary = Color(0xFFA1A1A1)
-val IconDisabled = Color(0xFFD4D4D4)
-val IconOnPrimary = white
-val IconOnSecondary = asamo700
+val IconWarning = Color(0xFFFE9A00)
 
-val error = Color(0xFFFB2C36)
-val caution = Color(0xFFF0B100)
-val success = Color(0xFF00C950)
-val info = Color(0xFF2B7FFF)
 val primary = asamo700
 
 @Immutable
@@ -49,29 +56,35 @@ data class OiColors(
     val textTertiary: Color,
     val textDisabled: Color,
     val textOnPrimary: Color,
-    val textOnSecondary: Color,
+    val textBrand: Color,
 
-    val backgroundBrand: Color,
-    val backgroundBrandSecondary: Color,
+    val backgroundContents: Color,
+    val backgroundDisabled: Color,
+    val backgroundError: Color,
+    val backgroundInfo: Color,
+    val backgroundPressed: Color,
     val backgroundPrimary: Color,
     val backgroundSecondary: Color,
-    val backgroundTertiary: Color,
+    val backgroundSelected: Color,
+    val backgroundSuccess: Color,
+    val backgroundUnselected: Color,
+    val backgroundWarning: Color,
+
 
     val borderPrimary: Color,
     val borderBrand: Color,
+    val borderSecondary: Color,
 
+    val iconBrand: Color,
+    val iconDisabled: Color,
+    val iconError: Color,
+    val iconInfo: Color,
+    val iconOnPrimary: Color,
     val iconPrimary: Color,
     val iconSecondary: Color,
+    val iconSuccess: Color,
     val iconTertiary: Color,
-    val iconDisabled: Color,
-    val iconOnPrimary: Color,
-    val iconOnSecondary: Color,
-
-    val error: Color,
-    val caution: Color,
-    val success: Color,
-    val info: Color,
-    val primary: Color
+    val iconWarning: Color,
 )
 
 val LocalColors = staticCompositionLocalOf {
