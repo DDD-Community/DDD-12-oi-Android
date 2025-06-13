@@ -43,8 +43,8 @@ fun OiButton(
     style: OiButtonStyle,
     enabled: Boolean = true,
     @StringRes textStringRes: Int,
-    @DrawableRes leftIconDrawableRes: Int,
-    @DrawableRes rightIconDrawableRes: Int,
+    @DrawableRes leftIconDrawableRes: Int?,
+    @DrawableRes rightIconDrawableRes: Int?,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -63,20 +63,24 @@ fun OiButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxHeight()
         ) {
-            Icon(
-                painter = painterResource(leftIconDrawableRes),
-                contentDescription = "Left icon"
-            )
+            leftIconDrawableRes?.let {
+                Icon(
+                    painter = painterResource(it),
+                    contentDescription = "Left icon"
+                )
+            }
 
             Text(
                 text = stringResource(textStringRes),
                 style = style.getTextStyle(),
             )
 
-            Icon(
-                painter = painterResource(rightIconDrawableRes),
-                contentDescription = "Right icon"
-            )
+            rightIconDrawableRes?.let {
+                Icon(
+                    painter = painterResource( it),
+                    contentDescription = "Right icon"
+                )
+            }
         }
     }
 }
