@@ -4,6 +4,12 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
+val teal400 = Color(0xFF00D5BE)
+val rose400 = Color(0xFFFF637E)
+val yellow400 = Color(0xFFFDC700)
+val indigo400 = Color(0XFF7C86FF)
+val lime400 = Color(0xFF9AE600)
+
 val TextPrimary = Color(0xFF171717)
 val TextSecondary = Color(0XFF262626)
 val TextTertiary = Color(0xFFA1A1A1)
