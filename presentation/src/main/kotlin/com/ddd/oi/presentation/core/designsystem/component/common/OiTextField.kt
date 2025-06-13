@@ -1,5 +1,6 @@
 package com.ddd.oi.presentation.core.designsystem.component.common
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -101,7 +102,7 @@ fun OiTextField(
                 }
             ) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_textfield_close_temp),
+                    imageVector = ImageVector.vectorResource(R.drawable.temp_ic_textfield_close),
                     contentDescription = "Close button",
                 )
             }
@@ -109,10 +110,61 @@ fun OiTextField(
     }
 }
 
-internal const val MAX_LENGTH = 30
+@Composable
+fun OiDateField(
+    modifier: Modifier = Modifier,
+    startDate: String = "",
+    endDate: String = "",
+) {
+    val dateText by remember { derivedStateOf { getFormattedDate(startDate, endDate) } }
+    val isDateSelected by remember { derivedStateOf { dateText.isNotEmpty() } }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(OiTextFieldDimens.height)
+            .getOiTextFieldModifier(false),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(OiTextFieldDimens.iconSize),
+            imageVector = ImageVector.vectorResource(getDateIconDrawableRes(isDateSelected)),
+            contentDescription = "Close button",
+        )
+
+        Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
+
+        Box(modifier = Modifier.weight(1F)) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterStart),
+                text = dateText,
+                style = OiTheme.typography.bodyLargeRegular,
+                color = OiTheme.colors.textPrimary,
+            )
+        }
+    }
+}
+
+private fun getFormattedDate(startDate: String, endDate: String): String {
+    return when {
+        startDate.isEmpty() -> ""
+        endDate.isEmpty() -> startDate
+        else -> "$startDate - $endDate"
+    }
+}
+
+@DrawableRes
+private fun getDateIconDrawableRes(isDateSelected: Boolean): Int {
+    return if (isDateSelected) R.drawable.temp_calendar_enabled
+    else R.drawable.temp_calendar_disabled
+}
+
+private const val MAX_LENGTH = 30
 
 @Composable
-internal fun Modifier.getOiTextFieldModifier(isFocused: Boolean): Modifier {
+private fun Modifier.getOiTextFieldModifier(isFocused: Boolean): Modifier {
     return this
         .clip(RoundedCornerShape(OiTextFieldDimens.roundedRectRadius))
         .border(
@@ -130,5 +182,8 @@ private fun OiTextFieldPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(OiTextFieldDimens.componentMargin)) {
         OiTextField(hint = "ex) 서울숲 데이트")
         OiTextField(initialText = "OiTextField")
+        OiDateField(startDate = "25.06.06", endDate = "25.06.07")
+        OiDateField(startDate = "25.06.06")
+        OiDateField()
     }
 }
