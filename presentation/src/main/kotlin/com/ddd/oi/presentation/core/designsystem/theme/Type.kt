@@ -29,8 +29,14 @@ internal val Typography = OiTypography(
         lineHeight = 27.sp,
         letterSpacing = 0.sp
     ),
-    bodyLargeBold = PretendardStyle.copy(
-        fontWeight = FontWeight.Bold,
+    headLineSmallSemibold = PretendardStyle.copy(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 18.sp,
+        lineHeight = 27.sp,
+        letterSpacing = 0.sp
+    ),
+    bodyLargeSemibold = PretendardStyle.copy(
+        fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 20.8.sp,
         letterSpacing = 0.sp
@@ -47,8 +53,8 @@ internal val Typography = OiTypography(
         lineHeight = 20.8.sp,
         letterSpacing = 0.sp
     ),
-    bodyMediumBold = PretendardStyle.copy(
-        fontWeight = FontWeight.Bold,
+    bodyMediumSemibold = PretendardStyle.copy(
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 18.2.sp,
         letterSpacing = 0.sp
@@ -65,8 +71,8 @@ internal val Typography = OiTypography(
         lineHeight = 18.2.sp,
         letterSpacing = 0.sp
     ),
-    bodySmallBold = PretendardStyle.copy(
-        fontWeight = FontWeight.Bold,
+    bodySmallSemibold = PretendardStyle.copy(
+        fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
         lineHeight = 15.6.sp,
         letterSpacing = 0.sp
@@ -83,8 +89,8 @@ internal val Typography = OiTypography(
         lineHeight = 15.6.sp,
         letterSpacing = 0.sp
     ),
-    bodyXSmallBold = PretendardStyle.copy(
-        fontWeight = FontWeight.Bold,
+    bodyXSmallSemibold = PretendardStyle.copy(
+        fontWeight = FontWeight.SemiBold,
         fontSize = 11.sp,
         lineHeight = 14.3.sp,
         letterSpacing = 0.sp
@@ -108,17 +114,18 @@ data class OiTypography(
     val headlineLargeBold: TextStyle,
     val headlineMediumBold: TextStyle,
     val headlineSmallBold: TextStyle,
+    val headLineSmallSemibold: TextStyle,
 
-    val bodyLargeBold: TextStyle,
+    val bodyLargeSemibold: TextStyle,
     val bodyLargeMedium: TextStyle,
     val bodyLargeRegular: TextStyle,
-    val bodyMediumBold: TextStyle,
+    val bodyMediumSemibold: TextStyle,
     val bodyMediumMedium: TextStyle,
     val bodyMediumRegular: TextStyle,
-    val bodySmallBold: TextStyle,
+    val bodySmallSemibold: TextStyle,
     val bodySmallMedium: TextStyle,
     val bodySmallRegular: TextStyle,
-    val bodyXSmallBold: TextStyle,
+    val bodyXSmallSemibold: TextStyle,
     val bodyXSmallMedium: TextStyle,
     val bodyXSmallRegular: TextStyle,
 )
@@ -128,16 +135,17 @@ val LocalTypography = staticCompositionLocalOf {
         headlineSmallBold = PretendardStyle,
         headlineMediumBold = PretendardStyle,
         headlineLargeBold = PretendardStyle,
-        bodyLargeBold = PretendardStyle,
+        headLineSmallSemibold = PretendardStyle,
+        bodyLargeSemibold = PretendardStyle,
         bodyLargeMedium = PretendardStyle,
         bodyLargeRegular = PretendardStyle,
-        bodyMediumBold = PretendardStyle,
+        bodyMediumSemibold = PretendardStyle,
         bodyMediumMedium = PretendardStyle,
         bodyMediumRegular = PretendardStyle,
-        bodySmallBold = PretendardStyle,
+        bodySmallSemibold = PretendardStyle,
         bodySmallMedium = PretendardStyle,
         bodySmallRegular = PretendardStyle,
-        bodyXSmallBold = PretendardStyle,
+        bodyXSmallSemibold = PretendardStyle,
         bodyXSmallMedium = PretendardStyle,
         bodyXSmallRegular = PretendardStyle,
     )

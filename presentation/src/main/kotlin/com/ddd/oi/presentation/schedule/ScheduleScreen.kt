@@ -20,7 +20,7 @@ fun ScheduleScreen(modifier: Modifier = Modifier) {
             modifier = modifier
                 .weight(1f)
                 .fillMaxSize()
-                .background(OiTheme.colors.backgroundTertiary)
+                .background(OiTheme.colors.backgroundContents)
         ) {
             Text("일정 리스트 영역")
         }
