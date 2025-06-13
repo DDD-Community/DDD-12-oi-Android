@@ -82,7 +82,7 @@ fun OiButton(
 }
 
 @Composable
-internal fun getButtonColors(isPressed: Boolean): ButtonColors {
+private fun getButtonColors(isPressed: Boolean): ButtonColors {
     return if (isPressed) {
         ButtonColors(
             contentColor = OiTheme.colors.textOnPrimary,

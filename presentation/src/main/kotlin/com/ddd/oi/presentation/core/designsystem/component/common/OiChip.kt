@@ -65,7 +65,7 @@ fun OiChip(
 
 
 @Composable
-internal fun getChipTextStyle(selected: Boolean): TextStyle {
+private fun getChipTextStyle(selected: Boolean): TextStyle {
     return if (selected) {
         OiTheme.typography.bodyMediumSemibold
     } else {
@@ -73,7 +73,7 @@ internal fun getChipTextStyle(selected: Boolean): TextStyle {
     }
 }
 
-internal fun getChipBackgroundColor(selected: Boolean): Color {
+private fun getChipBackgroundColor(selected: Boolean): Color {
     return if (selected) {
         neutral800
     } else {
@@ -81,7 +81,7 @@ internal fun getChipBackgroundColor(selected: Boolean): Color {
     }
 }
 
-internal fun getChipTextColor(selected: Boolean): Color {
+private fun getChipTextColor(selected: Boolean): Color {
     return if (selected) {
         TextOnPrimary
     } else {
