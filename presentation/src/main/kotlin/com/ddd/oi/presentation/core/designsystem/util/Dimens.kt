@@ -46,6 +46,17 @@ object OiChipDimens {
     val componentMargin = 2.dp
 }
 
+object OiTextFieldDimens {
+    val iconSize = 20.dp
+    val height = 48.dp
+    val roundedRectRadius = 8.dp
+
+    val horizontalPadding = 16.dp
+    val componentMargin = 8.dp
+
+    val stroke = 1.dp
+}
+
 object BottomBarDimens {
     val bottomBarHeight = 40.dp
 }
