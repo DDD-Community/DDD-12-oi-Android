@@ -20,7 +20,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             modifier = modifier
                 .weight(1f)
                 .fillMaxSize()
-                .background(OiTheme.colors.backgroundTertiary)
+                .background(OiTheme.colors.backgroundContents)
         ) {
             Text("홈 영역2")
         }

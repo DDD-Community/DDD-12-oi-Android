@@ -2,4 +2,7 @@
 <resources>
     <string name="home">홈</string>
     <string name="schedule">일정</string>
+    <string name="create_schedule">일정 만들기</string>
+
+    <string name="button">Button</string>
 </resources>
