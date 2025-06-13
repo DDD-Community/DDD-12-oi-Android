@@ -36,6 +36,7 @@ object OiButtonDimens {
 
 object OiChipDimens {
     val iconSize = 14.dp
+    val height = 32.dp
 
     val horizontalPadding = 12.dp
     val verticalPadding = 7.dp
