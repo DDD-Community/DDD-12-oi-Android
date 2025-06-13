@@ -65,7 +65,7 @@ fun OiChip(
 @Composable
 internal fun getChipTextStyle(selected: Boolean): TextStyle {
     return if (selected) {
-        OiTheme.typography.bodyMediumBold
+        OiTheme.typography.bodyMediumSemibold
     } else {
         OiTheme.typography.bodyMediumRegular
     }

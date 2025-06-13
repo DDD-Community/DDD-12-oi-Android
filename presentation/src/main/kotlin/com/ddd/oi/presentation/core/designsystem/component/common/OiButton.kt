@@ -85,17 +85,17 @@ fun OiButton(
 internal fun getButtonColors(isPressed: Boolean): ButtonColors {
     return if (isPressed) {
         ButtonColors(
-            contentColor = white,
-            containerColor = asamo900,
-            disabledContentColor = neutral300,
-            disabledContainerColor = neutral100,
+            contentColor = OiTheme.colors.textOnPrimary,
+            containerColor = OiTheme.colors.backgroundPressed,
+            disabledContentColor = OiTheme.colors.textDisabled,
+            disabledContainerColor = OiTheme.colors.backgroundDisabled,
         )
     } else {
         ButtonColors(
-            contentColor = white,
-            containerColor = asamo700,
-            disabledContentColor = neutral300,
-            disabledContainerColor = neutral100,
+            contentColor = OiTheme.colors.textOnPrimary,
+            containerColor = OiTheme.colors.backgroundPrimary,
+            disabledContentColor = OiTheme.colors.textDisabled,
+            disabledContainerColor = OiTheme.colors.backgroundDisabled,
         )
     }
 }
@@ -148,10 +148,10 @@ sealed interface OiButtonStyle {
 
     @Composable
     fun getTextStyle(): TextStyle = when (this) {
-        Small32Oval, Small32Rect -> OiTheme.typography.bodySmallBold
-        Medium40Rect, Medium40Oval -> OiTheme.typography.bodyMediumBold
-        Large48Oval, Large48Rect -> OiTheme.typography.bodyLargeBold
-        Xlarge56Oval, Xlarge56Rect -> OiTheme.typography.bodyLargeBold
+        Small32Oval, Small32Rect -> OiTheme.typography.bodySmallSemibold
+        Medium40Rect, Medium40Oval -> OiTheme.typography.bodyMediumSemibold
+        Large48Oval, Large48Rect -> OiTheme.typography.bodyLargeSemibold
+        Xlarge56Oval, Xlarge56Rect -> OiTheme.typography.bodyLargeSemibold
     }
 }
 
