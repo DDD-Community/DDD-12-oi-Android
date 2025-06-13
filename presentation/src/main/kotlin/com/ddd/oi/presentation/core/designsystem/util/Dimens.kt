@@ -15,6 +15,36 @@ object Dimens {
     val fabOffset = (fabSize / 2) + paddingMedium
 }
 
+object OiHeaderDimens {
+    val size = 60.dp
+    private val iconSize = 24.dp
+
+    val padding = (size - iconSize).div(2)
+}
+
+object OiButtonDimens {
+    val smallHeight = 32.dp
+    val mediumHeight = 40.dp
+    val largeHeight = 48.dp
+    val xlargeHeight = 56.dp
+
+    val roundedRectRadius = 8.dp
+    val ovalRadius = 999.dp
+
+    val componentMargin = 4.dp
+}
+
+object OiChipDimens {
+    val iconSize = 14.dp
+
+    val horizontalPadding = 12.dp
+    val verticalPadding = 7.dp
+
+    val ovalRadius = 999.dp
+
+    val componentMargin = 2.dp
+}
+
 object BottomBarDimens {
     val bottomBarHeight = 40.dp
 }
