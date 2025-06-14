@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
+import com.ddd.oi.domain.model.Category
 import com.ddd.oi.domain.model.Schedule
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
@@ -34,7 +35,6 @@ import com.ddd.oi.presentation.core.designsystem.util.OiCalendarDimens
 import com.ddd.oi.presentation.core.designsystem.util.getColor
 import com.ddd.oi.presentation.core.designsystem.util.extension.groupByDate
 import com.ddd.oi.presentation.core.designsystem.util.extension.groupCategoriesByDate
-import com.ddd.oi.presentation.schedule.model.UiCategory
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
@@ -48,7 +48,7 @@ fun OiCalendar(
     selectedDateMillis: Long?,
     onDateSelectionChange: (dateInMillis: Long) -> Unit,
     colors: OiCalendarColors = OiCalendarDefaults.colors(),
-    schedules: ImmutableMap<LocalDate, ImmutableList<UiCategory>>
+    schedules: ImmutableMap<LocalDate, ImmutableList<Category>>
 ) {
     val locale = getCurrentLocale()
     val oiCalendarModel = remember { OiCalendarModelImpl(locale) }
@@ -71,7 +71,7 @@ internal fun DateContent(
     onDateSelectionChange: (dateInMillis: Long) -> Unit,
     oiCalendarModel: OiCalendarModel,
     colors: OiCalendarColors,
-    schedules: ImmutableMap<LocalDate, ImmutableList<UiCategory>>
+    schedules: ImmutableMap<LocalDate, ImmutableList<Category>>
 ) {
     val today = oiCalendarModel.today
     Column(
@@ -143,7 +143,7 @@ internal fun OiMonth(
     startDateMillis: Long?,
     todayMillis: Long,
     colors: OiCalendarColors,
-    schedules: ImmutableMap<LocalDate, ImmutableList<UiCategory>>
+    schedules: ImmutableMap<LocalDate, ImmutableList<Category>>
 ) {
     var cellIndex = 0
 
@@ -214,7 +214,7 @@ fun OiDay(
     enabled: Boolean = false,
     today: Boolean = false,
     colors: OiCalendarColors,
-    categories: ImmutableList<UiCategory> = persistentListOf()
+    categories: ImmutableList<Category> = persistentListOf()
 ) {
     Column(
         modifier = modifier.width(OiCalendarDimens.dayWidth),
