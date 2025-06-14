@@ -1,8 +1,8 @@
 package com.ddd.oi.presentation.core.designsystem.util.extension
 
+import com.ddd.oi.domain.model.Category
 import com.ddd.oi.domain.model.Schedule
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiCalendarDefaults
-import com.ddd.oi.presentation.schedule.model.UiCategory
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.toImmutableList
@@ -28,12 +28,13 @@ fun List<Schedule>.groupByDate(
             date = date.plusDays(1)
         }
     }
-
-    return map.mapValues { it.value.toImmutableList() }.toImmutableMap()
+    return map
+        .mapValues { (_, list) -> list.sortedBy { it.createdAt }.toImmutableList() }
+        .toImmutableMap()
 }
 
-fun ImmutableMap<LocalDate, ImmutableList<Schedule>>.groupCategoriesByDate(): ImmutableMap<LocalDate, ImmutableList<UiCategory>> {
+fun ImmutableMap<LocalDate, ImmutableList<Schedule>>.groupCategoriesByDate(): ImmutableMap<LocalDate, ImmutableList<Category>> {
     return this.mapValues { (_, schedules) ->
-        schedules.map { UiCategory.from(it.category) }.toImmutableList()
+        schedules.map { it.category }.toImmutableList()
     }.toImmutableMap()
 }
