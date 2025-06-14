@@ -121,7 +121,7 @@ internal fun OiWeekDays(
     ) {
         dayNames.fastForEach {
             Box(
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier.size(OiCalendarDimens.dayWidth),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
