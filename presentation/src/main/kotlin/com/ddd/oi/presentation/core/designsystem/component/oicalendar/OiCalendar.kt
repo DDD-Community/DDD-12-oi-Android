@@ -226,21 +226,16 @@ fun OiDay(
             enabled = enabled,
             onClick = onClick,
             shape = CircleShape,
-            color = colors
-                .dayContainerColor(
-                    today = today,
-                    selected = selected,
-                    animate = animateChecked
-                )
-                .value,
-            contentColor =
-                colors
-                    .dayContentColor(
-                        isToday = today,
-                        selected = selected,
-                        enabled = enabled,
-                    )
-                    .value,
+            color = colors.dayContainerColor(
+                today = today,
+                selected = selected,
+                animate = animateChecked
+            ).value,
+            contentColor = colors.dayContentColor(
+                isToday = today,
+                selected = selected,
+                enabled = enabled,
+            ).value,
         ) {
             Box(
                 contentAlignment = Alignment.Center
@@ -249,7 +244,6 @@ fun OiDay(
                     text = dayNumber,
                     modifier = Modifier,
                     style = getTextStyle(today, selected),
-                    textAlign = TextAlign.Center
                 )
             }
         }
