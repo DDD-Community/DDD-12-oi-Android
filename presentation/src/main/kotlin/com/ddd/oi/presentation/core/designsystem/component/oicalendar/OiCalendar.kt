@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,8 +32,8 @@ import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.OiCalendarDimens
 import com.ddd.oi.presentation.core.designsystem.util.getColor
-import com.ddd.oi.presentation.core.designsystem.util.groupByDate
-import com.ddd.oi.presentation.core.designsystem.util.groupCategoriesByDate
+import com.ddd.oi.presentation.core.designsystem.util.extension.groupByDate
+import com.ddd.oi.presentation.core.designsystem.util.extension.groupCategoriesByDate
 import com.ddd.oi.presentation.schedule.model.UiCategory
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
