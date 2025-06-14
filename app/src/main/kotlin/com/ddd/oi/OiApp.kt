@@ -47,7 +47,7 @@ fun OiApp(
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
-        containerColor = OiTheme.colors.backgroundTertiary,
+        containerColor = OiTheme.colors.backgroundContents,
         snackbarHost = {
             SnackbarHost(
                 hostState = snackBarHostState,
@@ -72,7 +72,7 @@ fun OiApp(
                 FloatingActionButton(
                     onClick = navigator::navigateToCreateSchedule,
                     shape = CircleShape,
-                    containerColor = OiTheme.colors.iconOnSecondary,
+                    containerColor = OiTheme.colors.iconBrand,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp),
                     modifier = Modifier
                         .size(Dimens.fabSize)
