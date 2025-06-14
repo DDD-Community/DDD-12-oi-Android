@@ -4,8 +4,6 @@ import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZoneOffset
 import java.time.format.TextStyle
 import java.time.temporal.WeekFields
 import java.util.Locale
@@ -15,11 +13,11 @@ internal abstract class OiCalendarModel() {
 
     abstract val firstDayOfWeek: Int
 
-    abstract val weekdayNames: List<Pair<String, String>>
+    abstract val weekdayNames: List<String>
 
     abstract fun getMonth(date: OiCalendarDate): OiCalendarMonth
 
-    abstract fun getMonth(year: Int, /* @IntRange(from = 1, to = 12) */ month: Int): OiCalendarMonth
+    abstract fun getMonth(year: Int, month: Int): OiCalendarMonth
 }
 
 internal class OiCalendarModelImpl(locale: Locale) : OiCalendarModel() {
@@ -34,7 +32,7 @@ internal class OiCalendarModelImpl(locale: Locale) : OiCalendarModel() {
                 utcTimeMillis =
                     systemLocalDate
                         .atTime(LocalTime.MIDNIGHT)
-                        .atZone(utcTimeZoneId)
+                        .atZone(OiCalendarDefaults.zone)
                         .toInstant()
                         .toEpochMilli()
             )
@@ -42,15 +40,12 @@ internal class OiCalendarModelImpl(locale: Locale) : OiCalendarModel() {
 
     override val firstDayOfWeek: Int = WeekFields.of(locale).firstDayOfWeek.value
 
-    override val weekdayNames: List<Pair<String, String>> =
+    override val weekdayNames: List<String> =
         with(locale) {
             DayOfWeek.entries.map {
-                it.getDisplayName(TextStyle.FULL, this) to
-                        it.getDisplayName(TextStyle.NARROW, this)
+                it.getDisplayName(TextStyle.NARROW, this)
             }
         }
-
-    private val utcTimeZoneId: ZoneId = ZoneId.of("UTC")
 
     override fun getMonth(date: OiCalendarDate): OiCalendarMonth {
         return getMonth(LocalDate.of(date.year, date.month, 1))
@@ -74,7 +69,7 @@ internal class OiCalendarModelImpl(locale: Locale) : OiCalendarModel() {
         val firstDayEpochMillis =
             firstDayLocalDate
                 .atTime(LocalTime.MIDNIGHT)
-                .atZone(utcTimeZoneId)
+                .atZone(OiCalendarDefaults.zone)
                 .toInstant()
                 .toEpochMilli()
         return OiCalendarMonth(
@@ -106,19 +101,20 @@ internal data class OiCalendarMonth(
     val startUtcTimeMillis: Long,
     val previousMonthDays: Int,
 ) {
-    val endUtcTimeMillis: Long = startUtcTimeMillis + (numberOfDays * MillisecondsIn24Hours) - 1
-
     val totalCells: Int
         get() {
             val totalCells = daysFromStartOfWeekToFirstOfMonth + numberOfDays
             return (totalCells + DaysInWeek - 1) / DaysInWeek
         }
 
-    fun getDayStartUtcMillis(dayOfMonth: Int): Long {
-        return startUtcTimeMillis + (dayOfMonth - 1) * MillisecondsIn24Hours
+    fun getLocalDateForDayOfMonth(dayOfMonth: Int): LocalDate {
+        val utcMillis = getDayStartUtcMillis(dayOfMonth)
+        return Instant.ofEpochMilli(utcMillis)
+            .atZone(OiCalendarDefaults.zone)
+            .toLocalDate()
     }
 
-    fun getDayEndUtcMillis(dayOfMonth: Int): Long {
-        return startUtcTimeMillis + (dayOfMonth * MillisecondsIn24Hours) - 1
+    private fun getDayStartUtcMillis(dayOfMonth: Int): Long {
+        return startUtcTimeMillis + (dayOfMonth - 1) * MillisecondsIn24Hours
     }
 }
