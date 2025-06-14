@@ -7,12 +7,13 @@ import com.ddd.oi.presentation.core.designsystem.theme.lime400
 import com.ddd.oi.presentation.core.designsystem.theme.rose400
 import com.ddd.oi.presentation.core.designsystem.theme.teal400
 import com.ddd.oi.presentation.core.designsystem.theme.yellow400
+import com.ddd.oi.presentation.schedule.model.UiCategory
 
-fun Category.getColor(): Color =
+fun UiCategory.getColor(): Color =
     when (this) {
-        Category.Travel -> teal400
-        Category.Date -> rose400
-        Category.Daily -> yellow400
-        Category.Business -> indigo400
-        Category.Etc -> lime400
+        UiCategory.DAILY -> yellow400
+        UiCategory.DATE -> yellow400
+        UiCategory.TRAVEL -> teal400
+        UiCategory.BUSINESS -> indigo400
+        UiCategory.ETC -> lime400
     }
