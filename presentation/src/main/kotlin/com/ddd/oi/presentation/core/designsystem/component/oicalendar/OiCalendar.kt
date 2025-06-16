@@ -16,62 +16,77 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastForEach
 import com.ddd.oi.domain.model.Category
-import com.ddd.oi.domain.model.Schedule
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
+import com.ddd.oi.presentation.core.designsystem.theme.indigo400
+import com.ddd.oi.presentation.core.designsystem.theme.lime400
+import com.ddd.oi.presentation.core.designsystem.theme.teal400
+import com.ddd.oi.presentation.core.designsystem.theme.yellow400
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.OiCalendarDimens
-import com.ddd.oi.presentation.core.designsystem.util.getColor
-import com.ddd.oi.presentation.core.designsystem.util.extension.groupByDate
-import com.ddd.oi.presentation.core.designsystem.util.extension.groupCategoriesByDate
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
-import kotlinx.collections.immutable.persistentListOf
-import java.time.LocalDate
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import java.util.Locale
 
 @Composable
 fun OiCalendar(
-    year: Int,
-    month: Int,
-    selectedDateMillis: Long?,
-    onDateSelectionChange: (dateInMillis: Long) -> Unit,
+    selectedLocalDate: LocalDate?,
+    onDateSelectionChange: (LocalDate?) -> Unit,
     colors: OiCalendarColors = OiCalendarDefaults.colors(),
     schedules: ImmutableMap<LocalDate, ImmutableList<Category>>
 ) {
     val locale = getCurrentLocale()
-    val oiCalendarModel = remember { OiCalendarModelImpl(locale) }
-    DateContent(
-        year = year,
-        month = month,
-        selectedDateMillis = selectedDateMillis,
-        onDateSelectionChange = onDateSelectionChange,
+    val oiCalendarModel = remember { OiCalendarModel(locale) }
+
+    OiDateContent(
         oiCalendarModel = oiCalendarModel,
+        selectedLocalDate = selectedLocalDate,
+        onDateSelectionChange = onDateSelectionChange,
         colors = colors,
         schedules = schedules
     )
 }
 
 @Composable
-internal fun DateContent(
-    year: Int,
-    month: Int,
-    selectedDateMillis: Long?,
-    onDateSelectionChange: (dateInMillis: Long) -> Unit,
+private fun OiDateContent(
     oiCalendarModel: OiCalendarModel,
+    selectedLocalDate: LocalDate?,
     colors: OiCalendarColors,
-    schedules: ImmutableMap<LocalDate, ImmutableList<Category>>
+    schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
+    onDateSelectionChange: (LocalDate?) -> Unit = {}
 ) {
-    val today = oiCalendarModel.today
+    val selectedDate = selectedLocalDate ?: Clock.System.todayIn(TimeZone.currentSystemDefault())
+    val monthKey = selectedDate.year * 100 + selectedDate.monthNumber
+    val rawMonth = remember(monthKey, schedules) {
+        oiCalendarModel.getMonth(selectedLocalDate, schedules)
+    }
+    val calendarMonth = remember(rawMonth, selectedLocalDate) {
+        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
+        OiCalendarMonth(
+            days = rawMonth.days.map {
+                it.copy(
+                    isSelected = it.date == selectedLocalDate,
+                    isToday = it.date == today
+                )
+            }.toImmutableList()
+        )
+    }
     Column(
         modifier = Modifier
             .padding(horizontal = Dimens.paddingMedium)
@@ -79,16 +94,13 @@ internal fun DateContent(
     ) {
         OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
         OiMonth(
-            month = oiCalendarModel.getMonth(year, month),
+            month = calendarMonth,
             onDateSelectionChange = onDateSelectionChange,
-            startDateMillis = selectedDateMillis,
-            todayMillis = today.utcTimeMillis,
             colors = colors,
             modifier = Modifier.padding(
                 top = Dimens.paddingMediumSmall,
                 bottom = Dimens.paddingMedium
             ),
-            schedules = schedules
         )
     }
 }
@@ -98,18 +110,7 @@ internal fun OiWeekDays(
     colors: OiCalendarColors,
     oiCalendarModel: OiCalendarModel
 ) {
-    val firstDayOfWeek = oiCalendarModel.firstDayOfWeek
-    val weekdays = oiCalendarModel.weekdayNames
-    val dayNames = remember(firstDayOfWeek, weekdays) {
-        val names = arrayListOf<String>()
-        for (i in firstDayOfWeek - 1 until weekdays.size) {
-            names.add(weekdays[i])
-        }
-        for (i in 0 until firstDayOfWeek - 1) {
-            names.add(weekdays[i])
-        }
-        names
-    }
+    val dayNames = oiCalendarModel.orderedWeekdayNames
     Row(
         modifier =
             Modifier
@@ -137,19 +138,14 @@ internal fun OiWeekDays(
 internal fun OiMonth(
     modifier: Modifier = Modifier,
     month: OiCalendarMonth,
-    onDateSelectionChange: (dateInMillis: Long) -> Unit,
-    startDateMillis: Long?,
-    todayMillis: Long,
+    onDateSelectionChange: (LocalDate?) -> Unit,
     colors: OiCalendarColors,
-    schedules: ImmutableMap<LocalDate, ImmutableList<Category>>
 ) {
-    var cellIndex = 0
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(Dimens.paddingMediumSmall)
     ) {
-        for (weekIndex in 0 until month.totalCells) {
+        for (weekIndex in 0 until month.totalWeek) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -157,45 +153,13 @@ internal fun OiMonth(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 for (dayIndex in 0 until DaysInWeek) {
-                    if (cellIndex < month.daysFromStartOfWeekToFirstOfMonth) {
-                        val leadingOffset = month.daysFromStartOfWeekToFirstOfMonth - cellIndex
-                        val dayNumber = month.previousMonthDays - leadingOffset + 1
-                        val localDate = month.getLocalDateForDayOfMonth(-leadingOffset + 1)
-                        OiDay(
-                            dayNumber = dayNumber.toString(),
-                            colors = colors,
-                            categories = schedules[localDate] ?: persistentListOf()
-                        )
-                    } else if (cellIndex >= (month.daysFromStartOfWeekToFirstOfMonth + month.numberOfDays)) {
-                        val trailingOffset =
-                            cellIndex - (month.daysFromStartOfWeekToFirstOfMonth + month.numberOfDays)
-                        val dayNumber = trailingOffset + 1
-                        val localDate =
-                            month.getLocalDateForDayOfMonth(month.numberOfDays + dayNumber)
-                        OiDay(
-                            dayNumber = dayNumber.toString(),
-                            colors = colors,
-                            categories = schedules[localDate] ?: persistentListOf()
-                        )
-                    } else {
-                        val dayNumber = cellIndex - month.daysFromStartOfWeekToFirstOfMonth
-                        val dateInMillis =
-                            month.startUtcTimeMillis + (dayNumber * MillisecondsIn24Hours)
-                        val isToday = dateInMillis == todayMillis
-                        val todaySelected = dateInMillis == startDateMillis
-                        val localDate = month.getLocalDateForDayOfMonth(dayNumber)
-                        OiDay(
-                            selected = todaySelected,
-                            dayNumber = (dayNumber + 1).toString(),
-                            onClick = { onDateSelectionChange(dateInMillis) },
-                            animateChecked = todaySelected,
-                            enabled = true,
-                            today = isToday,
-                            colors = colors,
-                            categories = schedules[localDate] ?: persistentListOf()
-                        )
-                    }
-                    cellIndex++
+                    val index = weekIndex * DaysInWeek + dayIndex
+                    val day = month.days[index]
+                    OiDay(
+                        oiDay = day,
+                        onClick = { onDateSelectionChange(day.date) },
+                        colors = colors
+                    )
                 }
             }
         }
@@ -203,45 +167,40 @@ internal fun OiMonth(
 }
 
 @Composable
-fun OiDay(
+internal fun OiDay(
     modifier: Modifier = Modifier,
-    dayNumber: String,
-    selected: Boolean = false,
-    onClick: () -> Unit = {},
-    animateChecked: Boolean = false,
-    enabled: Boolean = false,
-    today: Boolean = false,
+    oiDay: OiCalendarDay,
+    onClick: () -> Unit,
     colors: OiCalendarColors,
-    categories: ImmutableList<Category> = persistentListOf()
 ) {
     Column(
         modifier = modifier.width(OiCalendarDimens.dayWidth),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Surface(
-            selected = selected,
+            selected = oiDay.isSelected,
             modifier = Modifier.size(OiCalendarDimens.dayWidth),
-            enabled = enabled,
+            enabled = oiDay.isCurrentMonth,
             onClick = onClick,
             shape = CircleShape,
             color = colors.dayContainerColor(
-                today = today,
-                selected = selected,
-                animate = animateChecked
+                isToday = oiDay.isToday,
+                isSelected = oiDay.isSelected,
+                animate = oiDay.animateChecked
             ).value,
             contentColor = colors.dayContentColor(
-                isToday = today,
-                selected = selected,
-                enabled = enabled,
+                isToday = oiDay.isToday,
+                isSelected = oiDay.isSelected,
+                enabled = oiDay.isCurrentMonth,
             ).value,
         ) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = dayNumber,
+                    text = oiDay.dayNumber.toString(),
                     modifier = Modifier,
-                    style = getTextStyle(today, selected),
+                    style = getTextStyle(oiDay.isToday, oiDay.isSelected),
                 )
             }
         }
@@ -249,7 +208,7 @@ fun OiDay(
             modifier = Modifier.padding(top = OiCalendarDimens.categoryPadding),
             horizontalArrangement = Arrangement.spacedBy(OiCalendarDimens.categoryPadding)
         ) {
-            categories.forEach { category ->
+            oiDay.categories.forEach { category ->
                 Box(
                     modifier = Modifier
                         .size(OiCalendarDimens.categoryCircleSize)
@@ -270,8 +229,15 @@ internal fun getTextStyle(
     else -> OiTheme.typography.bodyMediumRegular
 }
 
+fun Category.getColor(): Color = when (this) {
+    Category.Daily -> yellow400
+    Category.Date -> yellow400
+    Category.Travel -> teal400
+    Category.Business -> indigo400
+    Category.Etc -> lime400
+}
+
 internal const val DaysInWeek: Int = 7
-internal const val MillisecondsIn24Hours = 86400000L
 
 @Composable
 @ReadOnlyComposable
@@ -283,15 +249,13 @@ fun getCurrentLocale(): Locale {
 @Preview(showBackground = true)
 private fun OiCalendarPreview() {
     OiTheme {
-        val mockData: List<Schedule> = MockOiCalendarScheduleData.generateMockSchedules()
-        var selectedDateMillis by remember { mutableLongStateOf(0L) }
+        var selectedDateMillis by remember { mutableStateOf<LocalDate?>(LocalDate(2025, 6, 16)) }
+
         Column(modifier = Modifier.fillMaxWidth()) {
             OiCalendar(
-                year = 2025,
-                month = 6,
-                selectedDateMillis = selectedDateMillis,
+                selectedLocalDate = selectedDateMillis,
                 onDateSelectionChange = { selectedDateMillis = it },
-                schedules = mockData.groupByDate().groupCategoriesByDate()
+                schedules = persistentMapOf()
             )
         }
     }
