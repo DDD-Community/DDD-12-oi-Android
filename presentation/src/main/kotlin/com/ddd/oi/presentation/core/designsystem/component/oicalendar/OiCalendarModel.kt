@@ -1,120 +1,98 @@
 package com.ddd.oi.presentation.core.designsystem.component.oicalendar
 
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
+import androidx.compose.runtime.Immutable
+import com.ddd.oi.domain.model.Category
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.todayIn
 import java.time.format.TextStyle
-import java.time.temporal.WeekFields
 import java.util.Locale
 
-internal abstract class OiCalendarModel() {
-    abstract val today: OiCalendarDate
 
-    abstract val firstDayOfWeek: Int
+internal class OiCalendarModel(locale: Locale) {
 
-    abstract val weekdayNames: List<String>
+    private val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
 
-    abstract fun getMonth(date: OiCalendarDate): OiCalendarMonth
+    private val firstDayOfWeek: Int = DayOfWeek.SUNDAY.value
 
-    abstract fun getMonth(year: Int, month: Int): OiCalendarMonth
-}
+    private val allWeekdayNames: List<String> = DayOfWeek.entries.map {
+        it.getDisplayName(TextStyle.NARROW, locale)
+    }
 
-internal class OiCalendarModelImpl(locale: Locale) : OiCalendarModel() {
+    val orderedWeekdayNames: List<String> = run {
+        val startIndex = firstDayOfWeek - 1
+        allWeekdayNames.drop(startIndex) + allWeekdayNames.take(startIndex)
+    }
 
-    override val today
-        get(): OiCalendarDate {
-            val systemLocalDate = LocalDate.now()
-            return OiCalendarDate(
-                year = systemLocalDate.year,
-                month = systemLocalDate.monthValue,
-                dayOfMonth = systemLocalDate.dayOfMonth,
-                utcTimeMillis =
-                    systemLocalDate
-                        .atTime(LocalTime.MIDNIGHT)
-                        .atZone(OiCalendarDefaults.zone)
-                        .toInstant()
-                        .toEpochMilli()
+    fun getMonth(
+        selectedDate: LocalDate?,
+        categories: ImmutableMap<LocalDate, ImmutableList<Category>>
+    ): OiCalendarMonth {
+        val firstDayOfMonth =
+            LocalDate(selectedDate?.year ?: today.year, selectedDate?.month ?: today.month, 1)
+        val offset = ((firstDayOfMonth.dayOfWeek.isoDayNumber - firstDayOfWeek + 7) % 7)
+
+        return OiCalendarMonth(createOiDays(firstDayOfMonth, selectedDate, offset, categories))
+    }
+
+    private fun createOiDays(
+        currentMonth: LocalDate,
+        selectedDate: LocalDate?,
+        offset: Int,
+        schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
+    ): ImmutableList<OiCalendarDay> {
+        val daysInMonth = currentMonthLength(currentMonth)
+        val totalCells = ((offset + daysInMonth + 6) / 7) * 7
+        val startDate = currentMonth.minus(offset, DateTimeUnit.DAY)
+        return List(totalCells) { i ->
+            val date = startDate.plus(i, DateTimeUnit.DAY)
+            OiCalendarDay(
+                date = date,
+                isCurrentMonth = date.monthNumber == currentMonth.monthNumber,
+                isToday = date == today,
+                animateChecked = date == selectedDate,
+                isSelected = date == selectedDate,
+                categories = schedules[date] ?: persistentListOf()
             )
-        }
-
-    override val firstDayOfWeek: Int = WeekFields.of(locale).firstDayOfWeek.value
-
-    override val weekdayNames: List<String> =
-        with(locale) {
-            DayOfWeek.entries.map {
-                it.getDisplayName(TextStyle.NARROW, this)
-            }
-        }
-
-    override fun getMonth(date: OiCalendarDate): OiCalendarMonth {
-        return getMonth(LocalDate.of(date.year, date.month, 1))
+        }.toImmutableList()
     }
 
-    override fun getMonth(year: Int, month: Int): OiCalendarMonth {
-        return getMonth(LocalDate.of(year, month, 1))
-    }
-
-    private fun getMonth(firstDayLocalDate: LocalDate): OiCalendarMonth {
-        val difference = firstDayLocalDate.dayOfWeek.value - firstDayOfWeek
-        val daysFromStartOfWeekToFirstOfMonth =
-            if (difference < 0) {
-                difference + DaysInWeek
-            } else {
-                difference
-            }
-        val previousMonth = firstDayLocalDate.minusMonths(1)
-        val previousMonthDays = previousMonth.lengthOfMonth()
-
-        val firstDayEpochMillis =
-            firstDayLocalDate
-                .atTime(LocalTime.MIDNIGHT)
-                .atZone(OiCalendarDefaults.zone)
-                .toInstant()
-                .toEpochMilli()
-        return OiCalendarMonth(
-            year = firstDayLocalDate.year,
-            month = firstDayLocalDate.monthValue,
-            numberOfDays = firstDayLocalDate.lengthOfMonth(),
-            daysFromStartOfWeekToFirstOfMonth = daysFromStartOfWeekToFirstOfMonth,
-            startUtcTimeMillis = firstDayEpochMillis,
-            previousMonthDays = previousMonthDays
-        )
+    private fun currentMonthLength(date: LocalDate): Int {
+        val nextMonth = if (date.monthNumber == 12)
+            LocalDate(date.year + 1, 1, 1)
+        else
+            LocalDate(date.year, date.monthNumber + 1, 1)
+        return nextMonth.minus(1, DateTimeUnit.DAY).dayOfMonth
     }
 }
 
-internal data class OiCalendarDate(
-    val year: Int,
-    val month: Int,
-    val dayOfMonth: Int,
-    val utcTimeMillis: Long
-) : Comparable<OiCalendarDate> {
-    override fun compareTo(other: OiCalendarDate): Int =
-        this.utcTimeMillis.compareTo(other.utcTimeMillis)
-}
-
+@Immutable
 internal data class OiCalendarMonth(
-    val year: Int,
-    val month: Int,
-    val numberOfDays: Int,
-    val daysFromStartOfWeekToFirstOfMonth: Int,
-    val startUtcTimeMillis: Long,
-    val previousMonthDays: Int,
+    val days: ImmutableList<OiCalendarDay>
 ) {
-    val totalCells: Int
-        get() {
-            val totalCells = daysFromStartOfWeekToFirstOfMonth + numberOfDays
-            return (totalCells + DaysInWeek - 1) / DaysInWeek
-        }
-
-    fun getLocalDateForDayOfMonth(dayOfMonth: Int): LocalDate {
-        val utcMillis = getDayStartUtcMillis(dayOfMonth)
-        return Instant.ofEpochMilli(utcMillis)
-            .atZone(OiCalendarDefaults.zone)
-            .toLocalDate()
-    }
-
-    private fun getDayStartUtcMillis(dayOfMonth: Int): Long {
-        return startUtcTimeMillis + (dayOfMonth - 1) * MillisecondsIn24Hours
-    }
+    val totalWeek: Int
+        get() = (days.size + DaysInWeek - 1) / DaysInWeek
 }
+
+@Immutable
+internal data class OiCalendarDay(
+    val date: LocalDate,
+    val isCurrentMonth: Boolean,
+    val isToday: Boolean,
+    val animateChecked: Boolean,
+    val isSelected: Boolean,
+    val categories: ImmutableList<Category>
+) {
+    val dayNumber: Int = date.dayOfMonth
+}
+
