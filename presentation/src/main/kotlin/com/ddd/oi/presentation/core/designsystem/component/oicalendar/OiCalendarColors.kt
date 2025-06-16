@@ -9,8 +9,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
 
 @Immutable
-class OiCalendarColors
-constructor(
+class OiCalendarColors (
     val containerColor: Color,
     val weekdayContentColor: Color,
     private val dayContentColor: Color,
@@ -23,12 +22,12 @@ constructor(
     @Composable
     internal fun dayContentColor(
         isToday: Boolean,
-        selected: Boolean,
+        isSelected: Boolean,
         enabled: Boolean
     ): State<Color> {
         val target =
             when {
-                selected && enabled -> selectedDayContentColor
+                isSelected && enabled -> selectedDayContentColor
                 isToday -> todayContentColor
                 enabled -> dayContentColor
                 else -> disabledDayContentColor
@@ -38,13 +37,13 @@ constructor(
 
     @Composable
     internal fun dayContainerColor(
-        today: Boolean,
-        selected: Boolean,
+        isToday: Boolean,
+        isSelected: Boolean,
         animate: Boolean
     ): State<Color> {
         val target = when {
-            selected -> selectedDayContainerColor
-            today -> todayContainerColor
+            isSelected -> selectedDayContainerColor
+            isToday -> todayContainerColor
             else -> Color.Transparent
         }
         return if (animate) {
