@@ -10,10 +10,6 @@ import java.time.ZoneId
 @Stable
 object OiCalendarDefaults {
 
-    private const val ZONE_ID = "UTC"
-
-    val zone: ZoneId = ZoneId.of(ZONE_ID)
-
     @Composable
     fun colors(
         containerColor: Color = white,
