@@ -21,17 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastForEach
 import com.ddd.oi.domain.model.Category
+import com.ddd.oi.presentation.core.designsystem.component.mapper.getColor
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
-import com.ddd.oi.presentation.core.designsystem.theme.indigo400
-import com.ddd.oi.presentation.core.designsystem.theme.lime400
-import com.ddd.oi.presentation.core.designsystem.theme.teal400
-import com.ddd.oi.presentation.core.designsystem.theme.yellow400
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.OiCalendarDimens
 import kotlinx.collections.immutable.ImmutableList
@@ -227,14 +223,6 @@ internal fun getTextStyle(
     selected -> OiTheme.typography.bodyMediumSemibold
     today -> OiTheme.typography.bodyMediumMedium
     else -> OiTheme.typography.bodyMediumRegular
-}
-
-fun Category.getColor(): Color = when (this) {
-    Category.Daily -> yellow400
-    Category.Date -> yellow400
-    Category.Travel -> teal400
-    Category.Business -> indigo400
-    Category.Etc -> lime400
 }
 
 internal const val DaysInWeek: Int = 7
