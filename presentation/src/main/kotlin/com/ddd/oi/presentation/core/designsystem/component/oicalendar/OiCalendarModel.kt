@@ -19,35 +19,36 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 
-internal class OiCalendarModel(locale: Locale) {
+internal data class OiCalendarModel(val locale: Locale) {
 
-    private val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
-
-    private val firstDayOfWeek: Int = DayOfWeek.SUNDAY.value
+    companion object {
+        private val TODAY = Clock.System.todayIn(TimeZone.currentSystemDefault())
+        private val FIRST_DAY_OF_WEEK = DayOfWeek.SUNDAY.value
+    }
 
     private val allWeekdayNames: List<String> = DayOfWeek.entries.map {
         it.getDisplayName(TextStyle.NARROW, locale)
     }
 
     val orderedWeekdayNames: List<String> = run {
-        val startIndex = firstDayOfWeek - 1
+        val startIndex = FIRST_DAY_OF_WEEK - 1
         allWeekdayNames.drop(startIndex) + allWeekdayNames.take(startIndex)
     }
 
     fun getMonth(
-        selectedDate: LocalDate?,
+        selectedDate: LocalDate,
         categories: ImmutableMap<LocalDate, ImmutableList<Category>>
     ): OiCalendarMonth {
         val firstDayOfMonth =
-            LocalDate(selectedDate?.year ?: today.year, selectedDate?.month ?: today.month, 1)
-        val offset = ((firstDayOfMonth.dayOfWeek.isoDayNumber - firstDayOfWeek + 7) % 7)
+            LocalDate(selectedDate.year, selectedDate.month, 1)
+        val offset = ((firstDayOfMonth.dayOfWeek.isoDayNumber - FIRST_DAY_OF_WEEK + 7) % 7)
 
         return OiCalendarMonth(createOiDays(firstDayOfMonth, selectedDate, offset, categories))
     }
 
     private fun createOiDays(
         currentMonth: LocalDate,
-        selectedDate: LocalDate?,
+        selectedDate: LocalDate,
         offset: Int,
         schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
     ): ImmutableList<OiCalendarDay> {
@@ -59,7 +60,7 @@ internal class OiCalendarModel(locale: Locale) {
             OiCalendarDay(
                 date = date,
                 isCurrentMonth = date.monthNumber == currentMonth.monthNumber,
-                isToday = date == today,
+                isToday = date == TODAY,
                 animateChecked = date == selectedDate,
                 isSelected = date == selectedDate,
                 categories = schedules[date] ?: persistentListOf()
