@@ -5,5 +5,12 @@
     <string name="create_schedule">일정 만들기</string>
     <string name="next">다음</string>
 
-    <string name="button">Button</string>
+    <string name="whole">전체</string>
+    <string name="travel">여행</string>
+    <string name="date">데이트</string>
+    <string name="daily">일상</string>
+    <string name="business">비즈니스</string>
+    <string name="etc">기타</string>
+
+    <string name="button_eng">Button</string>
 </resources>
