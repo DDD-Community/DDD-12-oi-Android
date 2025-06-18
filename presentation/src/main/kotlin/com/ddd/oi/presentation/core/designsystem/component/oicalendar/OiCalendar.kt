@@ -42,9 +42,8 @@ import java.util.Locale
 
 @Composable
 fun OiCalendar(
-    selectedLocalDate: LocalDate?,
-    onDateSelectionChange: (LocalDate?) -> Unit,
-    colors: OiCalendarColors = OiCalendarDefaults.colors(),
+    selectedLocalDate: LocalDate,
+    onDateSelectionChange: (LocalDate) -> Unit,
     schedules: ImmutableMap<LocalDate, ImmutableList<Category>>
 ) {
     val locale = getCurrentLocale()
@@ -54,7 +53,6 @@ fun OiCalendar(
         oiCalendarModel = oiCalendarModel,
         selectedLocalDate = selectedLocalDate,
         onDateSelectionChange = onDateSelectionChange,
-        colors = colors,
         schedules = schedules
     )
 }
@@ -62,13 +60,12 @@ fun OiCalendar(
 @Composable
 private fun OiDateContent(
     oiCalendarModel: OiCalendarModel,
-    selectedLocalDate: LocalDate?,
-    colors: OiCalendarColors,
+    selectedLocalDate: LocalDate,
+    colors: OiCalendarColors = OiCalendarDefaults.colors(),
     schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
-    onDateSelectionChange: (LocalDate?) -> Unit = {}
+    onDateSelectionChange: (LocalDate) -> Unit = {}
 ) {
-    val selectedDate = selectedLocalDate ?: Clock.System.todayIn(TimeZone.currentSystemDefault())
-    val monthKey = selectedDate.year * 100 + selectedDate.monthNumber
+    val monthKey = selectedLocalDate.year * 100 + selectedLocalDate.monthNumber
     val rawMonth = remember(monthKey, schedules) {
         oiCalendarModel.getMonth(selectedLocalDate, schedules)
     }
@@ -134,7 +131,7 @@ internal fun OiWeekDays(
 internal fun OiMonth(
     modifier: Modifier = Modifier,
     month: OiCalendarMonth,
-    onDateSelectionChange: (LocalDate?) -> Unit,
+    onDateSelectionChange: (LocalDate) -> Unit,
     colors: OiCalendarColors,
 ) {
     Column(
@@ -229,7 +226,7 @@ internal const val DaysInWeek: Int = 7
 
 @Composable
 @ReadOnlyComposable
-fun getCurrentLocale(): Locale {
+internal fun getCurrentLocale(): Locale {
     return LocalConfiguration.current.locales[0]
 }
 
@@ -237,7 +234,7 @@ fun getCurrentLocale(): Locale {
 @Preview(showBackground = true)
 private fun OiCalendarPreview() {
     OiTheme {
-        var selectedDateMillis by remember { mutableStateOf<LocalDate?>(LocalDate(2025, 6, 16)) }
+        var selectedDateMillis by remember { mutableStateOf<LocalDate>(LocalDate(2025, 6, 16)) }
 
         Column(modifier = Modifier.fillMaxWidth()) {
             OiCalendar(
