@@ -1,7 +1,7 @@
 package com.ddd.oi.presentation.core.designsystem.component.mapper
 
 import androidx.compose.ui.graphics.Color
-import com.ddd.oi.domain.model.Category
+import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.indigo400
 import com.ddd.oi.presentation.core.designsystem.theme.lime400
