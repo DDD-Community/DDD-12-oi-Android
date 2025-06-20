@@ -1,17 +1,9 @@
-package com.ddd.oi.domain.usecase.schedule.model
+package com.ddd.oi.domain.model.schedule
 
-import com.ddd.oi.domain.model.Category
-import com.ddd.oi.domain.model.Party
-import com.ddd.oi.domain.model.Schedule
-import com.ddd.oi.domain.model.Transportation
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDateTime
 
 data class ScheduleResult(
     val schedules: Map<LocalDate, List<Schedule>>,
