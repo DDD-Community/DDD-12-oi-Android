@@ -9,3 +9,6 @@ data class BaseResponse<T>(
     val data: T?,
     val message: String
 )
+
+@Serializable
+data object EmptyData
