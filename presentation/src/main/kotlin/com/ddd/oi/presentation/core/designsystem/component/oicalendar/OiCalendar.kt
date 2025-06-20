@@ -21,12 +21,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastForEach
 import com.ddd.oi.domain.model.Category
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getColor
+import com.ddd.oi.presentation.core.designsystem.component.oidaterangepicker.OiSelectedRangeInfo
+import com.ddd.oi.presentation.core.designsystem.component.oidaterangepicker.drawRangeBackground
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.OiCalendarDimens
@@ -133,9 +136,20 @@ internal fun OiMonth(
     month: OiCalendarMonth,
     onDateSelectionChange: (LocalDate) -> Unit,
     colors: OiCalendarColors,
+    rangeSelectionInfo: OiSelectedRangeInfo? = null,
 ) {
+    val rangeSelectionDrawModifier =
+        if (rangeSelectionInfo != null) {
+            Modifier.drawWithContent {
+                drawRangeBackground(rangeSelectionInfo, colors.selectedDayContainerColor.copy(alpha = 0.2f))
+                drawContent()
+            }
+        } else {
+            Modifier
+        }
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .then(rangeSelectionDrawModifier),
         verticalArrangement = Arrangement.spacedBy(Dimens.paddingMediumSmall)
     ) {
         for (weekIndex in 0 until month.totalWeek) {
