@@ -1,4 +1,6 @@
-package com.ddd.oi.domain.model
+package com.ddd.oi.domain.model.schedule
+
+import kotlinx.datetime.LocalDate
 
 data class Schedule(
     val id: Long,
@@ -6,8 +8,8 @@ data class Schedule(
     val updatedAt: Long,
     val title: String,
     val category: Category,
-    val startedAt: Long,
-    val endedAt: Long,
+    val startedAt: LocalDate,
+    val endedAt: LocalDate,
     val transportation: Transportation,
     val partySet: Set<Party>,
     val placeList: List<Place>
