@@ -1,6 +1,6 @@
 package com.ddd.oi.presentation.core.designsystem.component.mapper
 
-import com.ddd.oi.domain.model.Transportation
+import com.ddd.oi.domain.model.schedule.Transportation
 import com.ddd.oi.presentation.R
 
 internal fun Transportation.getText(): Int = when (this) {
