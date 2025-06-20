@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.util.fastForEach
-import com.ddd.oi.domain.model.Category
+import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getColor
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
