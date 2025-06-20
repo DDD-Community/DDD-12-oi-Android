@@ -5,4 +5,17 @@
     <string name="create_schedule">일정 만들기</string>
 
     <string name="button">Button</string>
+    <string name="all">전체</string>
+    <string name="travel">여행</string>
+    <string name="date">데이트</string>
+    <string name="daily">일상</string>
+    <string name="business">비즈니스</string>
+    <string name="etc">기타</string>
+    <string name="schedule_duration">일정 기간</string>
+    <string name="route">이동 수단</string>
+    <string name="car">자가용</string>
+    <string name="public_transportation">대중교통</string>
+    <string name="bike">자전거</string>
+    <string name="walk">도보</string>
+    <string name="more">더보기</string>
 </resources>
