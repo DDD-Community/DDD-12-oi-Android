@@ -80,21 +80,19 @@ private fun OiDateContent(
             }.toImmutableList()
         )
     }
-    Column(
-        modifier = Modifier
-            .padding(horizontal = Dimens.paddingMedium)
-            .background(colors.containerColor)
-    ) {
-        OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
-        OiMonth(
-            month = calendarMonth,
-            onDateSelectionChange = onDateSelectionChange,
-            colors = colors,
-            modifier = Modifier.padding(
-                top = Dimens.paddingMediumSmall,
-                bottom = Dimens.paddingMedium
-            ),
-        )
+    Box(modifier = Modifier.background(colors.containerColor)) {
+        Column(modifier = Modifier.padding(horizontal = Dimens.paddingMedium)) {
+            OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
+            OiMonth(
+                month = calendarMonth,
+                onDateSelectionChange = onDateSelectionChange,
+                colors = colors,
+                modifier = Modifier.padding(
+                    top = Dimens.paddingMediumSmall,
+                    bottom = Dimens.paddingMedium
+                ),
+            )
+        }
     }
 }
 
@@ -108,7 +106,8 @@ internal fun OiWeekDays(
         modifier =
             Modifier
                 .height(OiCalendarDimens.calendarCellHeight)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(top = OiCalendarDimens.weekDayTopPadding),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         dayNames.fastForEach {
