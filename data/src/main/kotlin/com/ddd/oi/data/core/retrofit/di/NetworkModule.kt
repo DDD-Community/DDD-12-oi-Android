@@ -1,5 +1,6 @@
 package com.ddd.oi.data.core.retrofit.di
 
+import com.ddd.oi.data.schedule.remote.ScheduleApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,5 +43,11 @@ object NetworkModule {
             .baseUrl("")
             .client(okHttpClient)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideScheduleApiService(retrofit: Retrofit): ScheduleApiService {
+        return retrofit.create(ScheduleApiService::class.java)
     }
 }
