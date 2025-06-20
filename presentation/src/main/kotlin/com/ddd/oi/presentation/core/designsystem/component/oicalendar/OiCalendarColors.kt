@@ -14,8 +14,8 @@ class OiCalendarColors (
     val weekdayContentColor: Color,
     private val dayContentColor: Color,
     private val disabledDayContentColor: Color,
-    private val selectedDayContainerColor: Color,
-    private val selectedDayContentColor: Color,
+    val selectedDayContainerColor: Color,
+    val selectedDayContentColor: Color,
     private val todayContainerColor: Color,
     private val todayContentColor: Color,
 ) {
