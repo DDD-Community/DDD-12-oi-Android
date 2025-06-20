@@ -14,4 +14,6 @@ kotlin {
 
 dependencies {
     implementation(libs.kotlinx.coroutine)
+    //kotlinx-datetime
+    implementation(libs.kotlinx.datetime)
 }
