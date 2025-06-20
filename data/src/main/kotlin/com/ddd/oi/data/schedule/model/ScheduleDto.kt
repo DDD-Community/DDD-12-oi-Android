@@ -36,7 +36,7 @@ data class ScheduleDto(
             startedAt = LocalDate.parse(startDate),
             endedAt = LocalDate.parse(endDate),
             transportation = mobility.toDomain(),
-            partySet = groupList.toSet(),
+            partySet = emptySet(),
             placeList = emptyList()
         )
     }
