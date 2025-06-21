@@ -4,4 +4,5 @@ import com.ddd.oi.domain.model.schedule.Schedule
 
 interface ScheduleRepository {
     suspend fun getScheduleList(year: Int, month: Int): Result<List<Schedule>>
+    suspend fun deleteSchedule(scheduleId: Long): Result<Unit>
 }
