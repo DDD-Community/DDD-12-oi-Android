@@ -4,8 +4,6 @@ import kotlinx.datetime.LocalDate
 
 data class Schedule(
     val id: Long,
-    val createdAt: Long,
-    val updatedAt: Long,
     val title: String,
     val category: Category,
     val startedAt: LocalDate,
