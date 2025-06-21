@@ -4,6 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,9 +40,11 @@ import com.ddd.oi.presentation.core.designsystem.util.OiChipTabDimes
 @Composable
 fun OiRoundRectChip(
     modifier: Modifier = Modifier,
+    tag: String = "",
     isSelected: Boolean = false,
     oiChipIcon: OiChipIcon = OiChipIcon.None,
     @StringRes textStringRes: Int,
+    onItemClick: (String) -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -53,7 +56,10 @@ fun OiRoundRectChip(
             .padding(
                 horizontal = OiChipDimens.RoundRect.horizontalPadding,
                 vertical = OiChipDimens.RoundRect.verticalPadding
-            ),
+            )
+            .clickable {
+                onItemClick(tag)
+            },
         horizontalArrangement = Arrangement.spacedBy(OiChipDimens.RoundRect.componentMargin),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -76,9 +82,11 @@ fun OiRoundRectChip(
 @Composable
 fun OiOvalChip(
     modifier: Modifier = Modifier,
+    tag: String = "",
     isSelected: Boolean = false,
     oiChipIcon: OiChipIcon = OiChipIcon.None,
     @StringRes textStringRes: Int,
+    onItemClick: (String) -> Unit = {},
 ) {
     check(oiChipIcon != OiChipIcon.None)
 
@@ -99,6 +107,9 @@ fun OiOvalChip(
                     shape = RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius)
                 )
                 .padding(OiChipDimens.Oval.padding)
+                .clickable {
+                    onItemClick(tag)
+                }
         ) {
             Icon(
                 modifier = Modifier.size(OiChipDimens.Oval.iconSize),
@@ -118,8 +129,10 @@ fun OiOvalChip(
 @Composable
 fun OiChoiceChip(
     modifier: Modifier = Modifier,
+    tag: String = "",
     isSelected: Boolean = false,
     @StringRes textStringRes: Int,
+    onItemClick: (String) -> Unit = {},
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -139,7 +152,10 @@ fun OiChoiceChip(
                 .padding(
                     horizontal = OiChipDimens.Choice.horizontalPadding,
                     vertical = OiChipDimens.Choice.verticalPadding
-                ),
+                )
+                .clickable {
+                    onItemClick(tag)
+                },
             contentAlignment = Alignment.Center
         ) {
             Text(
