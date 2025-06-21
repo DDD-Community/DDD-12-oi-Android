@@ -1,4 +1,4 @@
-package com.ddd.oi.domain.usecase
+package com.ddd.oi.domain.usecase.schedule
 
 import com.ddd.oi.domain.model.schedule.ScheduleResult
 
