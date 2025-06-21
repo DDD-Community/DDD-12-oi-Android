@@ -133,8 +133,6 @@ private fun OiCardPreview() {
             OiCard(
                 schedule = Schedule(
                     id = 0L,
-                    createdAt = 0L,
-                    updatedAt = 0L,
                     title = "2박 3일 부산 여행",
                     category = Category.Daily,
                     startedAt = LocalDate(
