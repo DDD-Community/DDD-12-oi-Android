@@ -22,7 +22,7 @@ fun OiNavHost(
         homeNavGraph()
         scheduleNavGraph()
         upsertScheduleNavGraph(
-            navigateToScheduleDetail = navigator::navigateToScheduleDetail
+            navigatePopBack = { navigator.popBackStack() }
         )
         scheduleDetailNavGraph()
     }

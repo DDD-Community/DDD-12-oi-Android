@@ -5,14 +5,16 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.ddd.oi.presentation.core.navigation.Route
 
-fun NavController.navigateToUpsertSchedule() {
+fun NavController.navigateToInsertSchedule() {
     navigate(Route.UpsertSchedule)
 }
 
 fun NavGraphBuilder.upsertScheduleNavGraph(
-    navigateToScheduleDetail: () -> Unit
+    navigatePopBack: () -> Unit
 ) {
     composable<Route.UpsertSchedule> {
-        UpsertScheduleScreen()
+        UpsertScheduleScreen(
+            navigatePopBack = navigatePopBack
+        )
     }
 }
