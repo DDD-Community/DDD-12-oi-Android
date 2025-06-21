@@ -18,4 +18,10 @@
     <string name="bike">자전거</string>
     <string name="walk">도보</string>
     <string name="more">더보기</string>
+    <string name="edit">수정하기</string>
+    <string name="copy">복사하기</string>
+    <string name="remove">삭제하기</string>
+    <string name="schedulesnackkbar">일정은 최대 3개까지 작성 가능해요</string>
+
+
 </resources>
