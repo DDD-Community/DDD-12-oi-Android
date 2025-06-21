@@ -38,8 +38,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
-import java.time.Instant
-import java.time.ZoneId
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -171,14 +173,17 @@ private fun getFormattedDate(
     startDate: Long,
     endDate: Long
 ): String {
-    // todo replace to datetime
-    val formattedStartDate = Instant
-        .ofEpochMilli(startDate)
-        .atZone(ZoneId.systemDefault())
+    val startDateInstant = Instant
+        .fromEpochMilliseconds(startDate)
+    val endDateInstant = Instant
+        .fromEpochMilliseconds(endDate)
+
+    val formattedStartDate = startDateInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+        .toJavaLocalDateTime()
         .format(DateTimeFormatter.ofPattern("yy.MM.dd"))
-    val formattedEndDate = Instant
-        .ofEpochMilli(endDate)
-        .atZone(ZoneId.systemDefault())
+    val formattedEndDate = endDateInstant
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .toJavaLocalDateTime()
         .format(DateTimeFormatter.ofPattern("yy.MM.dd"))
 
     return when {
@@ -186,8 +191,8 @@ private fun getFormattedDate(
             ""
         }
 
-        else ->  {
-            if(endDate < 0L) formattedStartDate
+        else -> {
+            if (endDate < 0L) formattedStartDate
             else "$formattedStartDate - $formattedEndDate"
         }
     }
