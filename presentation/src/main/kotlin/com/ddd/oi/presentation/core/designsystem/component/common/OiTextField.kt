@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -40,13 +41,12 @@ import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
 @Composable
 fun OiTextField(
     modifier: Modifier = Modifier,
-    initialText: String = "",
+    text: String = "",
     hint: String = "",
     onTextChanged: (String) -> Unit = {},
 ) {
-    var currentText by remember { mutableStateOf(initialText) }
     var isFocused by remember { mutableStateOf(false) }
-    val isClearButtonVisible by remember { derivedStateOf { currentText.isNotEmpty() } }
+    val isClearButtonVisible by remember { derivedStateOf { text.isNotEmpty() } }
 
     Row(
         modifier = modifier
@@ -66,11 +66,10 @@ fun OiTextField(
                     .onFocusChanged { focusState ->
                         isFocused = focusState.isFocused
                     },
-                value = currentText,
+                value = text,
                 textStyle = OiTheme.typography.bodyLargeRegular,
                 onValueChange = {
                     if (it.length <= MAX_LENGTH) {
-                        currentText = it
                         onTextChanged(it)
                     }
                 },
@@ -78,7 +77,7 @@ fun OiTextField(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             )
 
-            if (currentText.isEmpty()) {
+            if (text.isEmpty()) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -97,7 +96,6 @@ fun OiTextField(
                 modifier = Modifier
                     .size(OiTextFieldDimens.iconSize),
                 onClick = {
-                    currentText = ""
                     onTextChanged("")
                 }
             ) {
@@ -115,9 +113,11 @@ fun OiDateField(
     modifier: Modifier = Modifier,
     startDate: String = "",
     endDate: String = "",
+    hint: String = "",
 ) {
     val dateText by remember { derivedStateOf { getFormattedDate(startDate, endDate) } }
     val isDateSelected by remember { derivedStateOf { dateText.isNotEmpty() } }
+    val isHintVisible by remember { derivedStateOf { startDate.isEmpty() && endDate.isEmpty() } }
 
     Row(
         modifier = modifier
@@ -130,19 +130,31 @@ fun OiDateField(
             modifier = Modifier.size(OiTextFieldDimens.iconSize),
             imageVector = ImageVector.vectorResource(getDateIconDrawableRes(isDateSelected)),
             contentDescription = "Close button",
+            tint = getDateIconTint(isDateSelected)
         )
 
         Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
 
         Box(modifier = Modifier.weight(1F)) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterStart),
-                text = dateText,
-                style = OiTheme.typography.bodyLargeRegular,
-                color = OiTheme.colors.textPrimary,
-            )
+            if (isHintVisible) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterStart),
+                    text = hint,
+                    style = OiTheme.typography.bodyLargeRegular,
+                    color = OiTheme.colors.textDisabled,
+                )
+            } else {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterStart),
+                    text = dateText,
+                    style = OiTheme.typography.bodyLargeRegular,
+                    color = OiTheme.colors.textPrimary,
+                )
+            }
         }
     }
 }
@@ -159,6 +171,12 @@ private fun getFormattedDate(startDate: String, endDate: String): String {
 private fun getDateIconDrawableRes(isDateSelected: Boolean): Int {
     return if (isDateSelected) R.drawable.temp_calendar_enabled
     else R.drawable.temp_calendar_disabled
+}
+
+@Composable
+private fun getDateIconTint(isDateSelected: Boolean): Color {
+    return if (isDateSelected) OiTheme.colors.iconPrimary
+    else OiTheme.colors.iconDisabled
 }
 
 private const val MAX_LENGTH = 30
@@ -181,9 +199,9 @@ private fun Modifier.getOiTextFieldModifier(isFocused: Boolean): Modifier {
 private fun OiTextFieldPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(OiTextFieldDimens.componentMargin)) {
         OiTextField(hint = "ex) 서울숲 데이트")
-        OiTextField(initialText = "OiTextField")
+        OiTextField(text = "OiTextField")
         OiDateField(startDate = "25.06.06", endDate = "25.06.07")
         OiDateField(startDate = "25.06.06")
-        OiDateField()
+        OiDateField(hint = "YY.MM.DD - YY.MM.DD")
     }
 }
