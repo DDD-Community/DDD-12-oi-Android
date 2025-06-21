@@ -7,4 +7,7 @@ interface ScheduleRemoteDataSource {
     suspend fun getScheduleList(year: Int, month: Int): Result<List<ScheduleDto>>
 
     suspend fun uploadSchedule(schedule: ScheduleRequestDto): Result<ScheduleDto>
+
+    suspend fun deleteSchedule(scheduleId: Long): Result<Unit>
+
 }
