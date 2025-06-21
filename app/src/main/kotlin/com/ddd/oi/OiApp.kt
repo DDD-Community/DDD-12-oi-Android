@@ -70,7 +70,7 @@ fun OiApp(
                 exit = fadeOut() + slideOut { IntOffset(0, it.height) }
             ) {
                 FloatingActionButton(
-                    onClick = navigator::navigateToCreateSchedule,
+                    onClick = navigator::navigateToUpsertSchedule,
                     shape = CircleShape,
                     containerColor = OiTheme.colors.iconBrand,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp),

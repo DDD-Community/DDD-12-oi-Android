@@ -19,7 +19,6 @@ val neutral800 = Color(0xFF262626)
 
 val white = Color(0xFFFFFFFF)
 
-
 val TextPrimary = Color(0xFF171717)
 val TextSecondary = Color(0XFF262626)
 val TextTertiary = Color(0xFFA1A1A1)

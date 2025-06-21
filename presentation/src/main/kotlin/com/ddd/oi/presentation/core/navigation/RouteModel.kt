@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 sealed interface Route {
     @Serializable
-    data object CreateSchedule: Route
+    data object UpsertSchedule: Route
 
     @Serializable
     data object ScheduleDetail: Route

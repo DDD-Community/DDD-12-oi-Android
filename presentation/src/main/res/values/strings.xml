@@ -3,6 +3,37 @@
     <string name="home">홈</string>
     <string name="schedule">일정</string>
     <string name="create_schedule">일정 만들기</string>
+    <string name="next">다음</string>
 
-    <string name="button">Button</string>
+    <string name="whole">전체</string>
+    <string name="travel">여행</string>
+    <string name="date">데이트</string>
+    <string name="daily">일상</string>
+    <string name="business">비즈니스</string>
+    <string name="etc">기타</string>
+
+    <string name="button_eng">Button</string>
+
+    <string name="schedule_name">일정 이름</string>
+    <string name="schedule_name_hint">ex) 서울숲 데이트</string>
+    <string name="schedule_category">일정 카테고리</string>
+    <string name="schedule_period">일정 기간</string>
+    <string name="schedule_period_hint">YY.MM.DD - YY.MM.DD</string>
+    <string name="transportation">교통수단</string>
+    <string name="party">일행</string>
+
+    <string name="transportation_car">자가용</string>
+    <string name="transportation_public">대중교통</string>
+    <string name="transportation_bicycle">자전거</string>
+    <string name="transportation_walk">도보</string>
+
+    <string name="party_alone">혼자</string>
+    <string name="party_friend">친구</string>
+    <string name="party_other_half">연인</string>
+    <string name="party_parent">부모님</string>
+    <string name="party_sibling">형제자매</string>
+    <string name="party_children">자녀</string>
+    <string name="party_pet">반려동물</string>
+    <string name="party_etc">기타</string>
+
 </resources>

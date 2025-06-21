@@ -35,14 +35,57 @@ object OiButtonDimens {
 }
 
 object OiChipDimens {
-    val iconSize = 14.dp
+    object RoundRect {
+        val iconSize = 14.dp
+        val height = 32.dp
 
-    val horizontalPadding = 12.dp
-    val verticalPadding = 7.dp
+        val horizontalPadding = 12.dp
+        val verticalPadding = 7.dp
 
-    val ovalRadius = 999.dp
+        val ovalRadius = 999.dp
 
-    val componentMargin = 2.dp
+        val componentMargin = 2.dp
+    }
+
+    object Oval {
+        val iconSize = 24.dp
+        val size = 52.dp
+
+        val padding = 14.dp
+
+        val borderStroke = 1.dp
+
+        val componentMargin = 12.dp
+    }
+
+    object Choice {
+        val height = 40.dp
+
+        val horizontalPadding = 16.dp
+        val verticalPadding = 11.dp
+    }
+}
+
+object OiChipTabDimes {
+    object RoundRect {
+        val horizontalPadding = 16.dp
+        val verticalPadding = 12.dp
+    }
+    object Oval {
+        val verticalPadding = 13.5.dp
+        val horizontalPadding = 17.dp
+    }
+}
+
+object OiTextFieldDimens {
+    val iconSize = 20.dp
+    val height = 48.dp
+    val roundedRectRadius = 8.dp
+
+    val horizontalPadding = 16.dp
+    val componentMargin = 8.dp
+
+    val stroke = 1.dp
 }
 
 object BottomBarDimens {
