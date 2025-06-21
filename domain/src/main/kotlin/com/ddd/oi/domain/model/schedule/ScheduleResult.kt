@@ -10,9 +10,7 @@ data class ScheduleResult(
     val availableCategory: Set<Category>
 )
 
-fun List<Schedule>.groupByDate(
-    timeZone: TimeZone = TimeZone.currentSystemDefault()
-): Map<LocalDate, List<Schedule>> {
+fun List<Schedule>.groupByDate(): Map<LocalDate, List<Schedule>> {
     val map = mutableMapOf<LocalDate, MutableList<Schedule>>()
 
     for (schedule in this) {
@@ -23,5 +21,4 @@ fun List<Schedule>.groupByDate(
         }
     }
     return map
-        .mapValues { (_, list) -> list.sortedBy { it.createdAt } }
 }
