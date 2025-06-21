@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
@@ -112,7 +113,43 @@ fun OiOvalChip(
             style = getOvalTextStyle(isSelected)
         )
     }
+}
 
+@Composable
+fun OiChoiceChip(
+    modifier: Modifier = Modifier,
+    isSelected: Boolean = false,
+    @StringRes textStringRes: Int,
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = modifier
+                .height(height = OiChipDimens.Choice.height)
+                .background(
+                    color = getOvalBackgroundColor(isSelected),
+                    shape = RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius)
+                )
+                .border(
+                    width = OiChipDimens.Oval.borderStroke,
+                    color = getOvalBorderColor(isSelected),
+                    shape = RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius)
+                )
+                .padding(
+                    horizontal = OiChipDimens.Choice.horizontalPadding,
+                    vertical = OiChipDimens.Choice.verticalPadding
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stringResource(textStringRes),
+                textAlign = TextAlign.Center,
+                style = getChoiceTextStyle(isSelected),
+                color = getChipTextColor(isSelected)
+            )
+        }
+    }
 }
 
 
@@ -131,6 +168,15 @@ private fun getOvalTextStyle(isSelected: Boolean): TextStyle {
         OiTheme.typography.bodySmallSemibold
     } else {
         OiTheme.typography.bodySmallRegular
+    }
+}
+
+@Composable
+private fun getChoiceTextStyle(isSelected: Boolean): TextStyle {
+    return if (isSelected) {
+        OiTheme.typography.bodySmallSemibold
+    } else {
+        OiTheme.typography.bodyMediumRegular
     }
 }
 
@@ -388,4 +434,10 @@ private fun OiOvalChipPreview() {
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun OiChoiceChipPreview() {
+    OiChoiceChip(textStringRes = R.string.transportation_car)
 }

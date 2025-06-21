@@ -57,6 +57,13 @@ object OiChipDimens {
 
         val componentMargin = 12.dp
     }
+
+    object Choice {
+        val height = 40.dp
+
+        val horizontalPadding = 16.dp
+        val verticalPadding = 11.dp
+    }
 }
 
 object OiChipTabDimes {
