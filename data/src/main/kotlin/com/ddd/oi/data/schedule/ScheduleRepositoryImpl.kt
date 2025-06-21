@@ -14,4 +14,8 @@ class ScheduleRepositoryImpl @Inject constructor(
                 dtoList.map { it.toDomain() }
             }
     }
+
+    override suspend fun deleteSchedule(scheduleId: Long): Result<Unit> {
+        return scheduleRemoteDataSource.deleteSchedule(scheduleId)
+    }
 }
