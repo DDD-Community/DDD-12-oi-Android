@@ -1,6 +1,7 @@
 package com.ddd.oi.data.schedule.model
 
 import com.ddd.oi.domain.model.schedule.Category
+import com.ddd.oi.domain.model.schedule.Party
 import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.domain.model.schedule.Transportation
 import kotlinx.datetime.LocalDate
@@ -23,20 +24,18 @@ data class ScheduleDto(
     @SerialName("mobility")
     val mobility: TransportationDto,
 
-    @SerialName("groupList")
-    val groupList: List<String> = emptyList()
+    @SerialName("groups")
+    val groupList: List<GroupDto> = emptyList()
 ) {
     fun toDomain(): Schedule {
         return Schedule(
             id = scheduleId,
             title = title,
-            createdAt = 0L,
-            updatedAt = 0L,
             category =  scheduleTag.toDomain(),
             startedAt = LocalDate.parse(startDate),
             endedAt = LocalDate.parse(endDate),
             transportation = mobility.toDomain(),
-            partySet = emptySet(),
+            partySet = groupList.map { it.toDomain() }.toSet(),
             placeList = emptyList()
         )
     }
@@ -88,4 +87,42 @@ fun TransportationDto.toDomain(): Transportation = when (this) {
     TransportationDto.Public -> Transportation.Public
     TransportationDto.Bicycle -> Transportation.Bicycle
     TransportationDto.Walk -> Transportation.Walk
+}
+
+@Serializable
+enum class GroupDto {
+    @SerialName("SOLO")
+    Solo,
+    
+    @SerialName("COUPLE")
+    Couple,
+    
+    @SerialName("FRIEND")
+    Friend,
+    
+    @SerialName("PARENTS")
+    Parents,
+    
+    @SerialName("SIBLINGS")
+    Siblings,
+    
+    @SerialName("CHILDREN")
+    Children,
+    
+    @SerialName("PET")
+    Pet,
+    
+    @SerialName("OTHER")
+    Other
+}
+
+fun GroupDto.toDomain(): Party = when (this) {
+    GroupDto.Solo -> Party.Alone
+    GroupDto.Couple -> Party.OtherHalf
+    GroupDto.Friend -> Party.Friend
+    GroupDto.Parents -> Party.Parent
+    GroupDto.Siblings -> Party.Sibling
+    GroupDto.Children -> Party.Children
+    GroupDto.Pet -> Party.Pet
+    GroupDto.Other -> Party.Etc
 }
