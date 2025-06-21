@@ -37,10 +37,14 @@ data class ScheduleState(
 
     val calendarCategoryMap: ImmutableMap<LocalDate, ImmutableList<Category>>
         get() = filteredSchedules.mapValues { (_, list) ->
-            list.map { it.category }.distinct().toImmutableList()
+            list.map { it.category }.toImmutableList()
         }.toImmutableMap()
 
+    val isCreateScheduleEnabled: Boolean
+        get() = schedules[selectedDate].orEmpty().size < MaxSchedulesPerDay
 }
+
+private const val MaxSchedulesPerDay = 3
 
 sealed class CategoryFilter {
     data object All : CategoryFilter()
