@@ -2,6 +2,7 @@ package com.ddd.oi.presentation.core.designsystem.component.common
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun OiTextField(
@@ -111,19 +115,23 @@ fun OiTextField(
 @Composable
 fun OiDateField(
     modifier: Modifier = Modifier,
-    startDate: String = "",
-    endDate: String = "",
+    onClickDateField: () -> Unit = {},
+    startDate: Long = -1L,
+    endDate: Long = -1L,
     hint: String = "",
 ) {
     val dateText by remember { derivedStateOf { getFormattedDate(startDate, endDate) } }
     val isDateSelected by remember { derivedStateOf { dateText.isNotEmpty() } }
-    val isHintVisible by remember { derivedStateOf { startDate.isEmpty() && endDate.isEmpty() } }
+    val isHintVisible by remember { derivedStateOf { startDate < 0L && endDate < 0L } }
 
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(OiTextFieldDimens.height)
-            .getOiTextFieldModifier(false),
+            .getOiTextFieldModifier(false)
+            .clickable {
+                onClickDateField()
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -159,11 +167,29 @@ fun OiDateField(
     }
 }
 
-private fun getFormattedDate(startDate: String, endDate: String): String {
+private fun getFormattedDate(
+    startDate: Long,
+    endDate: Long
+): String {
+    // todo replace to datetime
+    val formattedStartDate = Instant
+        .ofEpochMilli(startDate)
+        .atZone(ZoneId.systemDefault())
+        .format(DateTimeFormatter.ofPattern("yy.MM.dd"))
+    val formattedEndDate = Instant
+        .ofEpochMilli(endDate)
+        .atZone(ZoneId.systemDefault())
+        .format(DateTimeFormatter.ofPattern("yy.MM.dd"))
+
     return when {
-        startDate.isEmpty() -> ""
-        endDate.isEmpty() -> startDate
-        else -> "$startDate - $endDate"
+        startDate < 0L -> {
+            ""
+        }
+
+        else ->  {
+            if(endDate < 0L) formattedStartDate
+            else "$formattedStartDate - $formattedEndDate"
+        }
     }
 }
 
@@ -200,8 +226,13 @@ private fun OiTextFieldPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(OiTextFieldDimens.componentMargin)) {
         OiTextField(hint = "ex) 서울숲 데이트")
         OiTextField(text = "OiTextField")
-        OiDateField(startDate = "25.06.06", endDate = "25.06.07")
-        OiDateField(startDate = "25.06.06")
+        OiDateField(
+            startDate = System.currentTimeMillis()
+        )
+        OiDateField(
+            startDate = System.currentTimeMillis(),
+            endDate = System.currentTimeMillis()
+        )
         OiDateField(hint = "YY.MM.DD - YY.MM.DD")
     }
 }
