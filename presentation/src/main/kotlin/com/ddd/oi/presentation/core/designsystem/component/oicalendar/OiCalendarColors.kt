@@ -14,20 +14,24 @@ class OiCalendarColors (
     val weekdayContentColor: Color,
     private val dayContentColor: Color,
     private val disabledDayContentColor: Color,
-    val selectedDayContainerColor: Color,
-    val selectedDayContentColor: Color,
+    private val selectedDayContainerColor: Color,
+    private val selectedDayContentColor: Color,
     private val todayContainerColor: Color,
     private val todayContentColor: Color,
+    val rangeBackgroundColor: Color,
+    private val isRangeModel: Boolean
 ) {
     @Composable
     internal fun dayContentColor(
         isToday: Boolean,
+        isRange: Boolean,
         isSelected: Boolean,
         enabled: Boolean
     ): State<Color> {
         val target =
             when {
-                isSelected && enabled -> selectedDayContentColor
+                isRangeModel && (isRange || isSelected) -> selectedDayContentColor
+                (isSelected && enabled) -> selectedDayContentColor
                 isToday -> todayContentColor
                 enabled -> dayContentColor
                 else -> disabledDayContentColor
@@ -39,9 +43,12 @@ class OiCalendarColors (
     internal fun dayContainerColor(
         isToday: Boolean,
         isSelected: Boolean,
+        isRange: Boolean,
         animate: Boolean
     ): State<Color> {
         val target = when {
+            isRangeModel && isSelected -> rangeBackgroundColor
+            isRangeModel && isRange -> Color.Transparent
             isSelected -> selectedDayContainerColor
             isToday -> todayContainerColor
             else -> Color.Transparent
