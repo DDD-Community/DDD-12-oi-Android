@@ -1,6 +1,7 @@
 package com.ddd.oi.presentation.core.designsystem.component.oidaterangepicker
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,14 +32,10 @@ import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.OiCalendarDimens
 import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.collections.immutable.toImmutableList
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
-import kotlinx.datetime.todayIn
 
 @Composable
 fun OiDateRangePicker(
@@ -66,24 +63,15 @@ private fun OiDateRangePickerContent(
     selectedStartDate: LocalDate? = null,
     selectedEndDate: LocalDate? = null,
     onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
-    colors: OiCalendarColors = OiCalendarDefaults.colors()
+    colors: OiCalendarColors = OiCalendarDefaults.colors(isRangeMode = true)
 ) {
     val monthKey = displayedMonth.year * 100 + displayedMonth.monthNumber
-    val rawMonth = remember(monthKey) {
-        oiCalendarModel.getMonth(displayedMonth, persistentMapOf())
-    }
-
-    val calendarMonth = remember(rawMonth, selectedStartDate, selectedEndDate) {
-        val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
-        OiCalendarMonth(
-            days = rawMonth.days.map { day ->
-                val isRangeStart = day.date == selectedStartDate
-                val isRangeEnd = day.date == selectedEndDate
-                day.copy(
-                    isSelected = isRangeStart || isRangeEnd,
-                    isToday = day.date == today
-                )
-            }.toImmutableList()
+    val calendarMonth = remember(monthKey, selectedStartDate, selectedEndDate) {
+        oiCalendarModel.getMonthForRange(
+            displayedMonth = displayedMonth,
+            categories = persistentMapOf(),
+            selectedStartDate = selectedStartDate,
+            selectedEndDate = selectedEndDate
         )
     }
 
@@ -108,22 +96,24 @@ private fun OiDateRangePickerContent(
         } else {
             null
         }
-    Column(
-        modifier = Modifier
-            .padding(horizontal = Dimens.paddingMedium)
-            .background(colors.containerColor)
-    ) {
-        OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
-        OiMonth(
-            month = calendarMonth,
-            onDateSelectionChange = onDateSelectionChange,
-            colors = colors,
-            rangeSelectionInfo = rangeSelectionInfo,
-            modifier = Modifier.padding(
-                top = Dimens.paddingMediumSmall,
-                bottom = Dimens.paddingMedium
-            ),
-        )
+    Box(modifier = Modifier.background(colors.containerColor)) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = Dimens.paddingMedium)
+                .background(colors.containerColor)
+        ) {
+            OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
+            OiMonth(
+                month = calendarMonth,
+                onDateSelectionChange = onDateSelectionChange,
+                colors = colors,
+                rangeSelectionInfo = rangeSelectionInfo,
+                modifier = Modifier.padding(
+                    top = Dimens.paddingMediumSmall,
+                    bottom = Dimens.paddingMedium
+                ),
+            )
+        }
     }
 }
 
@@ -186,13 +176,14 @@ internal fun ContentDrawScope.drawRangeBackground(
 
     if (y1 != y2) {
         for (weekOffset in 1 until (y2 - y1)) {
-            drawRect(
+            drawRoundRect(
                 color = color,
                 topLeft = Offset(
                     0f,
                     startY + (weekOffset * (itemContainerHeight + verticalSpacing))
                 ),
-                size = Size(width = this.size.width, height = circleSize)
+                size = Size(width = this.size.width, height = circleSize),
+                cornerRadius = CornerRadius(x = circleRadius, y = circleRadius)
             )
         }
 
@@ -266,16 +257,15 @@ private fun updateDateSelection(
     onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit
 ) {
     when {
-        // 아무것도 선택되지 않았거나 범위가 이미 완성된 경우 -> 새로 시작
         (currentStartDate == null && currentEndDate == null) ||
                 (currentStartDate != null && currentEndDate != null) -> {
             onDatesSelectionChange(selectedDate, null)
         }
-        // 시작일만 선택된 상태에서 시작일 이후 날짜 선택 -> 끝일로 설정
+
         currentStartDate != null && selectedDate >= currentStartDate -> {
             onDatesSelectionChange(currentStartDate, selectedDate)
         }
-        // 시작일만 선택된 상태에서 시작일 이전 날짜 선택 -> 새로 시작
+
         else -> {
             onDatesSelectionChange(selectedDate, null)
         }
