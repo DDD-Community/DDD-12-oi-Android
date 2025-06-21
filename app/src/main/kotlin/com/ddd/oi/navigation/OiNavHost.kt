@@ -20,7 +20,10 @@ fun OiNavHost(
         modifier = modifier
     ) {
         homeNavGraph()
-        scheduleNavGraph()
+        scheduleNavGraph(
+            navigateToCreateSchedule = {},
+            onShowSnackbar = {}
+        )
         createScheduleNavGraph(
             navigateToScheduleDetail = navigator::navigateToScheduleDetail
         )
