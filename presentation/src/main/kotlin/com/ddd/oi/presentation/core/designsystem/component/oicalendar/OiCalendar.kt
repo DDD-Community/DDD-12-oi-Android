@@ -83,21 +83,23 @@ private fun OiDateContent(
             }.toImmutableList()
         )
     }
-    Column(
-        modifier = Modifier
-            .padding(horizontal = Dimens.paddingMedium)
-            .background(colors.containerColor)
-    ) {
-        OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
-        OiMonth(
-            month = calendarMonth,
-            onDateSelectionChange = onDateSelectionChange,
-            colors = colors,
-            modifier = Modifier.padding(
-                top = Dimens.paddingMediumSmall,
-                bottom = Dimens.paddingMedium
-            ),
-        )
+    Box(modifier = Modifier.background(colors.containerColor)) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = Dimens.paddingMedium)
+                .background(colors.containerColor)
+        ) {
+            OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
+            OiMonth(
+                month = calendarMonth,
+                onDateSelectionChange = onDateSelectionChange,
+                colors = colors,
+                modifier = Modifier.padding(
+                    top = Dimens.paddingMediumSmall,
+                    bottom = Dimens.paddingMedium
+                ),
+            )
+        }
     }
 }
 
@@ -141,7 +143,7 @@ internal fun OiMonth(
     val rangeSelectionDrawModifier =
         if (rangeSelectionInfo != null) {
             Modifier.drawWithContent {
-                drawRangeBackground(rangeSelectionInfo, colors.selectedDayContainerColor.copy(alpha = 0.2f))
+                drawRangeBackground(rangeSelectionInfo, colors.rangeBackgroundColor)
                 drawContent()
             }
         } else {
@@ -193,11 +195,13 @@ internal fun OiDay(
             color = colors.dayContainerColor(
                 isToday = oiDay.isToday,
                 isSelected = oiDay.isSelected,
+                isRange = oiDay.isRange,
                 animate = oiDay.animateChecked
             ).value,
             contentColor = colors.dayContentColor(
                 isToday = oiDay.isToday,
                 isSelected = oiDay.isSelected,
+                isRange = oiDay.isRange,
                 enabled = oiDay.isCurrentMonth,
             ).value,
         ) {
