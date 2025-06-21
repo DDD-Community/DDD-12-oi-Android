@@ -1,7 +1,7 @@
 package com.ddd.oi.data.schedule.remote
 
 import com.ddd.oi.data.core.model.BaseResponse
-import com.ddd.oi.data.core.model.EmptyData
+import com.ddd.oi.data.core.model.EmptyResponse
 import com.ddd.oi.data.schedule.model.ScheduleDto
 import com.ddd.oi.data.schedule.model.ScheduleRequestDto
 
@@ -20,7 +20,7 @@ interface ScheduleApiService {
     suspend fun deleteSchedule(
         @Header("user-no") userId: Long = 1L,
         @Path("scheduleId") scheduleId: Long,
-    ): BaseResponse<EmptyData>
+    ): BaseResponse<EmptyResponse>
 
 
 
