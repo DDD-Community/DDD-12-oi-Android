@@ -98,3 +98,10 @@ object BottomBarShapeDimens {
     val curveStart = 75.dp
     val curveEnd = 85.dp
 }
+
+object OiCalendarDimens {
+    val calendarCellHeight = 34.dp
+    val dayWidth = 28.dp
+    val categoryCircleSize = 4.dp
+    val categoryPadding = 2.dp
+}
