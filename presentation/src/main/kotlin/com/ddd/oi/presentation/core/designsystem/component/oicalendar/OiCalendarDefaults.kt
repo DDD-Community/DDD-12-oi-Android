@@ -19,6 +19,8 @@ object OiCalendarDefaults {
         selectedDayContentColor: Color = white,
         todayContainerColor: Color = OiTheme.colors.backgroundUnselected,
         todayContentColor: Color = OiTheme.colors.textPrimary,
+        rangeBackgroundColor: Color = OiTheme.colors.backgroundSelected,
+        isRangeMode: Boolean = false
     ): OiCalendarColors = OiCalendarColors(
         containerColor,
         weekdayContentColor,
@@ -27,6 +29,9 @@ object OiCalendarDefaults {
         selectedDayContainerColor,
         selectedDayContentColor,
         todayContainerColor,
-        todayContentColor
+        todayContentColor,
+        rangeBackgroundColor,
+        isRangeMode
     )
+
 }
