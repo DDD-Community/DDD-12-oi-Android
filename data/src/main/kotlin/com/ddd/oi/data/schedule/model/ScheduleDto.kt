@@ -1,17 +1,12 @@
 package com.ddd.oi.data.schedule.model
 
-import com.ddd.oi.data.schedule.mapper.toDomain
-import com.ddd.oi.domain.model.schedule.Schedule
-import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ScheduleDto(
-    @SerialName("scheduleId")
     val scheduleId: Long,
 
-    @SerialName("scheduleTag")
     val scheduleTag: CategoryDto,
 
     val title: String,
@@ -19,7 +14,6 @@ data class ScheduleDto(
     val startDate: String,
     val endDate: String,
 
-    @SerialName("mobility")
     val mobility: TransportationDto,
 
     @SerialName("groups")
