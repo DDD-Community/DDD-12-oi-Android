@@ -3,8 +3,13 @@ package com.ddd.oi.data.schedule.remote
 import com.ddd.oi.data.core.model.BaseResponse
 import com.ddd.oi.data.schedule.model.ScheduleDto
 import com.ddd.oi.data.schedule.model.ScheduleRequest
-
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.Header
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface ScheduleApiService {
     
@@ -24,7 +29,7 @@ interface ScheduleApiService {
 
 
     @POST("api/v1/schedules")
-    suspend fun uploadSchedule(
+    suspend fun upsertSchedule(
         @Header("user-no") userId: Long = 1L,
         @Body request: ScheduleRequest
     ): BaseResponse<ScheduleDto>
