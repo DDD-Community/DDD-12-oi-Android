@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
+import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiCalendarColors
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiCalendarDefaults
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiCalendarModel
@@ -31,6 +32,8 @@ import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiMonth
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.OiCalendarDimens
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
@@ -42,7 +45,8 @@ fun OiDateRangePicker(
     displayedMonth: LocalDate,
     selectedStartDate: LocalDate? = null,
     selectedEndDate: LocalDate? = null,
-    onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit = { _, _ -> },
+    schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
+    onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
 ) {
     val locale = getCurrentLocale()
     val oiCalendarModel = remember { OiCalendarModel(locale) }
@@ -52,6 +56,7 @@ fun OiDateRangePicker(
         displayedMonth = displayedMonth,
         selectedStartDate = selectedStartDate,
         selectedEndDate = selectedEndDate,
+        schedules = schedules,
         onDatesSelectionChange = onDatesSelectionChange,
     )
 }
@@ -62,14 +67,15 @@ private fun OiDateRangePickerContent(
     displayedMonth: LocalDate,
     selectedStartDate: LocalDate? = null,
     selectedEndDate: LocalDate? = null,
+    schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
     onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
     colors: OiCalendarColors = OiCalendarDefaults.colors(isRangeMode = true)
 ) {
     val monthKey = displayedMonth.year * 100 + displayedMonth.monthNumber
-    val calendarMonth = remember(monthKey, selectedStartDate, selectedEndDate) {
+    val calendarMonth = remember(monthKey, selectedStartDate, selectedEndDate, schedules) {
         oiCalendarModel.getMonthForRange(
             displayedMonth = displayedMonth,
-            categories = persistentMapOf(),
+            categories = schedules,
             selectedStartDate = selectedStartDate,
             selectedEndDate = selectedEndDate
         )
@@ -164,13 +170,7 @@ internal fun ContentDrawScope.drawRangeBackground(
             },
             height = circleSize
         ),
-        cornerRadius = CornerRadius(
-            x = when {
-                y1 == y2 -> circleRadius
-                else -> if (selectedRangeInfo.firstIsSelectionStart) circleRadius else 0f
-            },
-            y = circleRadius
-        )
+        cornerRadius = CornerRadius(x = circleRadius, y = circleRadius)
     )
 
     if (y1 != y2) {
@@ -193,10 +193,7 @@ internal fun ContentDrawScope.drawRangeBackground(
                 width = endX,
                 height = circleSize
             ),
-            cornerRadius = CornerRadius(
-                x = if (selectedRangeInfo.lastIsSelectionEnd) circleRadius else 0f,
-                y = circleRadius
-            )
+            cornerRadius = CornerRadius(x = circleRadius, y = circleRadius)
         )
     }
 }
@@ -296,7 +293,8 @@ private fun OiDateRangePickerPreview() {
                 onDatesSelectionChange = { s, e ->
                     selectedStartDate = s
                     selectedEndDate = e
-                }
+                },
+                schedules = persistentMapOf()
             )
         }
     }
