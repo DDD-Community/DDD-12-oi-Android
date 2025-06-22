@@ -41,21 +41,21 @@ fun ScheduleActionBottomSheet(
         ) {
             TextButton(modifier = Modifier.fillMaxWidth(), onClick = onEdit) {
                 Text(
-                    text = stringResource(R.string.edit),
+                    text = stringResource(R.string.edit_schedule),
                     style = OiTheme.typography.bodyLargeSemibold,
                     color = OiTheme.colors.textPrimary
                 )
             }
             TextButton(modifier = Modifier.fillMaxWidth(), onClick = onCopy) {
                 Text(
-                    text = stringResource(R.string.copy),
+                    text = stringResource(R.string.copy_schedule),
                     style = OiTheme.typography.bodyLargeSemibold,
                     color = OiTheme.colors.textPrimary
                 )
 
             }
             TextButton(modifier = Modifier.fillMaxWidth(), onClick = onDelete) {
-                Text(text = stringResource(R.string.remove),
+                Text(text = stringResource(R.string.remove_schedule),
                     style = OiTheme.typography.bodyLargeSemibold,
                     color = OiTheme.colors.backgroundError)
             }
