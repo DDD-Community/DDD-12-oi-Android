@@ -26,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
 import com.ddd.oi.domain.model.schedule.Schedule
@@ -56,7 +55,7 @@ fun OiCard(
             .padding(horizontal = Dimens.paddingMedium),
         shape = RoundedCornerShape(OiCardDimens.cornerRadius),
         colors = CardDefaults.cardColors(containerColor = white),
-        elevation = CardDefaults.cardElevation(2.dp),
+        elevation = CardDefaults.cardElevation(OiCardDimens.elevation),
         onClick = onClick
     ) {
         Row(
