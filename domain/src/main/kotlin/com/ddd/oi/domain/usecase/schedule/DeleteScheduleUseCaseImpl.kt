@@ -5,7 +5,7 @@ import com.ddd.oi.domain.repository.ScheduleRepository
 class DeleteScheduleUseCaseImpl(
     private val scheduleRepository: ScheduleRepository
 ): DeleteScheduleUseCase {
-    override suspend fun invoke(scheduleId: Long): Result<Unit> {
+    override suspend fun invoke(scheduleId: Long): Result<Boolean> {
         return scheduleRepository.deleteSchedule(scheduleId)
     }
 }
