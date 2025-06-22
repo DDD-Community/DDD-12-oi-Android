@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.ddd.oi.presentation.core.navigation.OiNavigator
-import com.ddd.oi.presentation.createschedule.createScheduleNavGraph
+import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
 import com.ddd.oi.presentation.home.homeNavGraph
 import com.ddd.oi.presentation.schedule.scheduleNavGraph
 import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
@@ -20,9 +20,14 @@ fun OiNavHost(
         modifier = modifier
     ) {
         homeNavGraph()
-        scheduleNavGraph()
-        createScheduleNavGraph(
-            navigateToScheduleDetail = navigator::navigateToScheduleDetail
+
+        scheduleNavGraph(
+            navigateToCreateSchedule = {},
+            onShowSnackbar = {}
+        )
+
+        upsertScheduleNavGraph(
+            navigatePopBack = { navigator.popBackStack() }
         )
         scheduleDetailNavGraph()
     }

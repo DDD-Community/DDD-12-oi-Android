@@ -1,7 +1,7 @@
 package com.ddd.oi.presentation.core.designsystem.component.oicalendar
 
 import androidx.compose.runtime.Immutable
-import com.ddd.oi.domain.model.Category
+import com.ddd.oi.domain.model.schedule.Category
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf

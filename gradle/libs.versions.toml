@@ -32,6 +32,7 @@ room = "2.7.1"
 serialization-json = "1.8.0"
 serialization = "2.1.20"
 kotlinxImmutable = "0.3.8"
+secrets-gradle-plugin = "2.0.1"
 
 coroutine = "1.10.1"
 coroutines-test = " 1.10.1"
@@ -95,3 +96,4 @@ jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrai
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
 dagger-hilt-root = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets-gradle-plugin" }
