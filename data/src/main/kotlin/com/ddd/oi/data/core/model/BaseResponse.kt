@@ -16,6 +16,3 @@ data class ErrorResponse(
     val message: String,
     val details: List<String> = emptyList()
 )
-
-@Serializable
-data object EmptyResponse
