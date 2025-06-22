@@ -10,8 +10,8 @@ import com.ddd.oi.domain.usecase.schedule.GetSchedulesUseCase
 import com.ddd.oi.domain.usecase.schedule.GetSchedulesUseCaseImpl
 import com.ddd.oi.domain.usecase.schedule.UpdateScheduleUseCase
 import com.ddd.oi.domain.usecase.schedule.UpdateScheduleUseCaseImpl
-import com.ddd.oi.domain.usecase.schedule.UpsertScheduleUseCase
-import com.ddd.oi.domain.usecase.schedule.UpsertScheduleUseCaseImpl
+import com.ddd.oi.domain.usecase.schedule.CreateScheduleUseCase
+import com.ddd.oi.domain.usecase.schedule.CreateScheduleUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -56,8 +56,8 @@ object ScheduleUseCaseModule {
     @Singleton
     fun provideUploadScheduleUseCase(
         scheduleRepository: ScheduleRepository
-    ): UpsertScheduleUseCase {
-        return UpsertScheduleUseCaseImpl(scheduleRepository)
+    ): CreateScheduleUseCase {
+        return CreateScheduleUseCaseImpl(scheduleRepository)
     }
 
     @Provides

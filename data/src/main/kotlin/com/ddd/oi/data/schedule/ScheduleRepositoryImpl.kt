@@ -21,8 +21,8 @@ class ScheduleRepositoryImpl @Inject constructor(
         return scheduleRemoteDataSource.deleteSchedule(scheduleId)
     }
 
-    override suspend fun upsertSchedule(schedule: Schedule): Result<Schedule> {
-        return scheduleRemoteDataSource.upsertSchedule(schedule.toRequest()).map { it.toDomain() }
+    override suspend fun createSchedule(schedule: Schedule): Result<Schedule> {
+        return scheduleRemoteDataSource.createSchedule(schedule.toRequest()).map { it.toDomain() }
     }
 
     override suspend fun updateSchedule(schedule: Schedule): Result<Schedule> {

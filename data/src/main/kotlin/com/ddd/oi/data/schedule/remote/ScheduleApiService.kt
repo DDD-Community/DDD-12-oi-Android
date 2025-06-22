@@ -29,7 +29,7 @@ interface ScheduleApiService {
 
 
     @POST("api/v1/schedules")
-    suspend fun upsertSchedule(
+    suspend fun createSchedule(
         @Header("user-no") userId: Long = 1L,
         @Body request: ScheduleRequest
     ): BaseResponse<ScheduleDto>
