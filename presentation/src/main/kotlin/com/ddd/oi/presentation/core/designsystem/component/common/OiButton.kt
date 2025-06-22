@@ -29,11 +29,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
-import com.ddd.oi.presentation.core.designsystem.theme.asamo700
-import com.ddd.oi.presentation.core.designsystem.theme.asamo900
-import com.ddd.oi.presentation.core.designsystem.theme.neutral100
-import com.ddd.oi.presentation.core.designsystem.theme.neutral300
-import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.OiButtonDimens
 
 @Composable
@@ -43,8 +38,8 @@ fun OiButton(
     style: OiButtonStyle,
     enabled: Boolean = true,
     @StringRes textStringRes: Int,
-    @DrawableRes leftIconDrawableRes: Int,
-    @DrawableRes rightIconDrawableRes: Int,
+    @DrawableRes leftIconDrawableRes: Int? = null,
+    @DrawableRes rightIconDrawableRes: Int? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -63,26 +58,30 @@ fun OiButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxHeight()
         ) {
-            Icon(
-                painter = painterResource(leftIconDrawableRes),
-                contentDescription = "Left icon"
-            )
+            leftIconDrawableRes?.let {
+                Icon(
+                    painter = painterResource(it),
+                    contentDescription = "Left icon"
+                )
+            }
 
             Text(
                 text = stringResource(textStringRes),
                 style = style.getTextStyle(),
             )
 
-            Icon(
-                painter = painterResource(rightIconDrawableRes),
-                contentDescription = "Right icon"
-            )
+            rightIconDrawableRes?.let {
+                Icon(
+                    painter = painterResource( it),
+                    contentDescription = "Right icon"
+                )
+            }
         }
     }
 }
 
 @Composable
-internal fun getButtonColors(isPressed: Boolean): ButtonColors {
+private fun getButtonColors(isPressed: Boolean): ButtonColors {
     return if (isPressed) {
         ButtonColors(
             contentColor = OiTheme.colors.textOnPrimary,
@@ -162,7 +161,7 @@ private fun OiButtonPreview() {
         OiButtonStyle.entries.forEach {
             OiButton(
                 style = it,
-                textStringRes = R.string.button,
+                textStringRes = R.string.button_eng,
                 leftIconDrawableRes = R.drawable.ic_add_plus,
                 rightIconDrawableRes = R.drawable.ic_chevron_right,
             )
