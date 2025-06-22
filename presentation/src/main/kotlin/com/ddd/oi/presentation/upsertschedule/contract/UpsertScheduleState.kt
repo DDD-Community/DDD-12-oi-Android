@@ -1,9 +1,9 @@
 package com.ddd.oi.presentation.upsertschedule.contract
 
 import androidx.compose.runtime.Stable
-import com.ddd.oi.domain.model.Category
-import com.ddd.oi.domain.model.Party
-import com.ddd.oi.domain.model.Transportation
+import com.ddd.oi.domain.model.schedule.Category
+import com.ddd.oi.domain.model.schedule.Party
+import com.ddd.oi.domain.model.schedule.Transportation
 
 @Stable
 data class UpsertScheduleState(

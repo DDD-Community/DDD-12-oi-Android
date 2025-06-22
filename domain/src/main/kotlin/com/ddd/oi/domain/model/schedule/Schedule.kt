@@ -1,16 +1,16 @@
-package com.ddd.oi.domain.model
+package com.ddd.oi.domain.model.schedule
+
+import kotlinx.datetime.LocalDate
 
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Schedule(
     val id: Long,
-    val createdAt: Long,
-    val updatedAt: Long,
     val title: String,
     val category: Category,
-    val startedAt: Long,
-    val endedAt: Long,
+    val startedAt: LocalDate,
+    val endedAt: LocalDate,
     val transportation: Transportation,
     val partySet: Set<Party>,
     val placeList: List<Place>

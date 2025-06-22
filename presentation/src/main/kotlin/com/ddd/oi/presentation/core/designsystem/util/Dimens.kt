@@ -102,6 +102,28 @@ object BottomBarShapeDimens {
 object OiCalendarDimens {
     val calendarCellHeight = 34.dp
     val dayWidth = 28.dp
+    val weekDayTopPadding = 4.dp
     val categoryCircleSize = 4.dp
     val categoryPadding = 2.dp
+}
+
+object MonthSelectorDimens {
+    val height = 56.dp
+    val horizontalPadding = 16.dp
+    val verticalPadding = 14.5.dp
+    val dropDownStartPadding = 2.dp
+}
+
+object OiCardDimens {
+    val cardHeight = 70.dp
+    val cornerRadius = 16.dp
+    val lineWidth = 4.dp
+    val lineHeight = 38.dp
+    val dividerHeight = 8.dp
+    val moreIconSize = 16.dp
+    val elevation = 2.dp
+}
+
+object DialogDimens {
+    val cornerRadius = 24.dp
 }

@@ -10,8 +10,14 @@ fun NavController.navigateToSchedule(navOptions: NavOptions) {
     navigate(MainTabRoute.Schedule, navOptions)
 }
 
-fun NavGraphBuilder.scheduleNavGraph() {
+fun NavGraphBuilder.scheduleNavGraph(
+    navigateToCreateSchedule: () -> Unit,
+    onShowSnackbar: (String) -> Unit
+) {
     composable<MainTabRoute.Schedule> {
-        ScheduleScreen()
+        ScheduleScreen(
+            navigateToCreateSchedule = navigateToCreateSchedule,
+            onShowSnackbar = onShowSnackbar
+        )
     }
 }

@@ -1,10 +1,10 @@
 package com.ddd.oi.presentation.upsertschedule
 
 import androidx.lifecycle.ViewModel
-import com.ddd.oi.domain.model.Category
-import com.ddd.oi.domain.model.Party
-import com.ddd.oi.domain.model.Schedule
-import com.ddd.oi.domain.model.Transportation
+import com.ddd.oi.domain.model.schedule.Category
+import com.ddd.oi.domain.model.schedule.Party
+import com.ddd.oi.domain.model.schedule.Schedule
+import com.ddd.oi.domain.model.schedule.Transportation
 import com.ddd.oi.presentation.upsertschedule.contract.UpsertScheduleSideEffect
 import com.ddd.oi.presentation.upsertschedule.contract.UpsertScheduleState
 import dagger.hilt.android.lifecycle.HiltViewModel

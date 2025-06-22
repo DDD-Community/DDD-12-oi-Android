@@ -15,5 +15,6 @@ kotlin {
 
 dependencies {
     implementation(libs.kotlinx.coroutine)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.serialization.json)
 }

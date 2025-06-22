@@ -20,7 +20,12 @@ fun OiNavHost(
         modifier = modifier
     ) {
         homeNavGraph()
-        scheduleNavGraph()
+
+        scheduleNavGraph(
+            navigateToCreateSchedule = {},
+            onShowSnackbar = {}
+        )
+
         upsertScheduleNavGraph(
             navigatePopBack = { navigator.popBackStack() }
         )

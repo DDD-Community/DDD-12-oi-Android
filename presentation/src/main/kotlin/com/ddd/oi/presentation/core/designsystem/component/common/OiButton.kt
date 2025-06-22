@@ -36,6 +36,7 @@ fun OiButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     style: OiButtonStyle,
+    colorType: OiButtonColorType = OiButtonColorType.Primary,
     enabled: Boolean = true,
     @StringRes textStringRes: Int,
     @DrawableRes leftIconDrawableRes: Int? = null,
@@ -50,7 +51,7 @@ fun OiButton(
             .height(style.height),
         shape = style.shape,
         enabled = enabled,
-        colors = getButtonColors(isPressed),
+        colors = getButtonColors(colorType, isPressed),
         onClick = onClick
     ) {
         Row(
@@ -81,22 +82,67 @@ fun OiButton(
 }
 
 @Composable
-private fun getButtonColors(isPressed: Boolean): ButtonColors {
-    return if (isPressed) {
-        ButtonColors(
-            contentColor = OiTheme.colors.textOnPrimary,
-            containerColor = OiTheme.colors.backgroundPressed,
-            disabledContentColor = OiTheme.colors.textDisabled,
-            disabledContainerColor = OiTheme.colors.backgroundDisabled,
-        )
-    } else {
-        ButtonColors(
-            contentColor = OiTheme.colors.textOnPrimary,
-            containerColor = OiTheme.colors.backgroundPrimary,
-            disabledContentColor = OiTheme.colors.textDisabled,
-            disabledContainerColor = OiTheme.colors.backgroundDisabled,
-        )
+private fun getButtonColors(colorType: OiButtonColorType, isPressed: Boolean): ButtonColors {
+    return when (colorType) {
+        OiButtonColorType.Primary -> {
+            if (isPressed) {
+                ButtonColors(
+                    contentColor = OiTheme.colors.textOnPrimary,
+                    containerColor = OiTheme.colors.backgroundPressed,
+                    disabledContentColor = OiTheme.colors.textDisabled,
+                    disabledContainerColor = OiTheme.colors.backgroundDisabled,
+                )
+            } else {
+                ButtonColors(
+                    contentColor = OiTheme.colors.textOnPrimary,
+                    containerColor = OiTheme.colors.backgroundPrimary,
+                    disabledContentColor = OiTheme.colors.textDisabled,
+                    disabledContainerColor = OiTheme.colors.backgroundDisabled,
+                )
+            }
+        }
+        OiButtonColorType.Secondary -> {
+            if (isPressed) {
+                ButtonColors(
+                    contentColor = OiTheme.colors.textPrimary,
+                    containerColor = OiTheme.colors.backgroundPressed,
+                    disabledContentColor = OiTheme.colors.textDisabled,
+                    disabledContainerColor = OiTheme.colors.backgroundDisabled,
+                )
+            } else {
+                ButtonColors(
+                    contentColor = OiTheme.colors.textPrimary,
+                    containerColor = OiTheme.colors.backgroundUnselected,
+                    disabledContentColor = OiTheme.colors.textDisabled,
+                    disabledContainerColor = OiTheme.colors.backgroundDisabled,
+                )
+            }
+        }
+        OiButtonColorType.Danger -> {
+            if (isPressed) {
+                ButtonColors(
+                    contentColor = OiTheme.colors.textOnPrimary,
+                    containerColor = OiTheme.colors.backgroundPressed,
+                    disabledContentColor = OiTheme.colors.textDisabled,
+                    disabledContainerColor = OiTheme.colors.backgroundDisabled,
+                )
+            } else {
+                ButtonColors(
+                    contentColor = OiTheme.colors.textOnPrimary,
+                    containerColor = OiTheme.colors.backgroundError,
+                    disabledContentColor = OiTheme.colors.textDisabled,
+                    disabledContainerColor = OiTheme.colors.backgroundDisabled,
+                )
+            }
+        }
     }
+}
+
+@Immutable
+enum class OiButtonColorType {
+    Primary,
+    Secondary, 
+    Danger
 }
 
 @Immutable
@@ -157,14 +203,20 @@ sealed interface OiButtonStyle {
 @Preview
 @Composable
 private fun OiButtonPreview() {
-    Column(verticalArrangement = Arrangement.spacedBy(OiButtonDimens.componentMargin)) {
-        OiButtonStyle.entries.forEach {
-            OiButton(
-                style = it,
-                textStringRes = R.string.button_eng,
-                leftIconDrawableRes = R.drawable.ic_add_plus,
-                rightIconDrawableRes = R.drawable.ic_chevron_right,
-            )
+    OiTheme {
+        Column(verticalArrangement = Arrangement.spacedBy(OiButtonDimens.componentMargin)) {
+            OiButtonColorType.entries.forEach { colorType ->
+                Text(text = colorType.name, style = OiTheme.typography.bodyMediumSemibold)
+                OiButtonStyle.entries.take(3).forEach { style ->
+                    OiButton(
+                        style = style,
+                        colorType = colorType,
+                        textStringRes = R.string.button_eng,
+                        leftIconDrawableRes = R.drawable.ic_add_plus,
+                        rightIconDrawableRes = R.drawable.ic_chevron_right,
+                    )
+                }
+            }
         }
     }
 }
