@@ -14,9 +14,9 @@ class ScheduleRemoteDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun uploadSchedule(schedule: ScheduleRequest): Result<ScheduleDto> {
+    override suspend fun upsertSchedule(schedule: ScheduleRequest): Result<ScheduleDto> {
         return safeApiCall {
-            scheduleApiService.uploadSchedule(request = schedule)
+            scheduleApiService.upsertSchedule(request = schedule)
         }
     }
 
