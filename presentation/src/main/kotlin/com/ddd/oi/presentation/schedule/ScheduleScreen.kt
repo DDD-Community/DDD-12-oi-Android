@@ -34,6 +34,7 @@ import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiCard
 import com.ddd.oi.presentation.schedule.component.ScheduleActionBottomSheet
 import com.ddd.oi.presentation.core.designsystem.component.common.OiChipIcon
+import com.ddd.oi.presentation.core.designsystem.component.common.OiDeleteDialog
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToScheduleHeaderDate
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getCategoryName
@@ -60,6 +61,7 @@ fun ScheduleScreen(
 ) {
     val uiState by viewModel.collectAsState()
     var selectedSchedule by remember { mutableStateOf<Schedule?>(null) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
 
     ScheduleScreen(
@@ -76,27 +78,35 @@ fun ScheduleScreen(
         onShowSnackbar = onShowSnackbar
     )
 
-    if (showBottomSheet && selectedSchedule != null) {
+    if (showBottomSheet) {
+        // TODO: 수정 및 복사 연결 작업
+        ScheduleActionBottomSheet(
+            onDismiss = {
+                showBottomSheet = false
+                selectedSchedule = null
+            },
+            onEdit = {
+                showBottomSheet = false
+                selectedSchedule = null
+            },
+            onCopy = {
+                showBottomSheet = false
+                selectedSchedule = null
+            },
+            onDelete = {
+                showBottomSheet = false
+                showDeleteDialog = true
+            }
+        )
+    }
+
+    if (showDeleteDialog && selectedSchedule != null) {
         selectedSchedule?.let { schedule ->
-            // TODO: 수정 및 복사 연결 작업
-            ScheduleActionBottomSheet(
-                onDismiss = {
-                    showBottomSheet = false
-                    selectedSchedule = null
-                },
-                onEdit = {
-                    showBottomSheet = false
-                    selectedSchedule = null
-                },
-                onCopy = {
-                    showBottomSheet = false
-                    selectedSchedule = null
-                },
-                onDelete = {
-                    // TODO: Alert Component 연결
+            OiDeleteDialog(
+                onDismiss = { showDeleteDialog = false },
+                onConfirm = {
                     viewModel.deleteSchedule(schedule.id)
-                    showBottomSheet = false
-                    selectedSchedule = null
+                    showDeleteDialog = false
                 }
             )
         }
@@ -240,6 +250,7 @@ private fun ScheduleCategoryFilter(
                                 oiChipIcon = OiChipIcon.Travel,
                                 onItemClick = { updateSelectedCategory(category) }
                             )
+
                             Category.Date -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
@@ -247,6 +258,7 @@ private fun ScheduleCategoryFilter(
                                 oiChipIcon = OiChipIcon.Date,
                                 onItemClick = { updateSelectedCategory(category) }
                             )
+
                             Category.Daily -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
@@ -254,6 +266,7 @@ private fun ScheduleCategoryFilter(
                                 oiChipIcon = OiChipIcon.Daily,
                                 onItemClick = { updateSelectedCategory(category) }
                             )
+
                             Category.Business -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
@@ -261,6 +274,7 @@ private fun ScheduleCategoryFilter(
                                 oiChipIcon = OiChipIcon.Business,
                                 onItemClick = { updateSelectedCategory(category) }
                             )
+
                             Category.Etc -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
