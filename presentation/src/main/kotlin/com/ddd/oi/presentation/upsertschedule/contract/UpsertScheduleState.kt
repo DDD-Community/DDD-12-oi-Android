@@ -27,4 +27,10 @@ data class UpsertScheduleState(
             party = emptySet()
         )
     }
+
+    val isButtonEnable: Boolean get() = title.isNotEmpty() &&
+            category != null &&
+            startDate > 0L &&
+            transportation != null &&
+            party.isNotEmpty()
 }

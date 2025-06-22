@@ -37,6 +37,7 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiOvalChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiTextField
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
+import org.orbitmvi.orbit.compose.collectAsState
 
 @Composable
 fun UpsertScheduleScreen(
@@ -49,18 +50,14 @@ fun UpsertScheduleScreen(
         schedule?.let(viewModel::setSchedule)
     }
 
-    val uiState = viewModel.container.stateFlow.collectAsStateWithLifecycle().value
+    val uiState = viewModel.collectAsState().value
     val title = uiState.title
     val category = uiState.category
     val startDate = uiState.startDate
     val endDate = uiState.endDate
     val transportation = uiState.transportation
     val party = uiState.party
-    val isButtonEnabled = title.isNotEmpty() &&
-            category != null &&
-            startDate > 0L &&
-            transportation != null &&
-            party.isNotEmpty()
+    val isButtonEnabled = uiState.isButtonEnable
 
     Scaffold(
         modifier = modifier
@@ -244,7 +241,7 @@ private fun UpsertScreenContent(
 }
 
 @Composable
-fun UpsertScheduleContentItem(
+private fun UpsertScheduleContentItem(
     modifier: Modifier = Modifier,
     @StringRes titleResId: Int,
     content: @Composable (Modifier) -> Unit,
