@@ -27,10 +27,10 @@ class ScheduleViewModel @Inject constructor(
         loadSchedule()
     }
 
-
     fun updateDate(localDate: LocalDate) = intent {
+        val previousMonthNumber = state.selectedDate.monthNumber
         reduce { state.copy(selectedDate = localDate) }
-        if (localDate.month != state.selectedDate.month) loadSchedule()
+        if (localDate.monthNumber != previousMonthNumber) loadSchedule()
     }
 
     fun updateSelectedCategory(categoryFilter: CategoryFilter) = intent {
