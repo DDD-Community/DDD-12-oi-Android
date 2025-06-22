@@ -123,3 +123,7 @@ object OiCardDimens {
     val moreIconSize = 16.dp
     val elevation = 2.dp
 }
+
+object DialogDimens {
+    val cornerRadius = 24.dp
+}
