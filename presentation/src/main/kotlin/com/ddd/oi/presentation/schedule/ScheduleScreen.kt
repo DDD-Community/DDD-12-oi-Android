@@ -1,7 +1,6 @@
 package com.ddd.oi.presentation.schedule
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,18 +25,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiCard
 import com.ddd.oi.presentation.schedule.component.ScheduleActionBottomSheet
-import com.ddd.oi.presentation.core.designsystem.component.common.OiChip
-import com.ddd.oi.presentation.core.designsystem.component.common.rippleOrFallbackImplementation
+import com.ddd.oi.presentation.core.designsystem.component.common.OiChipIcon
+import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToScheduleHeaderDate
-import com.ddd.oi.presentation.core.designsystem.component.mapper.getCategoryIcon
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getCategoryName
 import com.ddd.oi.presentation.core.designsystem.component.sechedule.MonthSelector
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiCalendar
@@ -223,38 +221,55 @@ private fun ScheduleCategoryFilter(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             categories.forEach { category ->
-                val selected = category == selectedCategory
+                val isSelected = category == selectedCategory
                 when (category) {
                     // TODO: OiChip 클릭 이벤트 설정 및 카테고리 받게하기
-                    CategoryFilter.All -> OiChip(
-                        modifier = Modifier
-                            .clickable(
-                                onClick = { updateSelectedCategory(category) },
-                                role = Role.Button,
-                                interactionSource = null,
-                                indication = rippleOrFallbackImplementation(
-                                    bounded = false,
-                                    radius = Dimens.paddingMediumSmall
-                                )
-                            ),
-                        selected = selected,
-                        textStringRes = R.string.all
+                    CategoryFilter.All -> OiRoundRectChip(
+                        modifier = Modifier,
+                        isSelected = isSelected,
+                        textStringRes = R.string.all,
+                        onItemClick = { updateSelectedCategory(category) }
                     )
 
-                    is CategoryFilter.Specific -> OiChip(
-                        modifier = Modifier.clickable(
-                            onClick = { updateSelectedCategory(category) },
-                            role = Role.Button,
-                            interactionSource = null,
-                            indication = rippleOrFallbackImplementation(
-                                bounded = false,
-                                radius = Dimens.paddingMediumSmall
+                    is CategoryFilter.Specific -> {
+                        when (category.category) {
+                            Category.Travel -> OiRoundRectChip(
+                                modifier = Modifier,
+                                isSelected = isSelected,
+                                textStringRes = category.category.getCategoryName(),
+                                oiChipIcon = OiChipIcon.Travel,
+                                onItemClick = { updateSelectedCategory(category) }
                             )
-                        ),
-                        selected = selected,
-                        iconDrawableRes = category.category.getCategoryIcon(),
-                        textStringRes = category.category.getCategoryName()
-                    )
+                            Category.Date -> OiRoundRectChip(
+                                modifier = Modifier,
+                                isSelected = isSelected,
+                                textStringRes = category.category.getCategoryName(),
+                                oiChipIcon = OiChipIcon.Date,
+                                onItemClick = { updateSelectedCategory(category) }
+                            )
+                            Category.Daily -> OiRoundRectChip(
+                                modifier = Modifier,
+                                isSelected = isSelected,
+                                textStringRes = category.category.getCategoryName(),
+                                oiChipIcon = OiChipIcon.Daily,
+                                onItemClick = { updateSelectedCategory(category) }
+                            )
+                            Category.Business -> OiRoundRectChip(
+                                modifier = Modifier,
+                                isSelected = isSelected,
+                                textStringRes = category.category.getCategoryName(),
+                                oiChipIcon = OiChipIcon.Business,
+                                onItemClick = { updateSelectedCategory(category) }
+                            )
+                            Category.Etc -> OiRoundRectChip(
+                                modifier = Modifier,
+                                isSelected = isSelected,
+                                textStringRes = category.category.getCategoryName(),
+                                oiChipIcon = OiChipIcon.Etc,
+                                onItemClick = { updateSelectedCategory(category) }
+                            )
+                        }
+                    }
                 }
             }
         }
