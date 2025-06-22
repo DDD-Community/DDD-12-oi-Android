@@ -10,7 +10,7 @@ class GetSchedulesUseCaseImpl(
 
     override suspend fun invoke(year: Int, month: Int): Result<ScheduleResult> {
         return scheduleRepository.getScheduleList(year, month)
-            .mapCatching { schedules ->
+            .map { schedules ->
                 ScheduleResult(
                     schedules = schedules.groupByDate(),
                     availableCategory = schedules.map { it.category }.toSet()
