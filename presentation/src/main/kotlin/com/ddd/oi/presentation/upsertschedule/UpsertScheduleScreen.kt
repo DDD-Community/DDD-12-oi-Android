@@ -1,21 +1,30 @@
 package com.ddd.oi.presentation.upsertschedule
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -35,9 +44,12 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiDateField
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiOvalChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiTextField
+import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.OiDateRangeBottomSheet
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
+import com.ddd.oi.presentation.core.designsystem.theme.white
 import org.orbitmvi.orbit.compose.collectAsState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpsertScheduleScreen(
     modifier: Modifier = Modifier,
@@ -57,6 +69,11 @@ fun UpsertScheduleScreen(
     val transportation = uiState.transportation
     val party = uiState.party
     val isButtonEnabled = uiState.isButtonEnable
+
+    var showDateRangeBottomSheet by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     Scaffold(
         modifier = modifier
@@ -87,11 +104,31 @@ fun UpsertScheduleScreen(
             onCategoryClick = viewModel::setCategory,
             startDate = startDate,
             endDate = endDate,
+            onDateFieldClick = { showDateRangeBottomSheet = true },
             transportation = transportation,
             onTransportationClick = viewModel::setTransportation,
             partySet = party,
             onPartyClick = viewModel::setParty
         )
+    }
+
+    if (showDateRangeBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showDateRangeBottomSheet = false },
+            sheetState = bottomSheetState,
+            containerColor = white
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.6f)
+                    .background(white)
+            ) {
+                OiDateRangeBottomSheet { start, end ->
+                    viewModel.setDate(start, end)
+                    showDateRangeBottomSheet = false
+                }
+            }
+        }
     }
 }
 
@@ -104,6 +141,7 @@ private fun UpsertScreenContent(
     onCategoryClick: (Category) -> Unit,
     startDate: Long,
     endDate: Long,
+    onDateFieldClick: () -> Unit,
     transportation: Transportation?,
     onTransportationClick: (Transportation) -> Unit,
     partySet: Set<Party>,
@@ -164,12 +202,7 @@ private fun UpsertScreenContent(
         ) { modifier ->
             OiDateField(
                 modifier = modifier,
-                onClickDateField = {
-                    /**
-                     * todo setDate
-                     * todo call [UpsertScheduleViewModel.setDate] after bottomSheet
-                     */
-                },
+                onClickDateField = onDateFieldClick,
                 startDate = startDate,
                 endDate = endDate,
                 hint = stringResource(R.string.schedule_period_hint),

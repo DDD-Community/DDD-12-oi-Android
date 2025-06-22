@@ -1,5 +1,6 @@
 package com.ddd.oi.presentation.upsertschedule
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
@@ -30,6 +31,7 @@ class UpsertScheduleViewModel @Inject constructor(
     }
 
     fun setDate(startDate: Long, endDate: Long) = intent {
+        Log.d("test", "startDate: $startDate, endDate: $endDate")
         reduce { state.copy(startDate = startDate, endDate = endDate) }
     }
 
