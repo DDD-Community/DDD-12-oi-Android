@@ -96,7 +96,7 @@ fun OiMonthGridBottomSheet(
         }
         OiButton(
             modifier = Modifier.padding(horizontal = Dimens.paddingMedium),
-            textStringRes = R.string.confirm,
+            textStringRes = R.string.complete,
             style = OiButtonStyle.Large48Oval,
             enabled = true,
             onClick = {
