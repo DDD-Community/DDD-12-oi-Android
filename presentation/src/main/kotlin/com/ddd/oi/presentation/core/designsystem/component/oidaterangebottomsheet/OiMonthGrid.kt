@@ -24,12 +24,12 @@ import com.ddd.oi.presentation.core.designsystem.util.MonthGridDimens
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.Month
 import java.text.DateFormatSymbols
-import java.util.Locale
 
 @Composable
 fun OiMonthGrid(
     modifier: Modifier = Modifier,
-    displayedMonth: LocalDate,
+    selectedYear: Int,
+    selectedMonth: Int,
     onMonthSelected: (LocalDate) -> Unit
 ) {
     val locale = getCurrentLocale()
@@ -54,10 +54,10 @@ fun OiMonthGrid(
         verticalArrangement = Arrangement.spacedBy(Dimens.paddingMediumSmall)
     ) {
         items(months) { monthItem ->
-            val monthDate = LocalDate(displayedMonth.year, monthItem.monthNumber, 1)
+            val monthDate = LocalDate(selectedYear, monthItem.monthNumber, 1)
             MonthCell(
                 monthText = monthItem.displayName,
-                isSelected = monthDate == displayedMonth,
+                isSelected = monthItem.monthNumber == selectedMonth,
                 onClick = {
                     onMonthSelected(monthDate)
                 }
@@ -67,7 +67,7 @@ fun OiMonthGrid(
 }
 
 @Composable
-private fun MonthCell(
+internal fun MonthCell(
     monthText: String,
     isSelected: Boolean,
     onClick: () -> Unit
@@ -90,7 +90,7 @@ private fun MonthCell(
     }
 }
 
-private data class MonthItem(
+internal data class MonthItem(
     val month: Month,
     val displayName: String,
     val monthNumber: Int
@@ -101,7 +101,8 @@ private data class MonthItem(
 private fun OiMonthGridPreview() {
     OiTheme {
         OiMonthGrid(
-            displayedMonth = LocalDate(2025, 6, 1),
+            selectedYear = 2025,
+            selectedMonth = 6,
             onMonthSelected = { }
         )
     }
