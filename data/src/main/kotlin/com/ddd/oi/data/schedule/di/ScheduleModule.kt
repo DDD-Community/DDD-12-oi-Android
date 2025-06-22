@@ -8,6 +8,10 @@ import com.ddd.oi.domain.usecase.schedule.DeleteScheduleUseCase
 import com.ddd.oi.domain.usecase.schedule.DeleteScheduleUseCaseImpl
 import com.ddd.oi.domain.usecase.schedule.GetSchedulesUseCase
 import com.ddd.oi.domain.usecase.schedule.GetSchedulesUseCaseImpl
+import com.ddd.oi.domain.usecase.schedule.UpdateScheduleUseCase
+import com.ddd.oi.domain.usecase.schedule.UpdateScheduleUseCaseImpl
+import com.ddd.oi.domain.usecase.schedule.UploadScheduleUseCase
+import com.ddd.oi.domain.usecase.schedule.UploadScheduleUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -46,5 +50,21 @@ object UseCaseModule {
         scheduleRepository: ScheduleRepository
     ): DeleteScheduleUseCase {
         return DeleteScheduleUseCaseImpl(scheduleRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUploadScheduleUseCase(
+        scheduleRepository: ScheduleRepository
+    ): UploadScheduleUseCase {
+        return UploadScheduleUseCaseImpl(scheduleRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateScheduleUseCase(
+        scheduleRepository: ScheduleRepository
+    ): UpdateScheduleUseCase {
+        return UpdateScheduleUseCaseImpl(scheduleRepository)
     }
 }
