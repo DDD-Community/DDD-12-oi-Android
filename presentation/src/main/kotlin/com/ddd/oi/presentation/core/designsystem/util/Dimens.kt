@@ -127,3 +127,8 @@ object OiCardDimens {
 object DialogDimens {
     val cornerRadius = 24.dp
 }
+
+object MonthGridDimens {
+    val horizontalPadding = 45.17.dp
+    var verticalPadding = 23.dp
+}
