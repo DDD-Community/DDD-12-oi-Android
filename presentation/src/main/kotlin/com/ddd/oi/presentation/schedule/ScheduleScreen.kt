@@ -15,9 +15,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +47,7 @@ import com.ddd.oi.presentation.core.designsystem.component.sechedule.OiLine
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
+import com.ddd.oi.presentation.schedule.component.OiMonthGridBottomSheet
 import com.ddd.oi.presentation.schedule.contract.CategoryFilter
 import com.ddd.oi.presentation.schedule.contract.ScheduleState
 import kotlinx.collections.immutable.ImmutableList
@@ -52,6 +55,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.datetime.LocalDate
 import org.orbitmvi.orbit.compose.collectAsState
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ScheduleScreen(
     modifier: Modifier = Modifier,
@@ -63,6 +67,8 @@ fun ScheduleScreen(
     var selectedSchedule by remember { mutableStateOf<Schedule?>(null) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showBottomSheet by remember { mutableStateOf(false) }
+    var showMonthGridBottomSheet by remember { mutableStateOf(false) }
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     ScheduleScreen(
         modifier = modifier,
@@ -75,7 +81,8 @@ fun ScheduleScreen(
             showBottomSheet = true
         },
         navigateToCreateSchedule = navigateToCreateSchedule,
-        onShowSnackbar = onShowSnackbar
+        onShowSnackbar = onShowSnackbar,
+        onDropdownClick = { showMonthGridBottomSheet = true}
     )
 
     if (showBottomSheet) {
@@ -108,6 +115,30 @@ fun ScheduleScreen(
             )
         }
     }
+
+    if (showMonthGridBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { showMonthGridBottomSheet = false },
+            sheetState = bottomSheetState,
+            dragHandle = null,
+            containerColor = white
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight(0.5f)
+                    .background(white)
+            ) {
+                OiMonthGridBottomSheet(
+                    selectedYear = uiState.selectedDate.year,
+                    selectedMonth = uiState.selectedDate.monthNumber,
+                    onMonthSelected = {
+                        viewModel.updateDate(it)
+                        showMonthGridBottomSheet = false
+                    }
+                )
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -120,7 +151,8 @@ private fun ScheduleScreen(
     updateSelectedCategory: (CategoryFilter) -> Unit,
     onMoreClick: (Schedule) -> Unit,
     navigateToCreateSchedule: () -> Unit,
-    onShowSnackbar: (String) -> Unit
+    onShowSnackbar: (String) -> Unit,
+    onDropdownClick: () -> Unit
 ) {
     val todaySchedule =
         scheduleState.filteredSchedules[scheduleState.selectedDate] ?: persistentListOf()
@@ -137,7 +169,8 @@ private fun ScheduleScreen(
             MonthSelector(
                 selectedDate = scheduleState.selectedDate,
                 enabled = !scheduleState.isLoading,
-                onDateChange = updateDate
+                onDateChange = updateDate,
+                onDropdownClick = onDropdownClick
             )
             ScheduleCategoryFilter(
                 selectedCategory = scheduleState.selectedCategoryFilter,
