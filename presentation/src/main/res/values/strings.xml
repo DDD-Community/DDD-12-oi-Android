@@ -45,9 +45,15 @@
     <string name="bike">자전거</string>
     <string name="walk">도보</string>
     <string name="more">더보기</string>
-    <string name="edit">수정하기</string>
-    <string name="copy">복사하기</string>
-    <string name="remove">삭제하기</string>
-    <string name="schedulesnackkbar">일정은 최대 3개까지 작성 가능해요</string>
+    <string name="edit_schedule">수정하기</string>
+    <string name="copy_schedule">복사하기</string>
+    <string name="remove_schedule">삭제하기</string>
+    <string name="schedule_limit_snackbar">일정은 최대 3개까지 작성 가능해요</string>
+    <string name="button_cancel">취소하기</string>
+    <string name="button_delete">삭제하기</string>
+    <string name="button_register">등록하기</string>
+    <string name="dialog_delete_message">해당 일정을 삭제하시겠습니까?</string>
+    <string name="dialog_already_exist_schedule">해당 날짜에 이미 등록된 일정이 있어요.\n새 일정을 추가로 등록하시겠어요?</string>
+
 
 </resources>
