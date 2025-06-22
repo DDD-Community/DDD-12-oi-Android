@@ -3,10 +3,10 @@ package com.ddd.oi.domain.usecase.schedule
 import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.domain.repository.ScheduleRepository
 
-class UploadScheduleUseCaseImpl(
+class UpsertScheduleUseCaseImpl(
     private val scheduleRepository: ScheduleRepository
-): UploadScheduleUseCase {
+): UpsertScheduleUseCase {
     override suspend fun invoke(schedule: Schedule): Result<Schedule> {
-        return scheduleRepository.uploadSchedule(schedule)
+        return scheduleRepository.upsertSchedule(schedule)
     }
 }
