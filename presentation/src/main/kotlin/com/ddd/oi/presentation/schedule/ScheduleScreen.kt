@@ -104,10 +104,7 @@ fun ScheduleScreen(
         selectedSchedule?.let { schedule ->
             OiDeleteDialog(
                 onDismiss = { showDeleteDialog = false },
-                onConfirm = {
-                    viewModel.deleteSchedule(schedule.id)
-                    showDeleteDialog = false
-                }
+                onConfirm = { viewModel.deleteSchedule(schedule.id) }
             )
         }
     }
