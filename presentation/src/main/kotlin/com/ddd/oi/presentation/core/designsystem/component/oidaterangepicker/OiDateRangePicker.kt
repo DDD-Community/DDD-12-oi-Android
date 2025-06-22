@@ -96,24 +96,23 @@ private fun OiDateRangePickerContent(
         } else {
             null
         }
-    Box(modifier = Modifier.background(colors.containerColor)) {
-        Column(
-            modifier = Modifier
-                .padding(horizontal = Dimens.paddingMedium)
-                .background(colors.containerColor)
-        ) {
-            OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
-            OiMonth(
-                month = calendarMonth,
-                onDateSelectionChange = onDateSelectionChange,
-                colors = colors,
-                rangeSelectionInfo = rangeSelectionInfo,
-                modifier = Modifier.padding(
-                    top = Dimens.paddingMediumSmall,
-                    bottom = Dimens.paddingMedium
-                ),
-            )
-        }
+
+    Column(
+        modifier = Modifier
+            .background(colors.containerColor)
+            .padding(horizontal = Dimens.paddingMedium)
+    ) {
+        OiWeekDays(colors = colors, oiCalendarModel = oiCalendarModel)
+        OiMonth(
+            month = calendarMonth,
+            onDateSelectionChange = onDateSelectionChange,
+            colors = colors,
+            rangeSelectionInfo = rangeSelectionInfo,
+            modifier = Modifier.padding(
+                top = Dimens.paddingMediumSmall,
+                bottom = Dimens.paddingMedium
+            ),
+        )
     }
 }
 
