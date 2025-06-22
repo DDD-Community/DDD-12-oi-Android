@@ -80,6 +80,7 @@ fun ScheduleScreen(
 
     if (showBottomSheet && selectedSchedule != null) {
         selectedSchedule?.let { schedule ->
+            // TODO: 수정 및 복사 연결 작업
             ScheduleActionBottomSheet(
                 onDismiss = {
                     showBottomSheet = false
@@ -94,6 +95,7 @@ fun ScheduleScreen(
                     selectedSchedule = null
                 },
                 onDelete = {
+                    // TODO: Alert Component 연결
                     viewModel.deleteSchedule(schedule.id)
                     showBottomSheet = false
                     selectedSchedule = null
@@ -223,6 +225,7 @@ private fun ScheduleCategoryFilter(
             categories.forEach { category ->
                 val selected = category == selectedCategory
                 when (category) {
+                    // TODO: OiChip 클릭 이벤트 설정 및 카테고리 받게하기
                     CategoryFilter.All -> OiChip(
                         modifier = Modifier
                             .clickable(
