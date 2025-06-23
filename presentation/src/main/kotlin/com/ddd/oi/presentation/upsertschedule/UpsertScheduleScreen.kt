@@ -1,5 +1,6 @@
 package com.ddd.oi.presentation.upsertschedule
 
+import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.DragInteraction
@@ -43,24 +44,34 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiChoiceChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiDateField
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiOvalChip
+import com.ddd.oi.presentation.core.designsystem.component.dialog.OiPastDateDialog
 import com.ddd.oi.presentation.core.designsystem.component.common.OiTextField
+import com.ddd.oi.presentation.core.designsystem.component.dialog.OiAlreadyScheduleDialog
 import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.OiDateRangeBottomSheet
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
+import com.ddd.oi.presentation.upsertschedule.contract.UpsertScheduleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpsertScheduleScreen(
     modifier: Modifier = Modifier,
     schedule: Schedule? = null,
-    navigatePopBack: () -> Unit = {},
+    navigatePopBack: (scheduleCreated: Boolean) -> Unit = {},
     viewModel: UpsertScheduleViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
         schedule?.let(viewModel::setSchedule)
     }
 
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            UpsertScheduleSideEffect.PopBackStack -> navigatePopBack(true)
+            is UpsertScheduleSideEffect.Toast -> {}
+        }
+    }
     val uiState = viewModel.collectAsState().value
     val title = uiState.title
     val category = uiState.category
@@ -71,9 +82,10 @@ fun UpsertScheduleScreen(
     val isButtonEnabled = uiState.isButtonEnable
 
     var showDateRangeBottomSheet by remember { mutableStateOf(false) }
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var isPastModalVisible by remember { mutableStateOf(false) }
+    var isAlreadyScheduledModalVisible by remember { mutableStateOf(false) }
+    var hasInRangeSchedule by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier
@@ -81,7 +93,7 @@ fun UpsertScheduleScreen(
         containerColor = OiTheme.colors.backgroundContents,
         topBar = {
             OiHeader(
-                onLeftClick = navigatePopBack,
+                onLeftClick = { navigatePopBack(false) },
                 titleStringRes = R.string.create_schedule,
                 leftButtonDrawableRes = R.drawable.ic_arrow_left
             )
@@ -89,8 +101,15 @@ fun UpsertScheduleScreen(
         bottomBar = {
             UpsertScreenBottom(
                 onButtonClick = {
+                    if (uiState.isModalPastVisible) {
+                        isPastModalVisible = true
+                        return@UpsertScreenBottom
+                    }
+                    if (hasInRangeSchedule) {
+                        isAlreadyScheduledModalVisible = true
+                        return@UpsertScreenBottom
+                    }
                     viewModel.upsertSchedule()
-                    navigatePopBack()
                 },
                 isButtonEnabled = isButtonEnabled
             )
@@ -123,12 +142,27 @@ fun UpsertScheduleScreen(
                     .fillMaxHeight(0.6f)
                     .background(white)
             ) {
-                OiDateRangeBottomSheet { start, end ->
-                    viewModel.setDate(start, end)
+                OiDateRangeBottomSheet { start, end, hasSchedules ->
                     showDateRangeBottomSheet = false
+                    viewModel.setDate(start, end)
+                    hasInRangeSchedule = hasSchedules
                 }
             }
         }
+    }
+
+    if (isPastModalVisible) {
+        OiPastDateDialog(
+            onDismiss = { isPastModalVisible = false },
+            onConfirm = { viewModel.upsertSchedule() }
+        )
+    }
+
+    if(isAlreadyScheduledModalVisible) {
+        OiAlreadyScheduleDialog(
+            onDismiss = { isAlreadyScheduledModalVisible = false },
+            onConfirm = { viewModel.upsertSchedule() }
+        )
     }
 }
 
