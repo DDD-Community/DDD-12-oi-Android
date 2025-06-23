@@ -14,10 +14,17 @@ fun NavGraphBuilder.scheduleNavGraph(
     navigateToCreateSchedule: () -> Unit,
     onShowSnackbar: (String) -> Unit
 ) {
-    composable<MainTabRoute.Schedule> {
+    composable<MainTabRoute.Schedule> { backStackEntry ->
+        val scheduleCreated = backStackEntry.savedStateHandle.get<Boolean>("schedule_created") ?: false
+        
+        if (scheduleCreated) {
+            backStackEntry.savedStateHandle.remove<Boolean>("schedule_created")
+        }
+        
         ScheduleScreen(
             navigateToCreateSchedule = navigateToCreateSchedule,
-            onShowSnackbar = onShowSnackbar
+            onShowSnackbar = onShowSnackbar,
+            scheduleCreated = scheduleCreated
         )
     }
 }
