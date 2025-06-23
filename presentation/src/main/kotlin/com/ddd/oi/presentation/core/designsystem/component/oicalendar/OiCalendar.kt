@@ -211,7 +211,7 @@ internal fun OiDay(
                 Text(
                     text = oiDay.dayNumber.toString(),
                     modifier = Modifier,
-                    style = getTextStyle(oiDay.isToday, oiDay.isSelected),
+                    style = getTextStyle(oiDay.isToday, oiDay.isSelected, oiDay.isRange),
                 )
             }
         }
@@ -233,9 +233,10 @@ internal fun OiDay(
 @Composable
 internal fun getTextStyle(
     today: Boolean,
-    selected: Boolean
+    selected: Boolean,
+    isRange: Boolean
 ): TextStyle = when {
-    selected -> OiTheme.typography.bodyMediumSemibold
+    selected || isRange -> OiTheme.typography.bodyMediumSemibold
     today -> OiTheme.typography.bodyMediumMedium
     else -> OiTheme.typography.bodyMediumRegular
 }
