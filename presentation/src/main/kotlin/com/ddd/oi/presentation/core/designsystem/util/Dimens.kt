@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 object Dimens {
     val paddingXSmall = 4.dp
     val paddingSmall = 8.dp
+    val paddingMediumXSmall = 10.dp
     val paddingMediumSmall = 12.dp
     val paddingMedium = 16.dp
     val paddingMediumLarge = 20.dp
@@ -13,6 +14,7 @@ object Dimens {
     val paddingLarge = 32.dp
     val fabSize = 48.dp
     val fabOffset = (fabSize / 2) + paddingMedium
+    val largeHeight = 40.dp
 }
 
 object OiHeaderDimens {
@@ -126,4 +128,9 @@ object OiCardDimens {
 
 object DialogDimens {
     val cornerRadius = 24.dp
+}
+
+object MonthGridDimens {
+    val horizontalPadding = 45.17.dp
+    var verticalPadding = 23.dp
 }

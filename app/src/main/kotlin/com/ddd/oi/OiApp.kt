@@ -27,6 +27,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -35,11 +36,13 @@ import com.ddd.oi.presentation.core.designsystem.component.MainBottomBar
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.navigation.OiNavigator
+import kotlinx.coroutines.launch
 
 @Composable
 fun OiApp(
     navigator: OiNavigator
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -49,10 +52,7 @@ fun OiApp(
             .navigationBarsPadding(),
         containerColor = OiTheme.colors.backgroundContents,
         snackbarHost = {
-            SnackbarHost(
-                hostState = snackBarHostState,
-                modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
-            )
+            SnackbarHost(hostState = snackBarHostState)
         },
         bottomBar = {
             MainBottomBar(
@@ -89,7 +89,9 @@ fun OiApp(
         floatingActionButtonPosition = FabPosition.Center
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
-            OiNavHost(navigator)
+            OiNavHost(
+                navigator = navigator,
+                onShowSnackbar = { coroutineScope.launch { snackBarHostState.showSnackbar(it) } })
         }
     }
 }

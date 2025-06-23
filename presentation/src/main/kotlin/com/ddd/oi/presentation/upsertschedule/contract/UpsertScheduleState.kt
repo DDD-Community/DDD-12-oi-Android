@@ -4,6 +4,10 @@ import androidx.compose.runtime.Stable
 import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
 import com.ddd.oi.domain.model.schedule.Transportation
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.todayIn
 
 @Stable
 data class UpsertScheduleState(
@@ -33,4 +37,12 @@ data class UpsertScheduleState(
             startDate > 0L &&
             transportation != null &&
             party.isNotEmpty()
+
+    val isPastDate: Boolean get() {
+        val zone = TimeZone.currentSystemDefault()
+        val today = Clock.System.todayIn(zone)
+            .atStartOfDayIn(zone)
+            .toEpochMilliseconds()
+        return startDate < today
+    }
 }

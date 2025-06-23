@@ -10,7 +10,7 @@ fun NavController.navigateToInsertSchedule() {
 }
 
 fun NavGraphBuilder.upsertScheduleNavGraph(
-    navigatePopBack: () -> Unit
+    navigatePopBack: (Boolean) -> Unit
 ) {
     composable<Route.UpsertSchedule> {
         UpsertScheduleScreen(

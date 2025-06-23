@@ -122,7 +122,7 @@ fun OiDateField(
     endDate: Long = -1L,
     hint: String = "",
 ) {
-    val dateText by remember { derivedStateOf { getFormattedDate(startDate, endDate) } }
+    val dateText by remember(startDate, endDate) { mutableStateOf(getFormattedDate(startDate, endDate)) }
     val isDateSelected by remember { derivedStateOf { dateText.isNotEmpty() } }
     val isHintVisible by remember { derivedStateOf { startDate < 0L && endDate < 0L } }
 

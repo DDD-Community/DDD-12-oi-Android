@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.core.designsystem.component.common
+package com.ddd.oi.presentation.core.designsystem.component.dialog
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
@@ -24,12 +24,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.ddd.oi.presentation.R
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonColorType
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.DialogDimens
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OiDialog(
     onDismiss: () -> Unit,
@@ -106,20 +108,14 @@ fun OiDeleteDialog(
 fun OiRegisterDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    @StringRes messageRes: Int = R.string.dialog_already_exist_schedule
+    content: @Composable () -> Unit,
 ) {
     OiDialog(onDismiss = onDismiss) {
         Column(
             modifier = Modifier.padding(horizontal = Dimens.paddingMedium),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                modifier = Modifier.padding(vertical = Dimens.paddingLarge),
-                text = stringResource(messageRes),
-                style = OiTheme.typography.headLineSmallSemibold,
-                color = OiTheme.colors.textPrimary,
-                textAlign = TextAlign.Center
-            )
+            content()
             OiButton(
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Primary,
@@ -178,7 +174,16 @@ private fun OiDialogPreview() {
         if (showRegisterDialog) {
             OiRegisterDialog(
                 onDismiss = { showRegisterDialog = false },
-                onConfirm = {}
+                onConfirm = {},
+                content = {
+                    Text(
+                        modifier = Modifier.padding(vertical = Dimens.paddingLarge),
+                        text = "tets",
+                        style = OiTheme.typography.headLineSmallSemibold,
+                        color = OiTheme.colors.textPrimary,
+                        textAlign = TextAlign.Center
+                    )
+                }
             )
         }
     }
