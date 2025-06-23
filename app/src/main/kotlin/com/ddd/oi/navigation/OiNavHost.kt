@@ -1,6 +1,7 @@
 package com.ddd.oi.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.ddd.oi.presentation.core.navigation.OiNavigator
@@ -12,8 +13,12 @@ import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 @Composable
 fun OiNavHost(
     navigator: OiNavigator,
+    onShowSnackbar: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    /**
+     * todo 스낵바 Throwable 타입으로 던지기?
+     */
     NavHost(
         navController = navigator.navController,
         startDestination = navigator.startDestination,
@@ -22,12 +27,17 @@ fun OiNavHost(
         homeNavGraph()
 
         scheduleNavGraph(
-            navigateToCreateSchedule = {},
-            onShowSnackbar = {}
+            navigateToCreateSchedule = { navigator.navigateToUpsertSchedule() },
+            onShowSnackbar = onShowSnackbar
         )
 
         upsertScheduleNavGraph(
-            navigatePopBack = { navigator.popBackStack() }
+            navigatePopBack = { scheduleCreated ->
+                navigator.navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("schedule_created", scheduleCreated)
+                navigator.popBackStack()
+            }
         )
         scheduleDetailNavGraph()
     }
