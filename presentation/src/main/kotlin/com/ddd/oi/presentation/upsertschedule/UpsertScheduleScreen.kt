@@ -1,6 +1,5 @@
 package com.ddd.oi.presentation.upsertschedule
 
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.DragInteraction
@@ -101,7 +100,7 @@ fun UpsertScheduleScreen(
         bottomBar = {
             UpsertScreenBottom(
                 onButtonClick = {
-                    if (uiState.isModalPastVisible) {
+                    if (uiState.isPastDate) {
                         isPastModalVisible = true
                         return@UpsertScreenBottom
                     }
