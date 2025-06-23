@@ -45,7 +45,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 @Composable
 fun OiDateRangeBottomSheet(
     viewModel: DateRangeBottomSheetViewModel = hiltViewModel(),
-    onUpsertScheduleClick: (Long, Long) -> Unit
+    onUpsertScheduleClick: (Long, Long, Boolean) -> Unit
 ) {
     val uiState by viewModel.collectAsState()
 
@@ -117,7 +117,7 @@ fun OiDateRangeBottomSheet(
                     val endDate = uiState.selectedEndDate ?: return@OiButton
                     val startLong = startDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
                     val endLong = endDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
-                    onUpsertScheduleClick(startLong, endLong)
+                    onUpsertScheduleClick(startLong, endLong, uiState.hasSchedulesInSelectedRange)
                 }
             )
         }
@@ -180,6 +180,6 @@ private fun ScheduleLimitSnackbar(
 @Preview(showBackground = true)
 private fun OiDateRangeBottomSheetPreview() {
     OiTheme {
-        OiDateRangeBottomSheet(onUpsertScheduleClick = {_, _ ->})
+        OiDateRangeBottomSheet(onUpsertScheduleClick = {_, _, _ ->})
     }
 }
