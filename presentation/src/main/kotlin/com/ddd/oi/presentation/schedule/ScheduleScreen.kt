@@ -21,12 +21,14 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,7 +38,7 @@ import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiCard
 import com.ddd.oi.presentation.schedule.component.ScheduleActionBottomSheet
 import com.ddd.oi.presentation.core.designsystem.component.common.OiChipIcon
-import com.ddd.oi.presentation.core.designsystem.component.common.OiDeleteDialog
+import com.ddd.oi.presentation.core.designsystem.component.dialog.OiDeleteDialog
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToScheduleHeaderDate
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getCategoryName
@@ -61,7 +63,8 @@ fun ScheduleScreen(
     modifier: Modifier = Modifier,
     viewModel: ScheduleViewModel = hiltViewModel(),
     navigateToCreateSchedule: () -> Unit = {},
-    onShowSnackbar: (String) -> Unit = {}
+    onShowSnackbar: (String) -> Unit = {},
+    scheduleCreated: Boolean = false
 ) {
     val uiState by viewModel.collectAsState()
     var selectedSchedule by remember { mutableStateOf<Schedule?>(null) }
@@ -69,6 +72,12 @@ fun ScheduleScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     var showMonthGridBottomSheet by remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    LaunchedEffect(scheduleCreated) {
+        if (scheduleCreated) {
+            viewModel.refresh()
+        }
+    }
 
     ScheduleScreen(
         modifier = modifier,
@@ -154,6 +163,7 @@ private fun ScheduleScreen(
     onShowSnackbar: (String) -> Unit,
     onDropdownClick: () -> Unit
 ) {
+    val localContextResource = LocalContext.current.resources
     val todaySchedule =
         scheduleState.filteredSchedules[scheduleState.selectedDate] ?: persistentListOf()
     PullToRefreshBox(
@@ -186,7 +196,7 @@ private fun ScheduleScreen(
                 selectedDate = scheduleState.selectedDate,
                 onCreateSchedule = {
                     if (scheduleState.isCreateScheduleEnabled) navigateToCreateSchedule()
-                    else onShowSnackbar("")
+                    else onShowSnackbar(localContextResource.getString(R.string.schedule_limit_snackbar))
                 }
             )
             Column(
