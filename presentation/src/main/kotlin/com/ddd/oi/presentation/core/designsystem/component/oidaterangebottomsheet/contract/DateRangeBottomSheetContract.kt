@@ -48,6 +48,21 @@ data class DateRangeBottomSheetState(
     val isSnackbarVisible: Boolean
         get() = !isLoading && !isSnackbarDismissed && hasScheduleLimitExceeded
 
+    val hasSchedulesInSelectedRange: Boolean
+        get() {
+            val startDate = selectedStartDate ?: return false
+            val endDate = selectedEndDate ?: return false
+            var currentDate = startDate
+            while (currentDate <= endDate) {
+                val monthKey = getMonthKey(currentDate)
+                val monthSchedules = scheduleCache[monthKey] ?: return false
+                val categoriesCount = monthSchedules[currentDate]?.size ?: 0
+                if (categoriesCount > 0) return true
+                currentDate = currentDate.plus(1, kotlinx.datetime.DateTimeUnit.DAY)
+            }
+            return false
+        }
+
     val isButtonEnabled: Boolean
         get() {
             val startDate = selectedStartDate ?: return false
