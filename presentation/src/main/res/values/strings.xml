@@ -53,9 +53,15 @@
     <string name="button_delete">삭제하기</string>
     <string name="button_register">등록하기</string>
     <string name="dialog_delete_message">해당 일정을 삭제하시겠습니까?</string>
+    <string name="dialog_past_date_message1">선택한 기간은</string>
+    <string name="dialog_past_date_message2">이미 지난 날짜</string>
+    <string name="dialog_past_date_message3">에요.\n이대로 등록을 계속하시겠어요?</string>
+
     <string name="dialog_already_exist_schedule">해당 날짜에 이미 등록된 일정이 있어요.\n새 일정을 추가로 등록하시겠어요?</string>
     <string name="confirm">확인</string>
     <string name="complete">완료하기</string>
+    <string name="schedule_create_success_key">schedule_create_success_key</string>
+
 
 
 
