@@ -47,8 +47,8 @@ class OiCalendarColors (
         animate: Boolean
     ): State<Color> {
         val target = when {
-            isRangeModel && isSelected -> rangeBackgroundColor
             isRangeModel && isRange -> Color.Transparent
+            isRangeModel && isSelected -> rangeBackgroundColor
             isSelected -> selectedDayContainerColor
             isToday -> todayContainerColor
             else -> Color.Transparent
