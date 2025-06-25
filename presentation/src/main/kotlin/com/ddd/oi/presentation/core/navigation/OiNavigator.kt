@@ -13,6 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
 import com.ddd.oi.presentation.home.navigateToHome
+import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.schedule.navigateToSchedule
 import com.ddd.oi.presentation.scheduledetail.navigateToScheduleDetail
 import kotlinx.collections.immutable.PersistentList
@@ -22,6 +23,8 @@ import kotlinx.collections.immutable.toPersistentList
 class OiNavigator(
     val navController: NavHostController
 ) {
+    private var tempScheduleData: ScheduleNavData? = null
+
     private val previousDestination = mutableStateOf<NavDestination?>(null)
 
     private val currentDestination: NavDestination?
@@ -63,10 +66,24 @@ class OiNavigator(
             MainTab.SCHEDULE -> navController.navigateToSchedule(navOptions)
         }
     }
-    fun navigateToUpsertSchedule() = navController.navigateToInsertSchedule()
+
+    fun navigateToUpsertSchedule(
+        schedule: ScheduleNavData?,
+        scheduleCopyState: Route.UpsertSchedule
+    ) {
+        tempScheduleData = schedule
+        navController.navigateToInsertSchedule(scheduleCopyState)
+    }
+
     fun navigateToScheduleDetail() = navController.navigateToScheduleDetail()
     fun popBackStack() {
         navController.popBackStack()
+    }
+
+    fun consumeTempSchedule(): ScheduleNavData? {
+        return tempScheduleData.also {
+            tempScheduleData = null
+        }
     }
 }
 
