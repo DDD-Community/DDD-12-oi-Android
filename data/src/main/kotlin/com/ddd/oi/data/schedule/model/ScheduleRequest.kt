@@ -10,5 +10,5 @@ data class ScheduleRequest(
     val endDate: String,
     @SerialName("mobility") val mobility: TransportationDto,
     @SerialName("scheduleTag") val scheduleTag: CategoryDto,
-    val groupList: List<GroupDto>
+    @SerialName("groups") val groupList: List<GroupDto>
 )
