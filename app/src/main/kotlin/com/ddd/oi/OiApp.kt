@@ -6,15 +6,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -36,6 +33,7 @@ import com.ddd.oi.presentation.core.designsystem.component.MainBottomBar
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.navigation.OiNavigator
+import com.ddd.oi.presentation.core.navigation.Route
 import kotlinx.coroutines.launch
 
 @Composable
@@ -70,7 +68,7 @@ fun OiApp(
                 exit = fadeOut() + slideOut { IntOffset(0, it.height) }
             ) {
                 FloatingActionButton(
-                    onClick = navigator::navigateToUpsertSchedule,
+                    onClick = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule())},
                     shape = CircleShape,
                     containerColor = OiTheme.colors.iconBrand,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp),
