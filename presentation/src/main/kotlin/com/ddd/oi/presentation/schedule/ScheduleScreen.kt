@@ -49,9 +49,13 @@ import com.ddd.oi.presentation.core.designsystem.component.sechedule.OiLine
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
+import com.ddd.oi.presentation.core.navigation.Route
+import com.ddd.oi.presentation.core.navigation.UpsertMode
 import com.ddd.oi.presentation.schedule.component.OiMonthGridBottomSheet
 import com.ddd.oi.presentation.schedule.contract.CategoryFilter
 import com.ddd.oi.presentation.schedule.contract.ScheduleState
+import com.ddd.oi.presentation.schedule.model.ScheduleNavData
+import com.ddd.oi.presentation.schedule.model.ScheduleNavDataFactory
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.datetime.LocalDate
@@ -62,7 +66,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun ScheduleScreen(
     modifier: Modifier = Modifier,
     viewModel: ScheduleViewModel = hiltViewModel(),
-    navigateToCreateSchedule: () -> Unit = {},
+    navigateToCreateSchedule: (ScheduleNavData?, Route.UpsertSchedule) -> Unit,
     onShowSnackbar: (String) -> Unit = {},
     scheduleCreated: Boolean = false
 ) {
@@ -89,9 +93,15 @@ fun ScheduleScreen(
             selectedSchedule = schedule
             showBottomSheet = true
         },
-        navigateToCreateSchedule = navigateToCreateSchedule,
+        navigateToCreateSchedule = {
+            val scheduleCopy = Route.UpsertSchedule(mode = UpsertMode.COPY)
+            navigateToCreateSchedule(
+                ScheduleNavDataFactory.createLocalDateCreate(uiState.selectedDate),
+                scheduleCopy
+            )
+        },
         onShowSnackbar = onShowSnackbar,
-        onDropdownClick = { showMonthGridBottomSheet = true}
+        onDropdownClick = { showMonthGridBottomSheet = true }
     )
 
     if (showBottomSheet) {
@@ -103,10 +113,20 @@ fun ScheduleScreen(
             },
             onEdit = {
                 showBottomSheet = false
+                selectedSchedule?.let { schedule ->
+                    val scheduleNavData = ScheduleNavDataFactory.createForEdit(schedule)
+                    val scheduleCopy = Route.UpsertSchedule(mode = UpsertMode.EDIT)
+                    navigateToCreateSchedule(scheduleNavData, scheduleCopy)
+                }
                 selectedSchedule = null
             },
             onCopy = {
                 showBottomSheet = false
+                selectedSchedule?.let { schedule ->
+                    val scheduleNavData = ScheduleNavDataFactory.createForCopy(schedule)
+                    val scheduleCopy = Route.UpsertSchedule(mode = UpsertMode.COPY)
+                    navigateToCreateSchedule(scheduleNavData, scheduleCopy)
+                }
                 selectedSchedule = null
             },
             onDelete = {
@@ -337,7 +357,8 @@ private fun ScheduleScreenPreview() {
         ScheduleScreen(
             modifier = Modifier
                 .fillMaxSize()
-                .background(OiTheme.colors.backgroundContents)
+                .background(OiTheme.colors.backgroundContents),
+            navigateToCreateSchedule = { _, _ -> }
         )
     }
 }
