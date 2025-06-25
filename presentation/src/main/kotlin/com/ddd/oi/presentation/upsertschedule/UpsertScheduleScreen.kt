@@ -33,7 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
-import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.domain.model.schedule.Transportation
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
@@ -49,6 +48,7 @@ import com.ddd.oi.presentation.core.designsystem.component.dialog.OiAlreadySched
 import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.OiDateRangeBottomSheet
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
+import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.upsertschedule.contract.UpsertScheduleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -57,12 +57,12 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 @Composable
 fun UpsertScheduleScreen(
     modifier: Modifier = Modifier,
-    schedule: Schedule? = null,
+    scheduleNavData: ScheduleNavData? = null,
     navigatePopBack: (scheduleCreated: Boolean) -> Unit = {},
     viewModel: UpsertScheduleViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
-        schedule?.let(viewModel::setSchedule)
+        scheduleNavData?.let(viewModel::setSchedule)
     }
 
     viewModel.collectSideEffect { sideEffect ->
@@ -138,7 +138,7 @@ fun UpsertScheduleScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(0.6f)
+                    .fillMaxHeight(0.7f)
                     .background(white)
             ) {
                 OiDateRangeBottomSheet { start, end, hasSchedules ->

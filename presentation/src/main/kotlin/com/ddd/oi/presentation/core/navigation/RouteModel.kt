@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 sealed interface Route {
     @Serializable
-    data object UpsertSchedule: Route
+    data class UpsertSchedule(val mode: UpsertMode = UpsertMode.CREATE): Route
 
     @Serializable
     data object ScheduleDetail: Route
@@ -16,4 +16,12 @@ sealed interface MainTabRoute : Route {
 
     @Serializable
     data object Schedule: MainTabRoute
+}
+
+
+@Serializable
+enum class UpsertMode {
+    CREATE,
+    EDIT,
+    COPY
 }

@@ -1,7 +1,6 @@
 package com.ddd.oi.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.ddd.oi.presentation.core.navigation.OiNavigator
@@ -27,11 +26,14 @@ fun OiNavHost(
         homeNavGraph()
 
         scheduleNavGraph(
-            navigateToCreateSchedule = { navigator.navigateToUpsertSchedule() },
+            navigateToCreateSchedule = { schedule, scheduleCopy ->
+                navigator.navigateToUpsertSchedule(schedule, scheduleCopy)
+            },
             onShowSnackbar = onShowSnackbar
         )
 
         upsertScheduleNavGraph(
+            navigator = navigator,
             navigatePopBack = { scheduleCreated ->
                 navigator.navController.previousBackStackEntry
                     ?.savedStateHandle
@@ -41,5 +43,4 @@ fun OiNavHost(
         )
         scheduleDetailNavGraph()
     }
-
 }

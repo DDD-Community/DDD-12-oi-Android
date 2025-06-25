@@ -114,7 +114,7 @@ fun OiDateRangeBottomSheet(
                 enabled = uiState.isButtonEnabled,
                 onClick = {
                     val startDate = uiState.selectedStartDate ?: return@OiButton
-                    val endDate = uiState.selectedEndDate ?: return@OiButton
+                    val endDate = uiState.selectedEndDate ?: startDate
                     val startLong = startDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
                     val endLong = endDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
                     onUpsertScheduleClick(startLong, endLong, uiState.hasSchedulesInSelectedRange)
