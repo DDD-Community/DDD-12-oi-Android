@@ -66,7 +66,6 @@ data class DateRangeBottomSheetState(
     val isButtonEnabled: Boolean
         get() {
             val startDate = selectedStartDate ?: return false
-            val endDate = selectedEndDate ?: return false
             return !isLoading && !hasScheduleLimitExceeded
         }
 
