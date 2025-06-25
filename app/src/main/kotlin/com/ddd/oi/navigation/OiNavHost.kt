@@ -27,11 +27,14 @@ fun OiNavHost(
         homeNavGraph()
 
         scheduleNavGraph(
-            navigateToCreateSchedule = { navigator.navigateToUpsertSchedule() },
+            navigateToCreateSchedule = { schedule, scheduleCopy ->
+                navigator.navigateToUpsertSchedule(schedule, scheduleCopy)
+            },
             onShowSnackbar = onShowSnackbar
         )
 
         upsertScheduleNavGraph(
+            navigator = navigator,
             navigatePopBack = { scheduleCreated ->
                 navigator.navController.previousBackStackEntry
                     ?.savedStateHandle
