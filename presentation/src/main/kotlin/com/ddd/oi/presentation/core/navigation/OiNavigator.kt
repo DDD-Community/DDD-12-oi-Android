@@ -23,6 +23,9 @@ import kotlinx.collections.immutable.toPersistentList
 class OiNavigator(
     val navController: NavHostController
 ) {
+    /**
+     * TODO: local 일정의 id 값으로 받아오는 방향으로 리팩터링
+     */
     private var tempScheduleData: ScheduleNavData? = null
 
     private val previousDestination = mutableStateOf<NavDestination?>(null)
