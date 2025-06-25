@@ -1,11 +1,17 @@
 package com.ddd.oi.presentation.upsertschedule
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.navigation.toRoute
 import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
 import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.domain.model.schedule.Transportation
 import com.ddd.oi.domain.usecase.schedule.CreateScheduleUseCase
+import com.ddd.oi.domain.usecase.schedule.UpdateScheduleUseCase
+import com.ddd.oi.presentation.core.navigation.Route
+import com.ddd.oi.presentation.core.navigation.UpsertMode
+import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.upsertschedule.contract.UpsertScheduleSideEffect
 import com.ddd.oi.presentation.upsertschedule.contract.UpsertScheduleState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,8 +24,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpsertScheduleViewModel @Inject constructor(
-    private val createScheduleUseCase: CreateScheduleUseCase
+    private val createScheduleUseCase: CreateScheduleUseCase,
+    private val updateScheduleUseCase: UpdateScheduleUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ContainerHost<UpsertScheduleState, UpsertScheduleSideEffect>, ViewModel() {
+
+    private var currentMode: UpsertMode = savedStateHandle.toRoute<Route.UpsertSchedule>().mode
 
     override val container = container<UpsertScheduleState, UpsertScheduleSideEffect>(
         UpsertScheduleState.default
@@ -52,13 +62,16 @@ class UpsertScheduleViewModel @Inject constructor(
         }
     }
 
-    fun setSchedule(schedule: Schedule) = intent {
+    fun setSchedule(scheduleNavData: ScheduleNavData) = intent {
         reduce {
             state.copy(
-                title = schedule.title,
-                category = schedule.category,
-                transportation = schedule.transportation,
-                party = schedule.partySet
+                id = scheduleNavData.id ?: state.id,
+                title = scheduleNavData.title ?: state.title,
+                category = scheduleNavData.category ?: state.category,
+                startDate = scheduleNavData.startedAt ?: state.startDate,
+                endDate = scheduleNavData.endedAt ?: state.endDate,
+                transportation = scheduleNavData.transportation ?: state.transportation,
+                party = scheduleNavData.party ?: state.party,
             )
         }
     }
@@ -67,7 +80,7 @@ class UpsertScheduleViewModel @Inject constructor(
         state.category?.let {
             val zone = TimeZone.currentSystemDefault()
             val schedule = Schedule(
-                id = 0,
+                id = state.id,
                 title = state.title,
                 category = it,
                 startedAt = Instant.fromEpochMilliseconds(state.startDate).toLocalDateTime(zone).date,
@@ -76,9 +89,24 @@ class UpsertScheduleViewModel @Inject constructor(
                 partySet = state.party,
                 placeList = emptyList()
             )
-            createScheduleUseCase(schedule)
-                .onSuccess {  postSideEffect(UpsertScheduleSideEffect.PopBackStack) }
-                .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 생성 실패")) }
+
+            when (currentMode) {
+                UpsertMode.CREATE, UpsertMode.COPY -> createOrCopySchedule(schedule)
+                UpsertMode.EDIT -> updateSchedule(schedule)
+            }
+
         }
+    }
+
+    private fun createOrCopySchedule(schedule: Schedule) = intent {
+        createScheduleUseCase(schedule)
+            .onSuccess {  postSideEffect(UpsertScheduleSideEffect.PopBackStack) }
+            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 생성 실패")) }
+    }
+
+    private fun updateSchedule(schedule: Schedule) = intent {
+        updateScheduleUseCase(schedule)
+            .onSuccess { postSideEffect(UpsertScheduleSideEffect.PopBackStack) }
+            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 수정 실패")) }
     }
 }
