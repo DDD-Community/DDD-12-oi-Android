@@ -29,7 +29,7 @@ class UpsertScheduleViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ContainerHost<UpsertScheduleState, UpsertScheduleSideEffect>, ViewModel() {
 
-    private var currentMode: UpsertMode = savedStateHandle.toRoute<Route.UpsertSchedule>().mode
+    var upsertMode: UpsertMode = savedStateHandle.toRoute<Route.UpsertSchedule>().mode
 
     override val container = container<UpsertScheduleState, UpsertScheduleSideEffect>(
         UpsertScheduleState.default
@@ -90,7 +90,7 @@ class UpsertScheduleViewModel @Inject constructor(
                 placeList = emptyList()
             )
 
-            when (currentMode) {
+            when (upsertMode) {
                 UpsertMode.CREATE, UpsertMode.COPY -> createOrCopySchedule(schedule)
                 UpsertMode.EDIT -> updateSchedule(schedule)
             }
