@@ -53,6 +53,7 @@ import com.ddd.oi.presentation.core.navigation.Route
 import com.ddd.oi.presentation.core.navigation.UpsertMode
 import com.ddd.oi.presentation.schedule.component.OiMonthGridBottomSheet
 import com.ddd.oi.presentation.schedule.contract.CategoryFilter
+import com.ddd.oi.presentation.schedule.contract.CategoryUi
 import com.ddd.oi.presentation.schedule.contract.ScheduleState
 import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.schedule.model.ScheduleNavDataFactory
@@ -105,7 +106,6 @@ fun ScheduleScreen(
     )
 
     if (showBottomSheet) {
-        // TODO: 수정 및 복사 연결 작업
         ScheduleActionBottomSheet(
             onDismiss = {
                 showBottomSheet = false
@@ -293,7 +293,6 @@ private fun ScheduleCategoryFilter(
             categories.forEach { category ->
                 val isSelected = category == selectedCategory
                 when (category) {
-                    // TODO: OiChip 클릭 이벤트 설정 및 카테고리 받게하기
                     CategoryFilter.All -> OiRoundRectChip(
                         modifier = Modifier,
                         isSelected = isSelected,
@@ -303,7 +302,7 @@ private fun ScheduleCategoryFilter(
 
                     is CategoryFilter.Specific -> {
                         when (category.category) {
-                            Category.Travel -> OiRoundRectChip(
+                            CategoryUi.Travel -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
                                 textStringRes = category.category.getCategoryName(),
@@ -311,7 +310,7 @@ private fun ScheduleCategoryFilter(
                                 onItemClick = { updateSelectedCategory(category) }
                             )
 
-                            Category.Date -> OiRoundRectChip(
+                            CategoryUi.Date -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
                                 textStringRes = category.category.getCategoryName(),
@@ -319,7 +318,7 @@ private fun ScheduleCategoryFilter(
                                 onItemClick = { updateSelectedCategory(category) }
                             )
 
-                            Category.Daily -> OiRoundRectChip(
+                            CategoryUi.Daily -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
                                 textStringRes = category.category.getCategoryName(),
@@ -327,7 +326,7 @@ private fun ScheduleCategoryFilter(
                                 onItemClick = { updateSelectedCategory(category) }
                             )
 
-                            Category.Business -> OiRoundRectChip(
+                            CategoryUi.Business -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
                                 textStringRes = category.category.getCategoryName(),
@@ -335,7 +334,7 @@ private fun ScheduleCategoryFilter(
                                 onItemClick = { updateSelectedCategory(category) }
                             )
 
-                            Category.Etc -> OiRoundRectChip(
+                            CategoryUi.Etc -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
                                 textStringRes = category.category.getCategoryName(),
