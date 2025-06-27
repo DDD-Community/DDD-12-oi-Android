@@ -1,5 +1,6 @@
 package com.ddd.oi.presentation.core.designsystem.component.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -96,6 +97,8 @@ fun OiCard(
                         modifier = Modifier
                             .padding(horizontal = Dimens.paddingSmall)
                             .height(OiCardDimens.dividerHeight)
+                            ,
+                        color = OiTheme.colors.borderSecondary
                     )
                     Icon(
                         imageVector = ImageVector.vectorResource(R.drawable.ic_route),
