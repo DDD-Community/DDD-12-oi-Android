@@ -8,7 +8,6 @@ import androidx.compose.animation.slideOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -19,8 +18,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -30,6 +27,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.ddd.oi.navigation.OiNavHost
 import com.ddd.oi.presentation.core.designsystem.component.MainBottomBar
+import com.ddd.oi.presentation.core.designsystem.component.scaffold.OiScaffold
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarHost
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarController
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.navigation.OiNavigator
@@ -42,15 +44,16 @@ fun OiApp(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
+    val snackbarController = rememberSnackbarController(snackBarHostState)
 
-    Scaffold(
+    OiScaffold(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
         containerColor = OiTheme.colors.backgroundContents,
         snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState)
+            OiSnackbarHost(hostState = snackBarHostState, snackbarController)
         },
         bottomBar = {
             MainBottomBar(
@@ -68,13 +71,11 @@ fun OiApp(
                 exit = fadeOut() + slideOut { IntOffset(0, it.height) }
             ) {
                 FloatingActionButton(
-                    onClick = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule())},
+                    onClick = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule()) },
                     shape = CircleShape,
                     containerColor = OiTheme.colors.iconBrand,
                     elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                    modifier = Modifier
-                        .size(Dimens.fabSize)
-                        .offset(y = Dimens.fabOffset)
+                    modifier = Modifier.size(Dimens.fabSize)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -84,12 +85,23 @@ fun OiApp(
                 }
             }
         },
-        floatingActionButtonPosition = FabPosition.Center
+        floatingActionButtonPosition = FabPosition.Center,
+        isFloatingActionButtonDocked = true
     ) { padding ->
         Column(modifier = Modifier.padding(padding)) {
             OiNavHost(
                 navigator = navigator,
-                onShowSnackbar = { coroutineScope.launch { snackBarHostState.showSnackbar(it) } })
+                onShowSnackbar = {
+                    coroutineScope.launch {
+                        snackbarController.showSnackbar(
+                            OiSnackbarData(
+                                message = "일정3개이하",
+                                type = SnackbarType.WARNING
+                            )
+                        )
+                    }
+                }
+            )
         }
     }
 }
