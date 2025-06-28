@@ -251,7 +251,7 @@ private fun ScheduleListHeader(
     ) {
         OiLine(modifier = Modifier.height(20.dp), color = OiTheme.colors.backgroundPrimary)
         Text(
-            modifier = Modifier.padding(start = 12.dp),
+            modifier = Modifier.padding(start = 8.dp),
             text = formatToScheduleHeaderDate(
                 date = selectedDate,
                 locale = getCurrentLocale()
