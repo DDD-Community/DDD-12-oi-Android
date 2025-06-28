@@ -53,8 +53,6 @@ fun OiTextField(
     onTextChanged: (String) -> Unit = {},
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val isClearButtonVisible by remember { derivedStateOf { text.isNotEmpty() } }
-
 
     Row(
         modifier = modifier
@@ -98,7 +96,7 @@ fun OiTextField(
             }
         }
 
-        if (isClearButtonVisible) {
+        if (text.isNotEmpty()) {
             Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
 
             IconButton(
