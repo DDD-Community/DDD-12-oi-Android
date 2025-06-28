@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,16 +37,16 @@ import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
 import com.ddd.oi.domain.model.schedule.Transportation
 import com.ddd.oi.presentation.R
-import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiChipIcon
 import com.ddd.oi.presentation.core.designsystem.component.common.OiChoiceChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiDateField
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
+import com.ddd.oi.presentation.core.designsystem.component.common.OiNavigationButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiOvalChip
-import com.ddd.oi.presentation.core.designsystem.component.dialog.OiPastDateDialog
 import com.ddd.oi.presentation.core.designsystem.component.common.OiTextField
 import com.ddd.oi.presentation.core.designsystem.component.dialog.OiAlreadyScheduleDialog
+import com.ddd.oi.presentation.core.designsystem.component.dialog.OiPastDateDialog
 import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.OiDateRangeBottomSheet
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
@@ -411,7 +410,7 @@ private fun UpsertScreenBottom(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        OiButton(
+        OiNavigationButton(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
                 .padding(top = (12 + 52).dp, bottom = 8.dp),
