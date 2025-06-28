@@ -91,7 +91,7 @@ object OiTextFieldDimens {
 }
 
 object BottomBarDimens {
-    val bottomBarHeight = 40.dp
+    val bottomBarHeight = 56.dp
 }
 
 object BottomBarShapeDimens {
@@ -133,4 +133,9 @@ object DialogDimens {
 object MonthGridDimens {
     val horizontalPadding = 45.17.dp
     var verticalPadding = 23.dp
+}
+
+object OiSnackBarDimen {
+    val snackbarHeight = 48.dp
+    val cornerRadius = 12.dp
 }
