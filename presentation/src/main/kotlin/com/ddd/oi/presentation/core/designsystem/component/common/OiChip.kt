@@ -190,7 +190,7 @@ private fun getOvalTextStyle(isSelected: Boolean): TextStyle {
 @Composable
 private fun getChoiceTextStyle(isSelected: Boolean): TextStyle {
     return if (isSelected) {
-        OiTheme.typography.bodySmallSemibold
+        OiTheme.typography.bodyMediumSemibold
     } else {
         OiTheme.typography.bodyMediumRegular
     }
