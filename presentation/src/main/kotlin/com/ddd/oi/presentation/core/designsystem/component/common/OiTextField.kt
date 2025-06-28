@@ -54,6 +54,7 @@ fun OiTextField(
     var isFocused by remember { mutableStateOf(false) }
     val isClearButtonVisible by remember { derivedStateOf { text.isNotEmpty() } }
 
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -122,9 +123,11 @@ fun OiDateField(
     endDate: Long = -1L,
     hint: String = "",
 ) {
-    val dateText by remember(startDate, endDate) { mutableStateOf(getFormattedDate(startDate, endDate)) }
-    val isDateSelected by remember { derivedStateOf { dateText.isNotEmpty() } }
-    val isHintVisible by remember { derivedStateOf { startDate < 0L && endDate < 0L } }
+    val dateText = remember(startDate, endDate) {
+        getFormattedDate(startDate, endDate)
+    }
+    val isDateSelected = dateText.isNotEmpty()
+    val isHintVisible = dateText.isEmpty()
 
     Row(
         modifier = modifier
@@ -192,7 +195,7 @@ private fun getFormattedDate(
         }
 
         else -> {
-            if (endDate < 0L) formattedStartDate
+            if (endDate < 0L || startDate == endDate) formattedStartDate
             else "$formattedStartDate - $formattedEndDate"
         }
     }
@@ -225,7 +228,7 @@ private fun Modifier.getOiTextFieldModifier(isFocused: Boolean): Modifier {
         .padding(horizontal = OiTextFieldDimens.horizontalPadding)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun OiTextFieldPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(OiTextFieldDimens.componentMargin)) {
