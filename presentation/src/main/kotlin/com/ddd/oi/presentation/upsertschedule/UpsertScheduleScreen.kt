@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -25,9 +26,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -95,7 +98,7 @@ fun UpsertScheduleScreen(
         topBar = {
             OiHeader(
                 onLeftClick = { navigatePopBack(false) },
-                titleStringRes = when(viewModel.upsertMode) {
+                titleStringRes = when (viewModel.upsertMode) {
                     UpsertMode.CREATE -> R.string.create_schedule
                     UpsertMode.EDIT -> R.string.edit_schedule
                     UpsertMode.COPY -> R.string.copy_schedule
@@ -166,7 +169,7 @@ fun UpsertScheduleScreen(
         )
     }
 
-    if(isAlreadyScheduledModalVisible) {
+    if (isAlreadyScheduledModalVisible) {
         OiAlreadyScheduleDialog(
             onDismiss = { isAlreadyScheduledModalVisible = false },
             onConfirm = { viewModel.upsertSchedule() }
@@ -274,7 +277,8 @@ private fun UpsertScreenContent(
 
         UpsertScheduleContentItem(
             modifier = Modifier.fillMaxWidth(),
-            titleResId = R.string.party
+            titleResId = R.string.party,
+            tagText = stringResource(R.string.duplicate_available)
         ) { modifier ->
             Column(
                 modifier = modifier,
@@ -318,15 +322,38 @@ private fun UpsertScreenContent(
 private fun UpsertScheduleContentItem(
     modifier: Modifier = Modifier,
     @StringRes titleResId: Int,
+    tagText: String? = null,
     content: @Composable (Modifier) -> Unit,
 ) {
     Column(modifier = modifier) {
-        Text(
+        Row(
             modifier = Modifier.padding(top = 32.dp),
-            text = stringResource(titleResId),
-            style = OiTheme.typography.bodyMediumSemibold,
-            color = OiTheme.colors.textPrimary
-        )
+        ) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                text = stringResource(titleResId),
+                style = OiTheme.typography.bodyMediumSemibold,
+                color = OiTheme.colors.textPrimary,
+            )
+
+            tagText?.let {
+                Box(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .background(
+                            color = OiTheme.colors.backgroundUnselected,
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
+                        text = it,
+                        color = OiTheme.colors.textTertiary,
+                        style = OiTheme.typography.bodyXSmallMedium
+                    )
+                }
+            }
+        }
 
         content(Modifier.padding(top = 12.dp))
     }

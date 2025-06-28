@@ -66,7 +66,6 @@
     <string name="complete">완료하기</string>
     <string name="schedule_create_success_key">schedule_create_success_key</string>
 
-
-
+    <string name="duplicate_available">중복가능</string>
 
 </resources>
