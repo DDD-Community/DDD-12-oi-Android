@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
@@ -88,6 +89,7 @@ fun OiTextField(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(start = 1.dp)
                         .align(Alignment.CenterStart),
                     text = hint,
                     style = OiTheme.typography.bodyLargeRegular,
