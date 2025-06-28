@@ -89,6 +89,7 @@ fun UpsertScheduleScreen(
 
     Scaffold(
         modifier = modifier
+            .background(white)
             .fillMaxSize(),
         containerColor = OiTheme.colors.backgroundContents,
         topBar = {
@@ -388,8 +389,8 @@ private fun UpsertScreenBottom(
     ) {
         OiButton(
             modifier = Modifier
-                .padding(bottom = 16.dp, top = (16 + 52).dp)
-                .padding(top = 12.dp, bottom = 8.dp),
+                .padding(horizontal = 16.dp)
+                .padding(top = (12 + 52).dp, bottom = 8.dp),
             onClick = onButtonClick,
             style = OiButtonStyle.Large48Oval,
             textStringRes = R.string.next,
