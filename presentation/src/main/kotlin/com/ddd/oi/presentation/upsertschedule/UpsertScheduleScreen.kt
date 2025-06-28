@@ -388,7 +388,7 @@ private fun UpsertScreenBottom(
     ) {
         OiButton(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .padding(bottom = 16.dp, top = (16 + 52).dp)
                 .padding(top = 12.dp, bottom = 8.dp),
             onClick = onButtonClick,
             style = OiButtonStyle.Large48Oval,
