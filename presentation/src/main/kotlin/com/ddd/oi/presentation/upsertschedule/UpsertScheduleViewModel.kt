@@ -56,6 +56,8 @@ class UpsertScheduleViewModel @Inject constructor(
             if(contains(party)) remove(party)
             else add(party)
         }.toSet()
+
+        if (partySet.size > 5) return@intent
         
         reduce {
             state.copy(party = partySet)
