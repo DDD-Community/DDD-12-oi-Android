@@ -103,12 +103,12 @@ class UpsertScheduleViewModel @Inject constructor(
     private fun createOrCopySchedule(schedule: Schedule) = intent {
         createScheduleUseCase(schedule)
             .onSuccess {  postSideEffect(UpsertScheduleSideEffect.PopBackStack) }
-            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 생성 실패")) }
+            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 생성 실패에 하였습니다.")) }
     }
 
     private fun updateSchedule(schedule: Schedule) = intent {
         updateScheduleUseCase(schedule)
             .onSuccess { postSideEffect(UpsertScheduleSideEffect.PopBackStack) }
-            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 수정 실패")) }
+            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 수정 실패 하였습니다.")) }
     }
 }
