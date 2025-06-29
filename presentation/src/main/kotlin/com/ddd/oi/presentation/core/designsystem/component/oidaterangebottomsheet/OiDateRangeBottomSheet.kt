@@ -120,10 +120,12 @@ fun OiDateRangeBottomSheet(
             }
             Spacer(modifier = Modifier.weight(1f))
             OiButton(
-                modifier = Modifier.padding(
-                    horizontal = Dimens.paddingMedium,
-                    vertical = Dimens.paddingSmall
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = Dimens.paddingMedium,
+                        vertical = Dimens.paddingSmall
+                    ),
                 textStringRes = R.string.confirm,
                 style = OiButtonStyle.Large48Oval,
                 enabled = uiState.isButtonEnabled,

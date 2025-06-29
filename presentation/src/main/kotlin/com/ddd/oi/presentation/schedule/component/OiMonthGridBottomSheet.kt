@@ -1,6 +1,7 @@
 package com.ddd.oi.presentation.schedule.component
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,7 +38,9 @@ fun OiMonthGridBottomSheet(
             }
         )
         OiButton(
-            modifier = Modifier.padding(horizontal = Dimens.paddingMedium),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimens.paddingMedium),
             textStringRes = R.string.complete,
             style = OiButtonStyle.Large48Oval,
             enabled = true,
