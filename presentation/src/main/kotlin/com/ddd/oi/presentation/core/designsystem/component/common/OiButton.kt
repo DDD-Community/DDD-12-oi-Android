@@ -47,7 +47,6 @@ fun OiButton(
 
     Button(
         modifier = modifier
-            .fillMaxWidth()
             .height(style.height),
         shape = style.shape,
         enabled = enabled,
