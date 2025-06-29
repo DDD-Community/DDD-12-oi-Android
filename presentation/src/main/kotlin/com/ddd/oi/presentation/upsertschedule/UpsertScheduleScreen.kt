@@ -48,6 +48,8 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiTextField
 import com.ddd.oi.presentation.core.designsystem.component.dialog.OiAlreadyScheduleDialog
 import com.ddd.oi.presentation.core.designsystem.component.dialog.OiPastDateDialog
 import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.OiDateRangeBottomSheet
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.navigation.UpsertMode
@@ -62,6 +64,7 @@ fun UpsertScheduleScreen(
     modifier: Modifier = Modifier,
     scheduleNavData: ScheduleNavData? = null,
     navigatePopBack: (scheduleCreated: Boolean) -> Unit = {},
+    onShowSnackbar: (OiSnackbarData) -> Unit = {},
     viewModel: UpsertScheduleViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
@@ -71,7 +74,14 @@ fun UpsertScheduleScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             UpsertScheduleSideEffect.PopBackStack -> navigatePopBack(true)
-            is UpsertScheduleSideEffect.Toast -> {}
+            is UpsertScheduleSideEffect.Toast -> {
+                onShowSnackbar(
+                    OiSnackbarData(
+                        message = sideEffect.message,
+                        type = SnackbarType.WARNING
+                    )
+                )
+            }
         }
     }
     val uiState = viewModel.collectAsState().value
