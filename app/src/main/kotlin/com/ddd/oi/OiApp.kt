@@ -91,14 +91,9 @@ fun OiApp(
         Column(modifier = Modifier.padding(padding)) {
             OiNavHost(
                 navigator = navigator,
-                onShowSnackbar = {
+                onShowSnackbar = { snackbarData ->
                     coroutineScope.launch {
-                        snackbarController.showSnackbar(
-                            OiSnackbarData(
-                                message = "일정3개이하",
-                                type = SnackbarType.WARNING
-                            )
-                        )
+                        snackbarController.showSnackbar(snackbarData)
                     }
                 }
             )
