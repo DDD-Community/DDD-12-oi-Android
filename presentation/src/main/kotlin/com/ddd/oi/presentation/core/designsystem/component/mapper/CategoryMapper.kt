@@ -8,6 +8,7 @@ import com.ddd.oi.presentation.core.designsystem.theme.lime400
 import com.ddd.oi.presentation.core.designsystem.theme.rose400
 import com.ddd.oi.presentation.core.designsystem.theme.teal400
 import com.ddd.oi.presentation.core.designsystem.theme.yellow400
+import com.ddd.oi.presentation.schedule.contract.CategoryUi
 
 internal fun Category.getColor(): Color = when (this) {
     Category.Daily -> yellow400
@@ -17,18 +18,20 @@ internal fun Category.getColor(): Color = when (this) {
     Category.Etc -> lime400
 }
 
-internal fun Category.getCategoryIcon(): Int = when (this) {
-    Category.Daily -> R.drawable.ic_daily
-    Category.Travel -> R.drawable.ic_travel
-    Category.Date -> R.drawable.ic_date
-    Category.Business -> R.drawable.ic_business
-    Category.Etc -> R.drawable.ic_horizontalmore
+internal fun CategoryUi.getCategoryName(): Int = when (this) {
+    CategoryUi.Daily -> R.string.daily
+    CategoryUi.Travel -> R.string.travel
+    CategoryUi.Date -> R.string.date
+    CategoryUi.Business -> R.string.business
+    CategoryUi.Etc -> R.string.etc
 }
 
-internal fun Category.getCategoryName(): Int = when (this) {
-    Category.Daily -> R.string.daily
-    Category.Travel -> R.string.travel
-    Category.Date -> R.string.date
-    Category.Business -> R.string.business
-    Category.Etc -> R.string.etc
+internal fun Category.toUi(): CategoryUi {
+    return when(this) {
+        Category.Travel -> CategoryUi.Travel
+        Category.Date -> CategoryUi.Date
+        Category.Daily -> CategoryUi.Daily
+        Category.Business -> CategoryUi.Business
+        Category.Etc -> CategoryUi.Etc
+    }
 }

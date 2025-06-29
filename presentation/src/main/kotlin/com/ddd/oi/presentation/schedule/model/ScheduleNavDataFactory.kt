@@ -8,7 +8,7 @@ import kotlinx.datetime.atStartOfDayIn
 object ScheduleNavDataFactory {
     fun createLocalDateCreate(localDate: LocalDate): ScheduleNavData {
         val date = localDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
-        return ScheduleNavData(startedAt = date)
+        return ScheduleNavData(startedAt = date, endedAt = date)
     }
 
     fun createForCopy(original: Schedule): ScheduleNavData {

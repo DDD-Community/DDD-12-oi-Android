@@ -1,21 +1,30 @@
 package com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.ddd.oi.presentation.R
+import com.ddd.oi.presentation.core.designsystem.component.common.OiIconButton
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.getCurrentLocale
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
@@ -32,6 +41,7 @@ fun OiMonthGrid(
     selectedMonth: Int,
     onMonthSelected: (LocalDate) -> Unit
 ) {
+    var year by remember { mutableIntStateOf(selectedYear) }
     val locale = getCurrentLocale()
     val monthNames = remember(locale) {
         DateFormatSymbols(locale).months.take(12)
@@ -47,21 +57,48 @@ fun OiMonthGrid(
         }
     }
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = modifier.background(white),
-        contentPadding = PaddingValues(Dimens.paddingMedium),
-        verticalArrangement = Arrangement.spacedBy(Dimens.paddingMediumSmall)
+    Column(
+        modifier = modifier
+            .padding(top = Dimens.paddingLarge, bottom = Dimens.paddingSmall)
     ) {
-        items(months) { monthItem ->
-            val monthDate = LocalDate(selectedYear, monthItem.monthNumber, 1)
-            MonthCell(
-                monthText = monthItem.displayName,
-                isSelected = monthItem.monthNumber == selectedMonth,
-                onClick = {
-                    onMonthSelected(monthDate)
-                }
+        Row(modifier.padding(horizontal = Dimens.paddingMedium)) {
+            OiIconButton(
+                enabled = true,
+                onClick = { year-- }
+            ) {
+                Icon(painterResource(R.drawable.ic_calendar_left), null)
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier,
+                text = "${year}년 ",
+                style = OiTheme.typography.headlineSmallBold
             )
+
+            Spacer(modifier = Modifier.weight(1f))
+            OiIconButton(
+                enabled = true,
+                onClick = { year++ }
+            ) {
+                Icon(painterResource(R.drawable.ic_calendar_right), null)
+            }
+        }
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            contentPadding = PaddingValues(Dimens.paddingMedium),
+            verticalArrangement = Arrangement.spacedBy(Dimens.paddingMediumSmall)
+        ) {
+            items(months) { monthItem ->
+                val isSelected = year == selectedYear && monthItem.monthNumber == selectedMonth
+                MonthCell(
+                    monthText = monthItem.displayName,
+                    isSelected = isSelected,
+                    onClick = {
+                        val localDate = LocalDate(year, monthItem.monthNumber, 1)
+                        onMonthSelected(localDate)
+                    }
+                )
+            }
         }
     }
 }
@@ -81,10 +118,7 @@ internal fun MonthCell(
             text = monthText,
             style = if (isSelected) OiTheme.typography.bodyMediumSemibold else OiTheme.typography.bodyMediumRegular,
             color = if (isSelected) OiTheme.colors.textOnPrimary else OiTheme.colors.textPrimary,
-            modifier = Modifier.padding(
-                horizontal = MonthGridDimens.horizontalPadding,
-                vertical = MonthGridDimens.verticalPadding
-            ),
+            modifier = Modifier.padding(vertical = MonthGridDimens.verticalPadding),
             textAlign = TextAlign.Center
         )
     }

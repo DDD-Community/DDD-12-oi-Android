@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -82,6 +82,7 @@ fun OiDeleteDialog(
                 color = OiTheme.colors.textPrimary
             )
             OiButton(
+                modifier = Modifier.fillMaxWidth(),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Danger,
                 textStringRes = R.string.button_delete,
@@ -91,10 +92,12 @@ fun OiDeleteDialog(
                 }
             )
             OiButton(
-                modifier = Modifier.padding(
-                    top = Dimens.paddingMediumSmall,
-                    bottom = Dimens.paddingLarge
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = Dimens.paddingMediumSmall,
+                        bottom = Dimens.paddingLarge
+                    ),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Secondary,
                 textStringRes = R.string.button_cancel,
@@ -117,6 +120,7 @@ fun OiRegisterDialog(
         ) {
             content()
             OiButton(
+                modifier = Modifier.fillMaxWidth(),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Primary,
                 textStringRes = R.string.button_register,
@@ -126,15 +130,60 @@ fun OiRegisterDialog(
                 }
             )
             OiButton(
-                modifier = Modifier.padding(
-                    top = Dimens.paddingMediumSmall,
-                    bottom = Dimens.paddingLarge
-                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = Dimens.paddingMediumSmall,
+                        bottom = Dimens.paddingLarge
+                    ),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Secondary,
                 textStringRes = R.string.button_cancel,
                 onClick = onDismiss
             )
+        }
+    }
+}
+
+@Composable
+fun ScheduleActionDialog(
+    onDismiss: () -> Unit,
+    onEdit: () -> Unit,
+    onCopy: () -> Unit,
+    onDelete: () -> Unit
+) {
+    OiDialog(onDismiss) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = Dimens.paddingMediumSmall),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            TextButton(modifier = Modifier.fillMaxWidth(), onClick = onEdit) {
+                Text(
+                    modifier = Modifier.padding(vertical = Dimens.paddingMediumLarge),
+                    text = stringResource(R.string.edit),
+                    style = OiTheme.typography.bodyLargeSemibold,
+                    color = OiTheme.colors.textPrimary
+                )
+            }
+            TextButton(modifier = Modifier.fillMaxWidth(), onClick = onCopy) {
+                Text(
+                    modifier = Modifier.padding(vertical = Dimens.paddingMediumLarge),
+                    text = stringResource(R.string.copy),
+                    style = OiTheme.typography.bodyLargeSemibold,
+                    color = OiTheme.colors.textPrimary
+                )
+
+            }
+            TextButton(modifier = Modifier.fillMaxWidth(), onClick = onDelete) {
+                Text(
+                    modifier = Modifier.padding(vertical = Dimens.paddingMediumLarge),
+                    text = stringResource(R.string.remove_schedule),
+                    style = OiTheme.typography.bodyLargeSemibold,
+                    color = OiTheme.colors.backgroundError
+                )
+            }
         }
     }
 }
@@ -146,12 +195,14 @@ private fun OiDialogPreview() {
     OiTheme {
         var showDeleteDialog by remember { mutableStateOf(false) }
         var showRegisterDialog by remember { mutableStateOf(false) }
+        var showActionScheduleDialog by remember { mutableStateOf(false) }
 
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
         ) {
             OiButton(
+                modifier = Modifier.fillMaxWidth(),
                 style = OiButtonStyle.Medium40Rect,
                 textStringRes = R.string.button_delete,
                 onClick = { showDeleteDialog = true }
@@ -162,12 +213,25 @@ private fun OiDialogPreview() {
                 textStringRes = R.string.button_register,
                 onClick = { showRegisterDialog = true }
             )
+            OiButton(
+                style = OiButtonStyle.Medium40Rect,
+                textStringRes = R.string.edit_schedule,
+                onClick = { showActionScheduleDialog = true }
+            )
         }
 
         if (showDeleteDialog) {
             OiDeleteDialog(
                 onDismiss = { showDeleteDialog = false },
                 onConfirm = {}
+            )
+        }
+        if (showActionScheduleDialog) {
+            ScheduleActionDialog(
+                onDismiss = { showActionScheduleDialog = false },
+                onEdit = {},
+                onCopy = {},
+                onDelete = {}
             )
         }
 

@@ -2,6 +2,7 @@ package com.ddd.oi.presentation.schedule.contract
 
 import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Schedule
+import com.ddd.oi.presentation.core.designsystem.component.mapper.toUi
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
@@ -23,14 +24,16 @@ data class ScheduleState(
 ) {
     val availableCategoryFilters: ImmutableList<CategoryFilter>
         get() {
-            return (listOf(CategoryFilter.All) + usedCategories.map { CategoryFilter.Specific(it) }).toImmutableList()
+            return (listOf(CategoryFilter.All) + usedCategories.map { CategoryFilter.Specific(it.toUi()) }
+                .sortedBy { it.category.order }).toImmutableList()
         }
 
     val filteredSchedules: ImmutableMap<LocalDate, ImmutableList<Schedule>>
         get() = when (selectedCategoryFilter) {
             is CategoryFilter.All -> schedules
             is CategoryFilter.Specific -> schedules.mapValues { (_, list) ->
-                list.filter { it.category == selectedCategoryFilter.category }.toImmutableList()
+                list.filter { it.category.toUi() == selectedCategoryFilter.category }
+                    .toImmutableList()
             }
                 .toImmutableMap()
         }
@@ -48,5 +51,13 @@ private const val MaxSchedulesPerDay = 3
 
 sealed class CategoryFilter {
     data object All : CategoryFilter()
-    data class Specific(val category: Category) : CategoryFilter()
+    data class Specific(val category: CategoryUi) : CategoryFilter()
+}
+
+enum class CategoryUi(val order: Int) {
+    Travel(1),
+    Date(2),
+    Daily(3),
+    Business(4),
+    Etc(5),
 }

@@ -6,17 +6,10 @@ import com.ddd.oi.domain.usecase.schedule.GetSchedulesUseCase
 import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.contract.CalendarMode
 import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.contract.DateRangeBottomSheetSideEffect
 import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.contract.DateRangeBottomSheetState
-import com.ddd.oi.presentation.upsertschedule.UpsertScheduleViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.persistentMapOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
-import kotlinx.collections.immutable.toPersistentHashMap
-import kotlinx.collections.immutable.toPersistentList
-import kotlinx.collections.immutable.toPersistentMap
-import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.plus
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 import javax.inject.Inject
@@ -43,13 +36,13 @@ class DateRangeBottomSheetViewModel @Inject constructor(
             state.copy(
                 selectedStartDate = startDate, 
                 selectedEndDate = endDate,
-                isSnackbarDismissed = false // 새로운 범위 선택 시 스낵바 다시 보이게
+                isSnackbarVisible = false // 새로운 범위 선택 시 스낵바 다시 보이게
             ) 
         }
     }
 
-    fun dismissSnackbar() = intent {
-        reduce { state.copy(isSnackbarDismissed = true) }
+    fun updateSnackBar(isSnackbarDismissed: Boolean) = intent {
+        reduce { state.copy(isSnackbarVisible = isSnackbarDismissed) }
     }
 
     fun updateDisplayedMonth(month: LocalDate) = intent {

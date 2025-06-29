@@ -3,6 +3,7 @@ package com.ddd.oi.presentation.core.designsystem.component.common
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
@@ -52,7 +54,6 @@ fun OiTextField(
     onTextChanged: (String) -> Unit = {},
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val isClearButtonVisible by remember { derivedStateOf { text.isNotEmpty() } }
 
     Row(
         modifier = modifier
@@ -87,6 +88,7 @@ fun OiTextField(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(start = 1.dp)
                         .align(Alignment.CenterStart),
                     text = hint,
                     style = OiTheme.typography.bodyLargeRegular,
@@ -95,7 +97,7 @@ fun OiTextField(
             }
         }
 
-        if (isClearButtonVisible) {
+        if (text.isNotEmpty()) {
             Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
 
             IconButton(
@@ -122,16 +124,21 @@ fun OiDateField(
     endDate: Long = -1L,
     hint: String = "",
 ) {
-    val dateText by remember(startDate, endDate) { mutableStateOf(getFormattedDate(startDate, endDate)) }
-    val isDateSelected by remember { derivedStateOf { dateText.isNotEmpty() } }
-    val isHintVisible by remember { derivedStateOf { startDate < 0L && endDate < 0L } }
+    val dateText = remember(startDate, endDate) {
+        getFormattedDate(startDate, endDate)
+    }
+    val isDateSelected = dateText.isNotEmpty()
+    val isHintVisible = dateText.isEmpty()
 
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(OiTextFieldDimens.height)
             .getOiTextFieldModifier(false)
-            .clickable {
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
                 onClickDateField()
             },
         verticalAlignment = Alignment.CenterVertically
@@ -192,7 +199,7 @@ private fun getFormattedDate(
         }
 
         else -> {
-            if (endDate < 0L) formattedStartDate
+            if (endDate < 0L || startDate == endDate) formattedStartDate
             else "$formattedStartDate - $formattedEndDate"
         }
     }
@@ -225,7 +232,7 @@ private fun Modifier.getOiTextFieldModifier(isFocused: Boolean): Modifier {
         .padding(horizontal = OiTextFieldDimens.horizontalPadding)
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun OiTextFieldPreview() {
     Column(verticalArrangement = Arrangement.spacedBy(OiTextFieldDimens.componentMargin)) {

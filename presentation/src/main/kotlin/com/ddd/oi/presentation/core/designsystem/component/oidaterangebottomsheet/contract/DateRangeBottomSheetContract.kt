@@ -15,17 +15,17 @@ import kotlinx.datetime.todayIn
 data class DateRangeBottomSheetState(
     val calendarMode: CalendarMode = CalendarMode.Range,
     val isLoading: Boolean = false,
-    val displayedMonth: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()).let { 
-        LocalDate(it.year, it.month, 1) 
+    val displayedMonth: LocalDate = Clock.System.todayIn(TimeZone.currentSystemDefault()).let {
+        LocalDate(it.year, it.month, 1)
     },
     val selectedStartDate: LocalDate? = null,
     val selectedEndDate: LocalDate? = null,
     val scheduleCache: ImmutableMap<String, ImmutableMap<LocalDate, ImmutableList<Category>>> = persistentMapOf(),
-    val isSnackbarDismissed: Boolean = false,
+    val isSnackbarVisible: Boolean = false,
 ) {
     val isMonthSelectorEnabled: Boolean
         get() = !isLoading && calendarMode == CalendarMode.Range
-    
+
     val currentMonthSchedules: ImmutableMap<LocalDate, ImmutableList<Category>>
         get() = scheduleCache[getMonthKey(displayedMonth)] ?: persistentMapOf()
 
@@ -45,13 +45,11 @@ data class DateRangeBottomSheetState(
             return false
         }
 
-    val isSnackbarVisible: Boolean
-        get() = !isLoading && !isSnackbarDismissed && hasScheduleLimitExceeded
-
     val hasSchedulesInSelectedRange: Boolean
         get() {
             val startDate = selectedStartDate ?: return false
-            val endDate = selectedEndDate ?: return false
+            val endDate = selectedEndDate ?: startDate
+            
             var currentDate = startDate
             while (currentDate <= endDate) {
                 val monthKey = getMonthKey(currentDate)
@@ -68,6 +66,20 @@ data class DateRangeBottomSheetState(
             val startDate = selectedStartDate ?: return false
             return !isLoading && !hasScheduleLimitExceeded
         }
+
+    val firstBlockedDateAfterStart: LocalDate?
+        get() {
+            val startDate = selectedStartDate ?: return null
+            scheduleCache.values.forEach { monthSchedules ->
+                monthSchedules.forEach { (date, categories) ->
+                    if (date > startDate && categories.size >= 3) {
+                        return date
+                    }
+                }
+            }
+            return null
+        }
+
 
     private fun getMonthKey(date: LocalDate): String = "${date.year}-${date.monthNumber}"
 

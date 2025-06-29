@@ -193,12 +193,14 @@ internal fun OiDay(
             onClick = onClick,
             shape = CircleShape,
             color = colors.dayContainerColor(
+                isBlocked = oiDay.isBlockedAfterStart,
                 isToday = oiDay.isToday,
                 isSelected = oiDay.isSelected,
                 isRange = oiDay.isRange,
                 animate = oiDay.animateChecked
             ).value,
             contentColor = colors.dayContentColor(
+                isBlocked = oiDay.isBlockedAfterStart,
                 isToday = oiDay.isToday,
                 isSelected = oiDay.isSelected,
                 isRange = oiDay.isRange,

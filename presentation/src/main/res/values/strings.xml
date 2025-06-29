@@ -3,6 +3,9 @@
     <string name="home">홈</string>
     <string name="schedule">일정</string>
     <string name="create_schedule">일정 만들기</string>
+
+    <string name="add_schedule">일정 추가</string>
+
     <string name="next">다음</string>
 
     <string name="whole">전체</string>
@@ -45,8 +48,10 @@
     <string name="bike">자전거</string>
     <string name="walk">도보</string>
     <string name="more">더보기</string>
-    <string name="edit_schedule">수정하기</string>
-    <string name="copy_schedule">복사하기</string>
+    <string name="edit_schedule">일정 수정하기</string>
+    <string name="copy_schedule">일정 복사하기</string>
+    <string name="edit">수정하기</string>
+    <string name="copy">복사하기</string>
     <string name="remove_schedule">삭제하기</string>
     <string name="schedule_limit_snackbar">일정은 최대 3개까지 작성 가능해요</string>
     <string name="button_cancel">취소하기</string>
@@ -62,7 +67,6 @@
     <string name="complete">완료하기</string>
     <string name="schedule_create_success_key">schedule_create_success_key</string>
 
-
-
+    <string name="duplicate_available">중복가능</string>
 
 </resources>

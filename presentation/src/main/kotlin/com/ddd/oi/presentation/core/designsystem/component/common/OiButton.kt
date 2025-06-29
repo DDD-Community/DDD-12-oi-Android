@@ -47,7 +47,6 @@ fun OiButton(
 
     Button(
         modifier = modifier
-            .fillMaxWidth()
             .height(style.height),
         shape = style.shape,
         enabled = enabled,
@@ -73,11 +72,81 @@ fun OiButton(
 
             rightIconDrawableRes?.let {
                 Icon(
-                    painter = painterResource( it),
+                    painter = painterResource(it),
                     contentDescription = "Right icon"
                 )
             }
         }
+    }
+}
+
+@Composable
+fun OiNavigationButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    style: OiButtonStyle = OiButtonStyle.Large48Oval,
+    enabled: Boolean = true,
+    @StringRes textStringRes: Int,
+    @DrawableRes leftIconDrawableRes: Int? = null,
+    @DrawableRes rightIconDrawableRes: Int? = null,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    Button(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(style.height),
+        shape = style.shape,
+        enabled = enabled,
+        colors = getNavigationButtonColors(isPressed),
+        onClick = onClick
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(OiButtonDimens.componentMargin),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            leftIconDrawableRes?.let {
+                Icon(
+                    painter = painterResource(it),
+                    contentDescription = "Left icon"
+                )
+            }
+
+            Text(
+                text = stringResource(textStringRes),
+                style = style.getTextStyle(),
+            )
+
+            rightIconDrawableRes?.let {
+                Icon(
+                    painter = painterResource(it),
+                    contentDescription = "Right icon"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun getNavigationButtonColors(
+    isPressed: Boolean
+): ButtonColors {
+    return if (isPressed) {
+        ButtonColors(
+            contentColor = OiTheme.colors.textOnPrimary,
+            containerColor = OiTheme.colors.backgroundPressed,
+            disabledContentColor = OiTheme.colors.textDisabled,
+            disabledContainerColor = OiTheme.colors.backgroundUnselected,
+        )
+    } else {
+        ButtonColors(
+            contentColor = OiTheme.colors.textOnPrimary,
+            containerColor = OiTheme.colors.backgroundPrimary,
+            disabledContentColor = OiTheme.colors.textDisabled,
+            disabledContainerColor = OiTheme.colors.backgroundUnselected,
+        )
     }
 }
 
@@ -101,6 +170,7 @@ private fun getButtonColors(colorType: OiButtonColorType, isPressed: Boolean): B
                 )
             }
         }
+
         OiButtonColorType.Secondary -> {
             if (isPressed) {
                 ButtonColors(
@@ -118,6 +188,7 @@ private fun getButtonColors(colorType: OiButtonColorType, isPressed: Boolean): B
                 )
             }
         }
+
         OiButtonColorType.Danger -> {
             if (isPressed) {
                 ButtonColors(
@@ -141,7 +212,7 @@ private fun getButtonColors(colorType: OiButtonColorType, isPressed: Boolean): B
 @Immutable
 enum class OiButtonColorType {
     Primary,
-    Secondary, 
+    Secondary,
     Danger
 }
 

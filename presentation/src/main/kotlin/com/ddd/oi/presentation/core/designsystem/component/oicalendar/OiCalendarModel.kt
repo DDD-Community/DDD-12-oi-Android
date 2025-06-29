@@ -50,13 +50,24 @@ internal data class OiCalendarModel(val locale: Locale) {
         displayedMonth: LocalDate,
         categories: ImmutableMap<LocalDate, ImmutableList<Category>>,
         selectedStartDate: LocalDate? = null,
-        selectedEndDate: LocalDate? = null
+        selectedEndDate: LocalDate? = null,
+        firstBlockedDateAfterStart: LocalDate? = null
     ): OiCalendarMonth {
         val firstDayOfMonth = LocalDate(displayedMonth.year, displayedMonth.month, 1)
         val offset = ((firstDayOfMonth.dayOfWeek.isoDayNumber - FIRST_DAY_OF_WEEK + 7) % 7)
         val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
 
-        return OiCalendarMonth(createOiDaysForRange(firstDayOfMonth, offset, categories, selectedStartDate, selectedEndDate, today))
+        return OiCalendarMonth(
+            createOiDaysForRange(
+                firstDayOfMonth,
+                offset,
+                categories,
+                selectedStartDate,
+                selectedEndDate,
+                today,
+                firstBlockedDateAfterStart
+            )
+        )
     }
 
     private fun createOiDays(
@@ -88,7 +99,8 @@ internal data class OiCalendarModel(val locale: Locale) {
         schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
         selectedStartDate: LocalDate?,
         selectedEndDate: LocalDate?,
-        today: LocalDate
+        today: LocalDate,
+        firstBlockedDateAfterStart: LocalDate? = null
     ): ImmutableList<OiCalendarDay> {
         val daysInMonth = currentMonthLength(currentMonth)
         val totalCells = ((offset + daysInMonth + 6) / 7) * 7
@@ -97,15 +109,18 @@ internal data class OiCalendarModel(val locale: Locale) {
             val date = startDate.plus(i, DateTimeUnit.DAY)
             val isRangeStart = date == selectedStartDate
             val isRangeEnd = date == selectedEndDate
-            val isInRange = selectedStartDate != null && selectedEndDate != null && 
-                           date >= selectedStartDate && date <= selectedEndDate
+            val isInRange = selectedStartDate != null && selectedEndDate != null &&
+                    date >= selectedStartDate && date <= selectedEndDate
+            val isBlockedAfterStart = firstBlockedDateAfterStart != null && date >= firstBlockedDateAfterStart
             OiCalendarDay(
                 date = date,
-                isCurrentMonth = date.monthNumber == currentMonth.monthNumber,
+                isCurrentMonth = date.monthNumber == currentMonth.monthNumber &&
+                    (schedules[date]?.size ?: 0) < 3,
                 isToday = date == today,
                 animateChecked = false,
                 isSelected = isRangeStart || isRangeEnd,
                 isRange = isInRange,
+                isBlockedAfterStart = isBlockedAfterStart,
                 categories = schedules[date] ?: persistentListOf()
             )
         }.toImmutableList()
@@ -136,6 +151,7 @@ internal data class OiCalendarDay(
     val animateChecked: Boolean,
     val isSelected: Boolean,
     val isRange: Boolean = false,
+    val isBlockedAfterStart: Boolean = false, // 시작일 이후 블록된 날짜
     val categories: ImmutableList<Category>
 ) {
     val dayNumber: Int = date.dayOfMonth

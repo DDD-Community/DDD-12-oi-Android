@@ -3,6 +3,7 @@ package com.ddd.oi.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
 import com.ddd.oi.presentation.core.navigation.OiNavigator
 import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
 import com.ddd.oi.presentation.home.homeNavGraph
@@ -12,7 +13,7 @@ import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 @Composable
 fun OiNavHost(
     navigator: OiNavigator,
-    onShowSnackbar: (String) -> Unit,
+    onShowSnackbar: (OiSnackbarData) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     /**
@@ -39,7 +40,8 @@ fun OiNavHost(
                     ?.savedStateHandle
                     ?.set("schedule_created", scheduleCreated)
                 navigator.popBackStack()
-            }
+            },
+            onShowSnackbar = onShowSnackbar
         )
         scheduleDetailNavGraph()
     }

@@ -10,9 +10,10 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 
-internal fun formatDateRange(startDate: LocalDate, endDate: LocalDate, timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
+internal fun formatDateRange(startDate: LocalDate, endDate: LocalDate): String {
     val yearShort = startDate.year % 100
     val start = "%02d.%02d.%02d".format(yearShort, startDate.monthNumber, startDate.dayOfMonth)
+    if (startDate == endDate) return start
     val end = "%02d.%02d".format(endDate.monthNumber, endDate.dayOfMonth)
 
     return "$start - $end"

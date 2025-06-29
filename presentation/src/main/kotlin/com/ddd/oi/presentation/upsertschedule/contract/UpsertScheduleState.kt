@@ -27,7 +27,7 @@ data class UpsertScheduleState(
             id = -1,
             title = "",
             category = null,
-            startDate = System.currentTimeMillis(),
+            startDate = -1,
             endDate = -1L,
             transportation = null,
             party = emptySet(),
