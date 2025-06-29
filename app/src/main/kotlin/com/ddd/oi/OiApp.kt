@@ -28,9 +28,7 @@ import androidx.compose.ui.unit.dp
 import com.ddd.oi.navigation.OiNavHost
 import com.ddd.oi.presentation.core.designsystem.component.MainBottomBar
 import com.ddd.oi.presentation.core.designsystem.component.scaffold.OiScaffold
-import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarHost
-import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarController
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
