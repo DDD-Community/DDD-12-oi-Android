@@ -8,6 +8,7 @@ import androidx.compose.animation.slideOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -32,6 +33,8 @@ import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarHo
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarController
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
+import com.ddd.oi.presentation.core.designsystem.util.OiButtonDimens
+import com.ddd.oi.presentation.core.navigation.MainTabRoute
 import com.ddd.oi.presentation.core.navigation.OiNavigator
 import com.ddd.oi.presentation.core.navigation.Route
 import kotlinx.coroutines.launch
@@ -43,6 +46,7 @@ fun OiApp(
     val coroutineScope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val snackbarController = rememberSnackbarController(snackBarHostState)
+    val currentRoute = navigator.currentRoute
 
     OiScaffold(
         modifier = Modifier
@@ -51,7 +55,14 @@ fun OiApp(
             .navigationBarsPadding(),
         containerColor = OiTheme.colors.backgroundContents,
         snackbarHost = {
-            OiSnackbarHost(hostState = snackBarHostState, snackbarController)
+            OiSnackbarHost(modifier = Modifier.offset {
+                val offsetY = when (currentRoute) {
+                    MainTabRoute.Schedule -> 0
+                    is Route.UpsertSchedule -> -(Dimens.paddingMedium + Dimens.paddingSmall + OiButtonDimens.largeHeight).roundToPx()
+                    else -> -Dimens.paddingMedium.roundToPx()
+                }
+                IntOffset(0, offsetY)
+            },hostState = snackBarHostState, controller = snackbarController)
         },
         bottomBar = {
             MainBottomBar(

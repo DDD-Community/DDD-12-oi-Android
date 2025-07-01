@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.offset
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.util.fastMap
 import androidx.compose.ui.util.fastMaxBy
+import com.ddd.oi.presentation.core.navigation.Route
 
 @Composable
 fun OiScaffold(
@@ -46,6 +47,7 @@ fun OiScaffold(
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val safeInsets = remember(contentWindowInsets) { MutableWindowInsets(contentWindowInsets) }
+
 
 
     Surface(
@@ -210,7 +212,7 @@ private fun ScaffoldLayout(
                 snackbarHeight +
                         (fabOffsetFromBottom?.let { it + 8.dp.roundToPx() }
                             ?: bottomBarHeight
-                            ?: (16.dp.roundToPx() + contentWindowInsets.getBottom(this@SubcomposeLayout)))
+                            ?: contentWindowInsets.getBottom(this@SubcomposeLayout))
             } else {
                 0
             }

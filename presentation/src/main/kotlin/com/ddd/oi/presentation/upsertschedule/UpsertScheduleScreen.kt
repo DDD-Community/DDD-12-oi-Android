@@ -76,10 +76,7 @@ fun UpsertScheduleScreen(
             UpsertScheduleSideEffect.PopBackStack -> navigatePopBack(true)
             is UpsertScheduleSideEffect.Toast -> {
                 onShowSnackbar(
-                    OiSnackbarData(
-                        message = sideEffect.message,
-                        type = SnackbarType.WARNING
-                    )
+                    OiSnackbarData(message = sideEffect.message, type = SnackbarType.WARNING)
                 )
             }
         }
