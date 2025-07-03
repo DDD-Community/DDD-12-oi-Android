@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -25,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
@@ -35,19 +37,22 @@ import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
 import com.ddd.oi.domain.model.schedule.Transportation
 import com.ddd.oi.presentation.R
-import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiChipIcon
 import com.ddd.oi.presentation.core.designsystem.component.common.OiChoiceChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiDateField
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
+import com.ddd.oi.presentation.core.designsystem.component.common.OiNavigationButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiOvalChip
-import com.ddd.oi.presentation.core.designsystem.component.dialog.OiPastDateDialog
 import com.ddd.oi.presentation.core.designsystem.component.common.OiTextField
 import com.ddd.oi.presentation.core.designsystem.component.dialog.OiAlreadyScheduleDialog
+import com.ddd.oi.presentation.core.designsystem.component.dialog.OiPastDateDialog
 import com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomsheet.OiDateRangeBottomSheet
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
+import com.ddd.oi.presentation.core.navigation.UpsertMode
 import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.upsertschedule.contract.UpsertScheduleSideEffect
 import org.orbitmvi.orbit.compose.collectAsState
@@ -59,6 +64,7 @@ fun UpsertScheduleScreen(
     modifier: Modifier = Modifier,
     scheduleNavData: ScheduleNavData? = null,
     navigatePopBack: (scheduleCreated: Boolean) -> Unit = {},
+    onShowSnackbar: (OiSnackbarData) -> Unit = {},
     viewModel: UpsertScheduleViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {
@@ -68,7 +74,11 @@ fun UpsertScheduleScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             UpsertScheduleSideEffect.PopBackStack -> navigatePopBack(true)
-            is UpsertScheduleSideEffect.Toast -> {}
+            is UpsertScheduleSideEffect.Toast -> {
+                onShowSnackbar(
+                    OiSnackbarData(message = sideEffect.message, type = SnackbarType.WARNING)
+                )
+            }
         }
     }
     val uiState = viewModel.collectAsState().value
@@ -88,12 +98,17 @@ fun UpsertScheduleScreen(
 
     Scaffold(
         modifier = modifier
+            .background(white)
             .fillMaxSize(),
         containerColor = OiTheme.colors.backgroundContents,
         topBar = {
             OiHeader(
                 onLeftClick = { navigatePopBack(false) },
-                titleStringRes = R.string.create_schedule,
+                titleStringRes = when (viewModel.upsertMode) {
+                    UpsertMode.CREATE -> R.string.create_schedule
+                    UpsertMode.EDIT -> R.string.edit_schedule
+                    UpsertMode.COPY -> R.string.copy_schedule
+                },
                 leftButtonDrawableRes = R.drawable.ic_arrow_left
             )
         },
@@ -138,7 +153,7 @@ fun UpsertScheduleScreen(
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxHeight(0.7f)
+                    .fillMaxHeight(0.75f)
                     .background(white)
             ) {
                 OiDateRangeBottomSheet { start, end, hasSchedules ->
@@ -157,7 +172,7 @@ fun UpsertScheduleScreen(
         )
     }
 
-    if(isAlreadyScheduledModalVisible) {
+    if (isAlreadyScheduledModalVisible) {
         OiAlreadyScheduleDialog(
             onDismiss = { isAlreadyScheduledModalVisible = false },
             onConfirm = { viewModel.upsertSchedule() }
@@ -265,7 +280,8 @@ private fun UpsertScreenContent(
 
         UpsertScheduleContentItem(
             modifier = Modifier.fillMaxWidth(),
-            titleResId = R.string.party
+            titleResId = R.string.party,
+            tagText = stringResource(R.string.duplicate_available)
         ) { modifier ->
             Column(
                 modifier = modifier,
@@ -309,15 +325,38 @@ private fun UpsertScreenContent(
 private fun UpsertScheduleContentItem(
     modifier: Modifier = Modifier,
     @StringRes titleResId: Int,
+    tagText: String? = null,
     content: @Composable (Modifier) -> Unit,
 ) {
     Column(modifier = modifier) {
-        Text(
+        Row(
             modifier = Modifier.padding(top = 32.dp),
-            text = stringResource(titleResId),
-            style = OiTheme.typography.bodyMediumSemibold,
-            color = OiTheme.colors.textPrimary
-        )
+        ) {
+            Text(
+                modifier = Modifier.align(Alignment.CenterVertically),
+                text = stringResource(titleResId),
+                style = OiTheme.typography.bodyMediumSemibold,
+                color = OiTheme.colors.textPrimary,
+            )
+
+            tagText?.let {
+                Box(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .background(
+                            color = OiTheme.colors.backgroundUnselected,
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                ) {
+                    Text(
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
+                        text = it,
+                        color = OiTheme.colors.textTertiary,
+                        style = OiTheme.typography.bodyXSmallMedium
+                    )
+                }
+            }
+        }
 
         content(Modifier.padding(top = 12.dp))
     }
@@ -378,10 +417,10 @@ private fun UpsertScreenBottom(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        OiButton(
+        OiNavigationButton(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(top = 12.dp, bottom = 8.dp),
+                .padding(top = (12 + 52).dp, bottom = 8.dp),
             onClick = onButtonClick,
             style = OiButtonStyle.Large48Oval,
             textStringRes = R.string.next,

@@ -50,6 +50,13 @@ class OiNavigator(
     val mainTabList: PersistentList<MainTab> = MainTab.entries.toPersistentList()
     val startDestination: Route = MainTabRoute.Home
 
+    val currentRoute: Route?
+        @Composable get() = when {
+            currentDestination?.hasRoute(Route.UpsertSchedule::class) == true -> Route.UpsertSchedule()
+            currentDestination?.hasRoute(MainTabRoute.Schedule::class) == true -> MainTabRoute.Schedule
+            else -> null
+        }
+
     @Composable
     fun shouldShowBottomBar(): Boolean = MainTab.contains {
         currentDestination?.hasRoute(it::class) == true

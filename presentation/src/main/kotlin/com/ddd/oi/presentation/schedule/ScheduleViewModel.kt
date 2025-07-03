@@ -56,6 +56,7 @@ class ScheduleViewModel @Inject constructor(
                 reduce {
                     state.copy(
                         isLoading = false,
+                        selectedCategoryFilter = CategoryFilter.All,
                         schedules = scheduleResult.schedules.mapValues { it.value.toPersistentList() }
                             .toPersistentMap(),
                         usedCategories = scheduleResult.availableCategory.toPersistentList()

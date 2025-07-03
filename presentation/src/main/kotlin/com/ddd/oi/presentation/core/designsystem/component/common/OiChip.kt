@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,17 +50,13 @@ fun OiRoundRectChip(
     Row(
         modifier = modifier
             .height(OiChipDimens.RoundRect.height)
-            .background(
-                color = getRoundRectBackgroundColor(isSelected),
-                shape = RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius)
-            )
+            .clip(RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius))
+            .background(color = getRoundRectBackgroundColor(isSelected))
+            .clickable { onItemClick(tag) }
             .padding(
                 horizontal = OiChipDimens.RoundRect.horizontalPadding,
                 vertical = OiChipDimens.RoundRect.verticalPadding
-            )
-            .clickable {
-                onItemClick(tag)
-            },
+            ),
         horizontalArrangement = Arrangement.spacedBy(OiChipDimens.RoundRect.componentMargin),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -97,19 +94,17 @@ fun OiOvalChip(
         Box(
             modifier = modifier
                 .size(OiChipDimens.Oval.size)
-                .background(
-                    color = getOvalBackgroundColor(isSelected),
-                    shape = RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius)
-                )
+                .clip(RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius))
+                .background(getOvalBackgroundColor(isSelected))
                 .border(
                     width = OiChipDimens.Oval.borderStroke,
                     color = getOvalBorderColor(isSelected),
                     shape = RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius)
                 )
-                .padding(OiChipDimens.Oval.padding)
                 .clickable {
                     onItemClick(tag)
                 }
+                .padding(OiChipDimens.Oval.padding)
         ) {
             Icon(
                 modifier = Modifier.size(OiChipDimens.Oval.iconSize),
@@ -140,22 +135,18 @@ fun OiChoiceChip(
         Box(
             modifier = modifier
                 .height(height = OiChipDimens.Choice.height)
-                .background(
-                    color = getOvalBackgroundColor(isSelected),
-                    shape = RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius)
-                )
+                .clip(RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius))
+                .background(color = getOvalBackgroundColor(isSelected))
                 .border(
                     width = OiChipDimens.Oval.borderStroke,
                     color = getOvalBorderColor(isSelected),
                     shape = RoundedCornerShape(OiChipDimens.RoundRect.ovalRadius)
                 )
+                .clickable { onItemClick(tag) }
                 .padding(
                     horizontal = OiChipDimens.Choice.horizontalPadding,
                     vertical = OiChipDimens.Choice.verticalPadding
-                )
-                .clickable {
-                    onItemClick(tag)
-                },
+                ),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -190,7 +181,7 @@ private fun getOvalTextStyle(isSelected: Boolean): TextStyle {
 @Composable
 private fun getChoiceTextStyle(isSelected: Boolean): TextStyle {
     return if (isSelected) {
-        OiTheme.typography.bodySmallSemibold
+        OiTheme.typography.bodyMediumSemibold
     } else {
         OiTheme.typography.bodyMediumRegular
     }
@@ -275,7 +266,7 @@ private fun OiChipIcon.getColor(isSelected: Boolean): Color {
         if (isSelected) {
             iconColor
         } else {
-            OiTheme.colors.backgroundUnselected
+            OiTheme.colors.backgroundDisabled
         }
     }
 }

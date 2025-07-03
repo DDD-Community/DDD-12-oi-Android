@@ -1,7 +1,6 @@
 package com.ddd.oi.presentation.core.designsystem.component.oidaterangepicker
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -46,7 +45,9 @@ fun OiDateRangePicker(
     selectedStartDate: LocalDate? = null,
     selectedEndDate: LocalDate? = null,
     schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
+    firstBlockedDateAfterStart: LocalDate? = null,
     onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
+    onBlockedDateClicked: () -> Unit = {}
 ) {
     val locale = getCurrentLocale()
     val oiCalendarModel = remember { OiCalendarModel(locale) }
@@ -57,7 +58,9 @@ fun OiDateRangePicker(
         selectedStartDate = selectedStartDate,
         selectedEndDate = selectedEndDate,
         schedules = schedules,
+        firstBlockedDateAfterStart = firstBlockedDateAfterStart,
         onDatesSelectionChange = onDatesSelectionChange,
+        onBlockedDateClicked = onBlockedDateClicked
     )
 }
 
@@ -68,7 +71,9 @@ private fun OiDateRangePickerContent(
     selectedStartDate: LocalDate? = null,
     selectedEndDate: LocalDate? = null,
     schedules: ImmutableMap<LocalDate, ImmutableList<Category>>,
+    firstBlockedDateAfterStart: LocalDate? = null,
     onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
+    onBlockedDateClicked: () -> Unit = {},
     colors: OiCalendarColors = OiCalendarDefaults.colors(isRangeMode = true)
 ) {
     val monthKey = displayedMonth.year * 100 + displayedMonth.monthNumber
@@ -77,7 +82,8 @@ private fun OiDateRangePickerContent(
             displayedMonth = displayedMonth,
             categories = schedules,
             selectedStartDate = selectedStartDate,
-            selectedEndDate = selectedEndDate
+            selectedEndDate = selectedEndDate,
+            firstBlockedDateAfterStart = firstBlockedDateAfterStart
         )
     }
 
@@ -86,7 +92,9 @@ private fun OiDateRangePickerContent(
             selectedDate = dateInMillis,
             currentStartDate = selectedStartDate,
             currentEndDate = selectedEndDate,
-            onDatesSelectionChange = onDatesSelectionChange
+            firstBlockedDateAfterStart = firstBlockedDateAfterStart,
+            onDatesSelectionChange = onDatesSelectionChange,
+            onBlockedDateClicked = onBlockedDateClicked
         )
     }
 
@@ -250,9 +258,32 @@ private fun updateDateSelection(
     selectedDate: LocalDate,
     currentStartDate: LocalDate?,
     currentEndDate: LocalDate?,
-    onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit
+    firstBlockedDateAfterStart: LocalDate?,
+    onDatesSelectionChange: (startDate: LocalDate?, endDate: LocalDate?) -> Unit,
+    onBlockedDateClicked: () -> Unit
 ) {
+    val isBlockedDate = firstBlockedDateAfterStart != null && selectedDate >= firstBlockedDateAfterStart
+    
     when {
+        // 블록된 날짜를 클릭한 경우
+        isBlockedDate -> {
+            when {
+                // startDate만 있고 endDate가 없는 경우: 스낵바 표시
+                currentStartDate != null && currentEndDate == null -> {
+                    onBlockedDateClicked()
+                }
+                // startDate와 endDate가 모두 있는 경우: 클릭한 날로 startDate 초기화
+                currentStartDate != null && currentEndDate != null -> {
+                    onDatesSelectionChange(selectedDate, null)
+                }
+                // 아무것도 선택되지 않은 경우: 일반적인 시작일 설정
+                else -> {
+                    onDatesSelectionChange(selectedDate, null)
+                }
+            }
+        }
+        
+        // 일반적인 날짜 선택 로직
         (currentStartDate == null && currentEndDate == null) ||
                 (currentStartDate != null && currentEndDate != null) -> {
             onDatesSelectionChange(selectedDate, null)

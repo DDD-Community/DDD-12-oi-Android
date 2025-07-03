@@ -29,7 +29,7 @@ class UpsertScheduleViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle
 ) : ContainerHost<UpsertScheduleState, UpsertScheduleSideEffect>, ViewModel() {
 
-    private var currentMode: UpsertMode = savedStateHandle.toRoute<Route.UpsertSchedule>().mode
+    var upsertMode: UpsertMode = savedStateHandle.toRoute<Route.UpsertSchedule>().mode
 
     override val container = container<UpsertScheduleState, UpsertScheduleSideEffect>(
         UpsertScheduleState.default
@@ -56,6 +56,8 @@ class UpsertScheduleViewModel @Inject constructor(
             if(contains(party)) remove(party)
             else add(party)
         }.toSet()
+
+        if (partySet.size > 5) return@intent
         
         reduce {
             state.copy(party = partySet)
@@ -90,7 +92,7 @@ class UpsertScheduleViewModel @Inject constructor(
                 placeList = emptyList()
             )
 
-            when (currentMode) {
+            when (upsertMode) {
                 UpsertMode.CREATE, UpsertMode.COPY -> createOrCopySchedule(schedule)
                 UpsertMode.EDIT -> updateSchedule(schedule)
             }
@@ -101,12 +103,12 @@ class UpsertScheduleViewModel @Inject constructor(
     private fun createOrCopySchedule(schedule: Schedule) = intent {
         createScheduleUseCase(schedule)
             .onSuccess {  postSideEffect(UpsertScheduleSideEffect.PopBackStack) }
-            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 생성 실패")) }
+            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 생성 실패에 하였습니다.")) }
     }
 
     private fun updateSchedule(schedule: Schedule) = intent {
         updateScheduleUseCase(schedule)
             .onSuccess { postSideEffect(UpsertScheduleSideEffect.PopBackStack) }
-            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 수정 실패")) }
+            .onFailure { postSideEffect(UpsertScheduleSideEffect.Toast("일정 수정 실패 하였습니다.")) }
     }
 }

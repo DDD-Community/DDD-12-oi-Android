@@ -20,6 +20,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,35 +42,42 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import org.orbitmvi.orbit.compose.collectAsState
 
-
 @Composable
 fun OiDateRangeBottomSheet(
     viewModel: DateRangeBottomSheetViewModel = hiltViewModel(),
     onUpsertScheduleClick: (Long, Long, Boolean) -> Unit
 ) {
     val uiState by viewModel.collectAsState()
-
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.updateCalendarMode(CalendarMode.Range)
+        }
+    }
     Box {
         Column {
-            MonthSelector(
-                selectedDate = uiState.displayedMonth,
-                enabled = uiState.isMonthSelectorEnabled,
-                onDateChange = viewModel::updateDisplayedMonth,
-                onDropdownClick = { viewModel.updateCalendarMode(CalendarMode.MonthGrid) }
-            )
             Crossfade(uiState.calendarMode) { mode ->
                 when (mode) {
                     CalendarMode.Range -> {
                         Column {
+                            MonthSelector(
+                                selectedDate = uiState.displayedMonth,
+                                enabled = uiState.isMonthSelectorEnabled,
+                                onDateChange = viewModel::updateDisplayedMonth,
+                                onDropdownClick = { viewModel.updateCalendarMode(CalendarMode.MonthGrid) }
+                            )
                             OiDateRangePicker(
                                 displayedMonth = uiState.displayedMonth,
                                 selectedStartDate = uiState.selectedStartDate,
                                 selectedEndDate = uiState.selectedEndDate,
                                 schedules = uiState.currentMonthSchedules,
                                 onDatesSelectionChange = viewModel::updateSelectedDate,
+                                firstBlockedDateAfterStart = uiState.firstBlockedDateAfterStart,
+                                onBlockedDateClicked = { viewModel.updateSnackBar(true) }
                             )
                             Row(
-                                modifier = Modifier.fillMaxWidth().height(Dimens.largeHeight),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(Dimens.largeHeight),
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -78,18 +86,22 @@ fun OiDateRangeBottomSheet(
                                     visible = uiState.isSnackbarVisible
                                 ) {
                                     ScheduleLimitSnackbar(
-                                        onCloseClick = viewModel::dismissSnackbar
+                                        onCloseClick = viewModel::updateSnackBar
                                     )
                                 }
-                                Icon(
-                                    modifier = Modifier.padding(
-                                        start = Dimens.paddingMediumXSmall,
-                                        end = Dimens.paddingLargeSmall
-                                    ),
-                                    imageVector = ImageVector.vectorResource(R.drawable.ic_info),
-                                    contentDescription = "info",
-                                    tint = OiTheme.colors.borderPrimary
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .padding(
+                                            start = Dimens.paddingMediumXSmall,
+                                            end = Dimens.paddingLargeSmall
+                                        )
+                                        .clickable { viewModel.updateSnackBar(true) }) {
+                                    Icon(
+                                        imageVector = ImageVector.vectorResource(R.drawable.ic_info),
+                                        contentDescription = "info",
+                                        tint = OiTheme.colors.borderPrimary
+                                    )
+                                }
                             }
                         }
                     }
@@ -108,23 +120,30 @@ fun OiDateRangeBottomSheet(
             }
             Spacer(modifier = Modifier.weight(1f))
             OiButton(
-                modifier = Modifier.padding(horizontal = Dimens.paddingMedium, vertical = Dimens.paddingSmall),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = Dimens.paddingMedium,
+                        vertical = Dimens.paddingSmall
+                    ),
                 textStringRes = R.string.confirm,
                 style = OiButtonStyle.Large48Oval,
                 enabled = uiState.isButtonEnabled,
                 onClick = {
                     val startDate = uiState.selectedStartDate ?: return@OiButton
                     val endDate = uiState.selectedEndDate ?: startDate
-                    val startLong = startDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
-                    val endLong = endDate.atStartOfDayIn(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+                    val startLong = startDate.atStartOfDayIn(TimeZone.currentSystemDefault())
+                        .toEpochMilliseconds()
+                    val endLong = endDate.atStartOfDayIn(TimeZone.currentSystemDefault())
+                        .toEpochMilliseconds()
                     onUpsertScheduleClick(startLong, endLong, uiState.hasSchedulesInSelectedRange)
                 }
             )
         }
 
-        /**
-         * todo State(Loading, Success, Error 분리) refactor
-         * todo 각 상태에 따라 화면 분기 refactor
+        /**                                                                                                                                                     │ │
+         * todo State(Loading, Success, Error 분리) refactor                                                                                                    │ │
+         * todo 각 상태에 따라 화면 분기 refactor                                                                                                               │ │
          */
         if (uiState.isLoading) {
             Box(
@@ -146,7 +165,7 @@ fun OiDateRangeBottomSheet(
 
 @Composable
 private fun ScheduleLimitSnackbar(
-    onCloseClick: () -> Unit = {}
+    onCloseClick: (Boolean) -> Unit = {}
 ) {
     Surface(
         shape = RoundedCornerShape(Dimens.paddingSmall),
@@ -164,7 +183,7 @@ private fun ScheduleLimitSnackbar(
                 style = OiTheme.typography.bodySmallRegular,
                 color = OiTheme.colors.textDisabled
             )
-            IconButton(onClick = onCloseClick) {
+            IconButton(onClick = { onCloseClick(false) }) {
                 Icon(
                     modifier = Modifier.padding(end = Dimens.paddingMediumLarge),
                     imageVector = ImageVector.vectorResource(R.drawable.ic_clear),
@@ -180,6 +199,6 @@ private fun ScheduleLimitSnackbar(
 @Preview(showBackground = true)
 private fun OiDateRangeBottomSheetPreview() {
     OiTheme {
-        OiDateRangeBottomSheet(onUpsertScheduleClick = {_, _, _ ->})
+        OiDateRangeBottomSheet(onUpsertScheduleClick = { _, _, _ -> })
     }
 }

@@ -18,6 +18,7 @@ val neutral300 = Color(0xFFD4D4D4)
 val neutral800 = Color(0xFF262626)
 
 val white = Color(0xFFFFFFFF)
+val snackbarBackground = Color(0xFF171717).copy(alpha = 0.8f)
 
 val TextPrimary = Color(0xFF171717)
 val TextSecondary = Color(0XFF262626)
