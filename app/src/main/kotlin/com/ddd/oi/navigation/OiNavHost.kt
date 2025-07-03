@@ -9,6 +9,7 @@ import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
 import com.ddd.oi.presentation.home.homeNavGraph
 import com.ddd.oi.presentation.schedule.scheduleNavGraph
 import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
+import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
 
 @Composable
 fun OiNavHost(
@@ -44,5 +45,6 @@ fun OiNavHost(
             onShowSnackbar = onShowSnackbar
         )
         scheduleDetailNavGraph()
+        searchPlaceNavGraph()
     }
 }

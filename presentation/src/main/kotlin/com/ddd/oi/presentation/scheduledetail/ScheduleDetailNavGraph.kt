@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.ddd.oi.presentation.core.navigation.Route
 
-fun NavController.navigateToScheduleDetail() {
-    navigate(Route.ScheduleDetail)
+fun NavController.navigateToScheduleDetail(scheduleId: Long) {
+    navigate(Route.ScheduleDetail(scheduleId))
 }
 
 fun NavGraphBuilder.scheduleDetailNavGraph() {
