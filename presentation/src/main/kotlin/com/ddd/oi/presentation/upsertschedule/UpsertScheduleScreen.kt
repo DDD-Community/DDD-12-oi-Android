@@ -206,6 +206,7 @@ private fun UpsertScreenContent(
     Column(
         modifier = modifier
             .padding(horizontal = 16.dp)
+            .padding(bottom = 52.dp)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -420,7 +421,7 @@ private fun UpsertScreenBottom(
         OiNavigationButton(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(top = (12 + 52).dp, bottom = 8.dp),
+                .padding(top = 12.dp, bottom = 8.dp),
             onClick = onButtonClick,
             style = OiButtonStyle.Large48Oval,
             textStringRes = R.string.next,
