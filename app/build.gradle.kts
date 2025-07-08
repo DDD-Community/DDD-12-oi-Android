@@ -56,6 +56,9 @@ dependencies {
     //immutable
     implementation(libs.kotlinx.immutable)
 
+    //naverMap
+    implementation("com.naver.maps:map-sdk:3.22.0")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
