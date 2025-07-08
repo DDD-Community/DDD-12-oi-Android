@@ -15,6 +15,7 @@ fun NavController.navigateToSchedule(navOptions: NavOptions) {
 
 fun NavGraphBuilder.scheduleNavGraph(
     navigateToCreateSchedule: (ScheduleNavData?, Route.UpsertSchedule) -> Unit,
+    navigateToScheduleDetail: (Long) -> Unit,
     onShowSnackbar: (OiSnackbarData) -> Unit
 ) {
     composable<MainTabRoute.Schedule> { backStackEntry ->
@@ -27,7 +28,8 @@ fun NavGraphBuilder.scheduleNavGraph(
         ScheduleScreen(
             navigateToCreateSchedule = navigateToCreateSchedule,
             onShowSnackbar = onShowSnackbar,
-            scheduleCreated = scheduleCreated
+            scheduleCreated = scheduleCreated,
+            navigateToScheduleDetail = navigateToScheduleDetail
         )
     }
 }

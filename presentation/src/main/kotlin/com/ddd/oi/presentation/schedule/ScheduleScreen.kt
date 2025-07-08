@@ -79,6 +79,7 @@ fun ScheduleScreen(
     viewModel: ScheduleViewModel = hiltViewModel(),
     navigateToCreateSchedule: (ScheduleNavData?, Route.UpsertSchedule) -> Unit,
     onShowSnackbar: (OiSnackbarData) -> Unit = {},
+    navigateToScheduleDetail: (Long) -> Unit,
     scheduleCreated: Boolean = false
 ) {
     val uiState by viewModel.collectAsState()
@@ -112,7 +113,8 @@ fun ScheduleScreen(
             )
         },
         onShowSnackbar = onShowSnackbar,
-        onDropdownClick = { showMonthGridBottomSheet = true }
+        onDropdownClick = { showMonthGridBottomSheet = true },
+        navigateToScheduleDetail = navigateToScheduleDetail
     )
 
     if (showBottomSheet) {
@@ -190,6 +192,7 @@ private fun ScheduleScreen(
     updateSelectedCategory: (CategoryFilter) -> Unit,
     onMoreClick: (Schedule) -> Unit,
     navigateToCreateSchedule: () -> Unit,
+    navigateToScheduleDetail: (Long) -> Unit,
     onShowSnackbar: (OiSnackbarData) -> Unit,
     onDropdownClick: () -> Unit
 ) {
@@ -243,7 +246,7 @@ private fun ScheduleScreen(
                 todaySchedule.forEach { schedule ->
                     OiCard(
                         schedule = schedule,
-                        onClick = { },
+                        onClick = { navigateToScheduleDetail(schedule.id) },
                         onMoreClick = { onMoreClick(schedule) }
                     )
                 }
@@ -397,7 +400,8 @@ private fun ScheduleScreenPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(OiTheme.colors.backgroundContents),
-            navigateToCreateSchedule = { _, _ -> }
+            navigateToCreateSchedule = { _, _ -> },
+            navigateToScheduleDetail = {}
         )
     }
 }

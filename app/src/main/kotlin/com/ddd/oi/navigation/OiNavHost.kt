@@ -31,6 +31,9 @@ fun OiNavHost(
             navigateToCreateSchedule = { schedule, scheduleCopy ->
                 navigator.navigateToUpsertSchedule(schedule, scheduleCopy)
             },
+            navigateToScheduleDetail = { id ->
+                navigator.navigateToScheduleDetail(id)
+            },
             onShowSnackbar = onShowSnackbar
         )
 
@@ -44,7 +47,11 @@ fun OiNavHost(
             },
             onShowSnackbar = onShowSnackbar
         )
-        scheduleDetailNavGraph()
+        scheduleDetailNavGraph(
+            navigateToSearchPlace = { id ->
+                navigator.navigateToSchedulePlace(id)
+            }
+        )
         searchPlaceNavGraph()
     }
 }
