@@ -110,6 +110,7 @@ fun OiTextField(
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.temp_ic_textfield_close),
                     contentDescription = "Close button",
+                    tint = Color.Unspecified
                 )
             }
         }
