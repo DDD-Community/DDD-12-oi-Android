@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -64,7 +62,7 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     //kotlin_serialization
-    implementation(libs.serialization.json)
+    implementation(libs.kotlinx.serialization.json)
 
     //retrofit
     implementation(libs.okhttp)

@@ -16,6 +16,7 @@ data class Schedule(
     val placeList: List<Place>
 )
 
+// todo api 응답이랑 매핑 되게 수정 필요
 @Serializable
 data class Place(
     val id: Long,

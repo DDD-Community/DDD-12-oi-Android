@@ -52,7 +52,7 @@ dependencies {
     //viewModel
     implementation(libs.androidx.viewmodel)
     //kotlin_serialization
-    implementation(libs.serialization.json)
+    implementation(libs.kotlinx.serialization.json)
 
     //orbit
     implementation(libs.orbit.core)
