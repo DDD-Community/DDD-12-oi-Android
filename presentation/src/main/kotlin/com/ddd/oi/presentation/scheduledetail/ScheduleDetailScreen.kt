@@ -1,10 +1,12 @@
 package com.ddd.oi.presentation.scheduledetail
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.NaverMap
 
+@OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun ScheduleDetailScreen(modifier: Modifier = Modifier) {
-    Text(text = "일정 상세 화면")
+    NaverMap()
 }
