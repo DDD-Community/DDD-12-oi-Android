@@ -29,6 +29,8 @@ navigation = "2.9.0"
 viewModel = "2.9.0"
 room = "2.7.1"
 
+naverMapCompose = "1.8.0"
+
 serialization-json = "1.8.0"
 serialization = "2.1.20"
 kotlinxImmutable = "0.3.8"
@@ -87,6 +89,9 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
+
+naver-map-compose = { module = "io.github.fornewid:naver-map-compose", version.ref = "naverMapCompose" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
