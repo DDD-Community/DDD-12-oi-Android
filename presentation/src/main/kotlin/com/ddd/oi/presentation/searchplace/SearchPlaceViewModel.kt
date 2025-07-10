@@ -86,7 +86,7 @@ class SearchPlaceViewModel @Inject constructor(
         else selectedPlace.add(place)
 
         _uiState.update {
-            when(it) {
+            when (it) {
                 is SearchPlaceUiState.QueryEmpty -> it.copy(selectedPlaceList = selectedPlace.toList())
                 is SearchPlaceUiState.ResultEmpty -> it.copy(selectedPlaceList = selectedPlace.toList())
                 is SearchPlaceUiState.Typing -> it.copy(selectedPlaceList = selectedPlace.toList())

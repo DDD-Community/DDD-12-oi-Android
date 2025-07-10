@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -119,8 +120,8 @@ private fun SearchPlaceScreen(
 
                 is SearchPlaceUiState.Typing -> {
                     LazyColumn(
-                        modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
                     ) {
                         items(uiState.placeList) {
                             OiPlaceCard(
@@ -128,7 +129,8 @@ private fun SearchPlaceScreen(
                                 category = it.category,
                                 categoryColor = Color(0xFF09B596),
                                 address = it.roadAddress,
-                                onClick = { onPlaceClick(it) }
+                                onClick = { onPlaceClick(it) },
+                                isFocused = uiState.selectedPlaceList.contains(it)
                             )
                         }
                     }

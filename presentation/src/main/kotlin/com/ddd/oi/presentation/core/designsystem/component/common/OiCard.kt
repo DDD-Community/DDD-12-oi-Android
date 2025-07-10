@@ -141,8 +141,7 @@ fun OiPlaceCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(OiCardDimens.cardHeight)
-            .padding(horizontal = Dimens.paddingMedium),
+            .height(OiCardDimens.cardHeight),
         shape = RoundedCornerShape(OiCardDimens.cornerRadius),
         colors = CardDefaults.cardColors(containerColor = white),
         elevation = CardDefaults.cardElevation(1.dp),
