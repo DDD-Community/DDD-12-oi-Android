@@ -7,6 +7,7 @@ import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
+import java.util.UUID
 
 interface NaverPlaceApi {
 
@@ -43,6 +44,7 @@ data class NaverSearchItem(
     @SerialName("mapy") val mapY: Int
 ) {
     fun toDomain() = Place(
+        id = UUID.nameUUIDFromBytes("$title|$address|$mapX|$mapY".toByteArray()).toString(),
         title = title,
         category = category,
         address = address,
