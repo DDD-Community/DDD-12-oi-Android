@@ -69,4 +69,6 @@
 
     <string name="duplicate_available">중복가능</string>
 
+    <string name="add_place">장소 추가하기</string>
+    <string name="add_selected_place">선택한 장소 추가하기</string>
 </resources>
