@@ -16,6 +16,7 @@ val asamo900 = Color(0xFF095E3A)
 val neutral100 = Color(0xFFF5F5F5)
 val neutral300 = Color(0xFFD4D4D4)
 val neutral800 = Color(0xFF262626)
+val neutral900 = Color(0xFF171717)
 
 val white = Color(0xFFFFFFFF)
 val snackbarBackground = Color(0xFF171717).copy(alpha = 0.8f)
@@ -42,6 +43,7 @@ val BackgroundWarning = Color(0xFFFE9A00)
 val BorderPrimary = Color(0xFFE5E5E5)
 val BorderBrand = Color(0xFF00A75C)
 val BorderSecondary = Color(0xFFF5F5F5)
+val BorderFocus = neutral900
 
 val IconBrand = Color(0xFF00A75C)
 val IconDisabled = Color(0xFFE5E5E5)
@@ -81,6 +83,7 @@ data class OiColors(
     val borderPrimary: Color,
     val borderBrand: Color,
     val borderSecondary: Color,
+    val borderFocus: Color,
 
     val iconBrand: Color,
     val iconDisabled: Color,

@@ -124,6 +124,7 @@ object OiCardDimens {
     val dividerHeight = 8.dp
     val moreIconSize = 16.dp
     val elevation = 2.dp
+    val stroke = 1.dp
 }
 
 object DialogDimens {
