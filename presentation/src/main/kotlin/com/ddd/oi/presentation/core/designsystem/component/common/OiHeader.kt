@@ -32,6 +32,7 @@ fun OiHeader(
     onLeftClick: () -> Unit = {},
     @StringRes titleStringRes: Int,
     @DrawableRes leftButtonDrawableRes: Int,
+    isDividerVisible: Boolean = true,
 ) {
     Box {
         Row(
@@ -62,11 +63,15 @@ fun OiHeader(
             )
         }
 
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter),
-            thickness = 1.dp,
-            color = OiTheme.colors.borderSecondary,
-        )
+        if (isDividerVisible) {
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter),
+                thickness = 1.dp,
+                color = OiTheme.colors.borderSecondary,
+            )
+        }
     }
 }
 
