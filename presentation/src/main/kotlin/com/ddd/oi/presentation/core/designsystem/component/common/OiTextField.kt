@@ -177,6 +177,86 @@ fun OiDateField(
     }
 }
 
+@Composable
+fun OiSearchField(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    hint: String = "",
+    onTextChanged: (String) -> Unit = {},
+) {
+    var isFocused by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(OiTextFieldDimens.height)
+            .getOiTextFieldModifier(isFocused),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(OiTextFieldDimens.iconSize),
+            imageVector = ImageVector.vectorResource(R.drawable.ic_search),
+            contentDescription = "Close button"
+        )
+
+        Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
+
+        Box(
+            modifier = Modifier
+                .weight(1F)
+        ) {
+            BasicTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterStart)
+                    .onFocusChanged { focusState ->
+                        isFocused = focusState.isFocused
+                    },
+                value = text,
+                textStyle = OiTheme.typography.bodyLargeRegular,
+                onValueChange = {
+                    if (it.length <= MAX_LENGTH) {
+                        onTextChanged(it)
+                    }
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            )
+
+            if (text.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 1.dp)
+                        .align(Alignment.CenterStart),
+                    text = hint,
+                    style = OiTheme.typography.bodyLargeRegular,
+                    color = OiTheme.colors.textDisabled,
+                )
+            }
+        }
+
+        if (text.isNotEmpty()) {
+            Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
+
+            IconButton(
+                modifier = Modifier
+                    .size(OiTextFieldDimens.iconSize),
+                onClick = {
+                    onTextChanged("")
+                }
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.temp_ic_textfield_close),
+                    contentDescription = "Close button",
+                    tint = Color.Unspecified
+                )
+            }
+        }
+    }
+}
+
 private fun getFormattedDate(
     startDate: Long,
     endDate: Long
@@ -226,7 +306,7 @@ private fun Modifier.getOiTextFieldModifier(isFocused: Boolean): Modifier {
         .clip(RoundedCornerShape(OiTextFieldDimens.roundedRectRadius))
         .border(
             width = OiTextFieldDimens.stroke,
-            color = if (isFocused) OiTheme.colors.borderBrand else OiTheme.colors.textDisabled,
+            color = if (isFocused) OiTheme.colors.borderFocus else OiTheme.colors.textDisabled,
             shape = RoundedCornerShape(OiTextFieldDimens.roundedRectRadius)
         )
         .fillMaxSize()
@@ -247,5 +327,7 @@ private fun OiTextFieldPreview() {
             endDate = System.currentTimeMillis()
         )
         OiDateField(hint = "YY.MM.DD - YY.MM.DD")
+
+        OiSearchField()
     }
 }
