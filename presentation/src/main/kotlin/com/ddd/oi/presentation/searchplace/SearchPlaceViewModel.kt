@@ -38,6 +38,7 @@ class SearchPlaceViewModel @Inject constructor(
         .map { query -> query.ifEmpty { throw IllegalArgumentException("Query is empty") } }
         .distinctUntilChanged()
         .flatMapLatest { query ->
+            // todo replace api
             queryPlaceUseCase(query).map { placeList ->
                 query to placeList
             }
