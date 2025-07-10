@@ -38,7 +38,7 @@ fun OiButton(
     style: OiButtonStyle,
     colorType: OiButtonColorType = OiButtonColorType.Primary,
     enabled: Boolean = true,
-    @StringRes textStringRes: Int,
+    title: String,
     @DrawableRes leftIconDrawableRes: Int? = null,
     @DrawableRes rightIconDrawableRes: Int? = null,
 ) {
@@ -66,7 +66,7 @@ fun OiButton(
             }
 
             Text(
-                text = stringResource(textStringRes),
+                text = title,
                 style = style.getTextStyle(),
             )
 
@@ -282,7 +282,7 @@ private fun OiButtonPreview() {
                     OiButton(
                         style = style,
                         colorType = colorType,
-                        textStringRes = R.string.button_eng,
+                        title = stringResource(R.string.button_eng),
                         leftIconDrawableRes = R.drawable.ic_add_plus,
                         rightIconDrawableRes = R.drawable.ic_chevron_right,
                     )

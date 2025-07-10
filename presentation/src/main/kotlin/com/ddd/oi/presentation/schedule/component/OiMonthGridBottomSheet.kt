@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
@@ -41,7 +42,7 @@ fun OiMonthGridBottomSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = Dimens.paddingMedium),
-            textStringRes = R.string.complete,
+            title = stringResource(R.string.complete),
             style = OiButtonStyle.Large48Oval,
             enabled = true,
             onClick = {
