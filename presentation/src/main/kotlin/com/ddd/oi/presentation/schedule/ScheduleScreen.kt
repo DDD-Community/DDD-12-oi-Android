@@ -1,5 +1,6 @@
 package com.ddd.oi.presentation.schedule
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -78,6 +79,7 @@ fun ScheduleScreen(
     modifier: Modifier = Modifier,
     viewModel: ScheduleViewModel = hiltViewModel(),
     navigateToCreateSchedule: (ScheduleNavData?, Route.UpsertSchedule) -> Unit,
+    navigateToScheduleDetail: (Schedule) -> Unit = {},
     onShowSnackbar: (OiSnackbarData) -> Unit = {},
     scheduleCreated: Boolean = false
 ) {
@@ -111,6 +113,7 @@ fun ScheduleScreen(
                 scheduleCopy
             )
         },
+        navigateToScheduleDetail = navigateToScheduleDetail,
         onShowSnackbar = onShowSnackbar,
         onDropdownClick = { showMonthGridBottomSheet = true }
     )
@@ -188,6 +191,7 @@ private fun ScheduleScreen(
     scheduleState: ScheduleState,
     updateDate: (LocalDate) -> Unit,
     updateSelectedCategory: (CategoryFilter) -> Unit,
+    navigateToScheduleDetail: (Schedule) -> Unit,
     onMoreClick: (Schedule) -> Unit,
     navigateToCreateSchedule: () -> Unit,
     onShowSnackbar: (OiSnackbarData) -> Unit,
@@ -243,7 +247,9 @@ private fun ScheduleScreen(
                 todaySchedule.forEach { schedule ->
                     OiCard(
                         schedule = schedule,
-                        onClick = { },
+                        onClick = {
+                            navigateToScheduleDetail(schedule)
+                        },
                         onMoreClick = { onMoreClick(schedule) }
                     )
                 }
@@ -275,7 +281,7 @@ private fun ScheduleListHeader(
         )
         Spacer(modifier = Modifier.weight(1f))
 
-        CreateScheduleButton(onClick = onCreateSchedule)
+        OiAddButton(onClick = onCreateSchedule)
     }
 }
 
@@ -359,8 +365,9 @@ private fun ScheduleCategoryFilter(
 }
 
 @Composable
-private fun CreateScheduleButton(
+internal fun OiAddButton(
     modifier: Modifier = Modifier,
+    @StringRes title: Int = R.string.add_schedule,
     onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -381,7 +388,7 @@ private fun CreateScheduleButton(
         ) {
             Icon(ImageVector.vectorResource(R.drawable.ic_add_plus), null)
             Text(
-                text = stringResource(R.string.add_schedule),
+                text = stringResource(title),
                 style = OiTheme.typography.bodySmallSemibold,
                 color = OiTheme.colors.textOnPrimary
             )
