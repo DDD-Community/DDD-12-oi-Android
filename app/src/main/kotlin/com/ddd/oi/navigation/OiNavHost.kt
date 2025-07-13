@@ -28,9 +28,8 @@ fun OiNavHost(
         homeNavGraph()
 
         scheduleNavGraph(
-            navigateToCreateSchedule = { schedule, scheduleCopy ->
-                navigator.navigateToUpsertSchedule(schedule, scheduleCopy)
-            },
+            navigateToCreateSchedule = navigator::navigateToUpsertSchedule,
+            navigateToScheduleDetail = navigator::navigateToScheduleDetail,
             onShowSnackbar = onShowSnackbar
         )
 
@@ -44,7 +43,9 @@ fun OiNavHost(
             },
             onShowSnackbar = onShowSnackbar
         )
-        scheduleDetailNavGraph()
+        scheduleDetailNavGraph(
+            onBackClick = { navigator.popBackStack() }
+        )
         searchPlaceNavGraph()
     }
 }

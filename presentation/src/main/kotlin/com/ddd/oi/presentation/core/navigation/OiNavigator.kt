@@ -11,6 +11,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
 import com.ddd.oi.presentation.home.navigateToHome
 import com.ddd.oi.presentation.schedule.model.ScheduleNavData
@@ -49,7 +50,7 @@ class OiNavigator(
         }
 
     val mainTabList: PersistentList<MainTab> = MainTab.entries.toPersistentList()
-    val startDestination: Route = Route.ScheduleDetail(1)
+    val startDestination: Route = MainTabRoute.Home
 
     val currentRoute: Route?
         @Composable get() = when {
@@ -86,7 +87,9 @@ class OiNavigator(
         navController.navigateToInsertSchedule(scheduleCopyState)
     }
 
-    fun navigateToScheduleDetail(scheduleId: Long) = navController.navigateToScheduleDetail(scheduleId)
+    fun navigateToScheduleDetail(schedule: Schedule) {
+        navController.navigateToScheduleDetail(schedule)
+    }
     fun navigateToSchedulePlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
     fun popBackStack() {
         navController.popBackStack()
