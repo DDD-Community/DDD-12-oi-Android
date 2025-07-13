@@ -10,11 +10,14 @@ fun NavController.navigateToSearchPlace(scheduleId: Long) {
     navigate(Route.SearchPlace(scheduleId))
 }
 
-fun NavGraphBuilder.searchPlaceNavGraph() {
+fun NavGraphBuilder.searchPlaceNavGraph(
+    navigatePopBack: () -> Unit,
+) {
     composable<Route.SearchPlace> { backStackEntry ->
         val searchPlace = backStackEntry.toRoute<Route.SearchPlace>()
         SearchPlaceScreen(
-            scheduleId = searchPlace.scheduleId
+            scheduleId = searchPlace.scheduleId,
+            onBack = navigatePopBack
         )
     }
 }

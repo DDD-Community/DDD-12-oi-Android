@@ -52,6 +52,10 @@ fun OiNavHost(
                 navigator.navigateToSchedulePlace(id)
             }
         )
-        searchPlaceNavGraph()
+        searchPlaceNavGraph(
+            navigatePopBack = {
+                navigator.popBackStack()
+            }
+        )
     }
 }

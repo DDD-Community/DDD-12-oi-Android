@@ -36,6 +36,7 @@ import com.ddd.oi.presentation.core.designsystem.theme.white
 @Composable
 fun SearchPlaceScreen(
     scheduleId: Long,
+    onBack: () -> Unit,
     viewModel: SearchPlaceViewModel = hiltViewModel()
 ) {
     val query by viewModel.query.collectAsState()
