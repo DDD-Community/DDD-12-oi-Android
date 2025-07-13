@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
 import com.ddd.oi.presentation.core.navigation.MainTabRoute
 import com.ddd.oi.presentation.core.navigation.Route
@@ -15,6 +16,7 @@ fun NavController.navigateToSchedule(navOptions: NavOptions) {
 
 fun NavGraphBuilder.scheduleNavGraph(
     navigateToCreateSchedule: (ScheduleNavData?, Route.UpsertSchedule) -> Unit,
+    navigateToScheduleDetail: (Schedule) -> Unit,
     onShowSnackbar: (OiSnackbarData) -> Unit
 ) {
     composable<MainTabRoute.Schedule> { backStackEntry ->
@@ -26,6 +28,7 @@ fun NavGraphBuilder.scheduleNavGraph(
         
         ScheduleScreen(
             navigateToCreateSchedule = navigateToCreateSchedule,
+            navigateToScheduleDetail = navigateToScheduleDetail,
             onShowSnackbar = onShowSnackbar,
             scheduleCreated = scheduleCreated
         )
