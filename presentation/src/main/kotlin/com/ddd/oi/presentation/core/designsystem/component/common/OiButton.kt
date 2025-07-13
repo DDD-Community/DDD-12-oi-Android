@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +43,7 @@ fun OiButton(
     title: String,
     @DrawableRes leftIconDrawableRes: Int? = null,
     @DrawableRes rightIconDrawableRes: Int? = null,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -48,6 +51,7 @@ fun OiButton(
     Button(
         modifier = modifier
             .height(style.height),
+        contentPadding = contentPadding,
         shape = style.shape,
         enabled = enabled,
         colors = getButtonColors(colorType, isPressed),
