@@ -105,18 +105,14 @@ internal fun rememberOiSheetState(
     initialValue: OiSheetValue = OiSheetValue.Collapsed,
     skipHiddenState: Boolean = false,
 ): OiSheetState {
-    val density = LocalDensity.current
     return rememberSaveable(
         confirmValueChange,
         skipHiddenState,
         saver =
-            OiSheetState.Saver(
-                density = density,
-            )
+            OiSheetState.Saver()
     ) {
         OiSheetState(
             initialValue = initialValue,
-            density = density,
         )
     }
 }
