@@ -141,6 +141,7 @@ private fun SearchPlaceScreen(
                                 text = stringResource(R.string.recent_search),
                             )
 
+                            // todo remove all
                             Text(
                                 modifier = Modifier.align(Alignment.CenterEnd),
                                 style = OiTheme.typography.bodySmallSemibold,
