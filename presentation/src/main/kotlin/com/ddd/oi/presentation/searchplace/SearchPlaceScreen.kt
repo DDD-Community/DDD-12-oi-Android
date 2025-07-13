@@ -1,15 +1,19 @@
 package com.ddd.oi.presentation.searchplace
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -17,15 +21,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ddd.oi.presentation.R
 import com.ddd.oi.domain.model.Place
+import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonColorType
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiPlaceCard
@@ -48,9 +56,11 @@ fun SearchPlaceScreen(
 
     SearchPlaceScreen(
         query = query,
-        onTextChanged = { viewModel.search(it) },
+        onTextChanged = { viewModel.query(it) },
         uiState = uiState,
-        onPlaceClick = { viewModel.selectPlace(it) }
+        onPlaceClick = { viewModel.selectPlace(it) },
+        onSearch = { viewModel.search(it) },
+        onLeftClick = onBack,
     )
 }
 
@@ -61,6 +71,8 @@ private fun SearchPlaceScreen(
     onTextChanged: (String) -> Unit,
     uiState: SearchPlaceUiState,
     onPlaceClick: (Place) -> Unit,
+    onSearch: (String) -> Unit,
+    onLeftClick: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier.background(white),
@@ -69,7 +81,8 @@ private fun SearchPlaceScreen(
             OiHeader(
                 leftButtonDrawableRes = R.drawable.ic_arrow_left,
                 titleStringRes = R.string.add_place,
-                isDividerVisible = false
+                isDividerVisible = false,
+                onLeftClick = onLeftClick
             )
         },
         bottomBar = {
@@ -91,10 +104,7 @@ private fun SearchPlaceScreen(
                     .padding(bottom = 12.dp),
                 text = query,
                 onTextChanged = onTextChanged,
-                onSearch = {
-                    // todo handle search
-                    Log.e("SearchPlaceScreen", it)
-                }
+                onSearch = onSearch
             )
 
             HorizontalDivider(
@@ -104,19 +114,91 @@ private fun SearchPlaceScreen(
             )
 
             if (uiState.selectedPlaceList.isNotEmpty()) {
-                // todo set selected place ui
-                Text(uiState.selectedPlaceList.joinToString("\n") { it.title })
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(OiTheme.colors.backgroundContents)
+                        .height(60.dp)
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(uiState.selectedPlaceList) {
+                        Button(onClick = {}) {
+                            Text(it.title)
+                        }
+                    }
+                }
             }
 
             when (uiState) {
                 is SearchPlaceUiState.QueryEmpty -> {
-                    // todo set last search ui
-                    Text("Query Empty")
+                    Column(modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp)) {
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                modifier = Modifier.align(Alignment.CenterStart),
+                                style = OiTheme.typography.bodyMediumSemibold,
+                                color = OiTheme.colors.textPrimary,
+                                text = stringResource(R.string.recent_search),
+                            )
+
+                            Text(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                style = OiTheme.typography.bodySmallSemibold,
+                                color = OiTheme.colors.textDisabled,
+                                text = stringResource(R.string.delete_all)
+                            )
+                        }
+
+                        FlowRow(
+                            modifier = Modifier.padding(top = 12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            uiState.searchPlace.forEach {
+                                OiButton(
+                                    title = it,
+                                    style = OiButtonStyle.Small32Oval,
+                                    colorType = OiButtonColorType.Secondary,
+                                    rightIconDrawableRes = R.drawable.ic_x,
+                                    contentPadding = PaddingValues(
+                                        horizontal = 12.dp,
+                                        vertical = 0.dp
+                                    )
+                                )
+                            }
+                        }
+                    }
                 }
 
                 is SearchPlaceUiState.ResultEmpty -> {
-                    // todo set result empty ui
-                    Text("Result Empty")
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1F)
+                    ) {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            verticalArrangement = Arrangement.spacedBy(18.dp)
+                        ) {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                style = OiTheme.typography.headlineSmallBold,
+                                color = OiTheme.colors.textPrimary,
+                                text = stringResource(R.string.no_search_result)
+                            )
+
+                            // todo replace character
+                            Column(
+                                modifier = Modifier
+                                    .size(154.dp)
+                                    .background(OiTheme.colors.backgroundDisabled)
+                                    .align(Alignment.CenterHorizontally)
+                            ) {
+
+                            }
+                        }
+                    }
                 }
 
                 is SearchPlaceUiState.Typing -> {
@@ -128,7 +210,7 @@ private fun SearchPlaceScreen(
                             OiPlaceCard(
                                 place = it.title,
                                 category = it.category,
-                                categoryColor = Color(0xFF09B596),
+                                categoryColor = Color(it.categoryColor.toColorInt()),
                                 address = it.roadAddress,
                                 onClick = { onPlaceClick(it) },
                                 isFocused = uiState.selectedPlaceList.contains(it)
@@ -174,7 +256,9 @@ private fun SearchPlaceScreenPreview() {
     SearchPlaceScreen(
         query = "애슐리",
         onTextChanged = {},
-        uiState = SearchPlaceUiState.QueryEmpty(emptyList()),
-        onPlaceClick = {}
+        uiState = SearchPlaceUiState.QueryEmpty(emptyList(), emptyList()),
+        onPlaceClick = {},
+        onSearch = {},
+        onLeftClick = {}
     )
 }

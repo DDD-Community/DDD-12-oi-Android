@@ -31,6 +31,7 @@ class SearchPlaceViewModel @Inject constructor(
     val query = _query.asStateFlow()
 
     private val selectedPlace: HashSet<Place> = hashSetOf()
+    private val searchPlace: HashSet<String> = hashSetOf()
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val placeList: Flow<Pair<String, List<Place>>> = _query
@@ -38,28 +39,32 @@ class SearchPlaceViewModel @Inject constructor(
         .map { query -> query.ifEmpty { throw IllegalArgumentException("Query is empty") } }
         .distinctUntilChanged()
         .flatMapLatest { query ->
-            // todo replace api
             queryPlaceUseCase(query).map { placeList ->
                 query to placeList
             }
         }
 
     private val _uiState: MutableStateFlow<SearchPlaceUiState> =
-        MutableStateFlow(SearchPlaceUiState.QueryEmpty(selectedPlaceList = selectedPlace.toList()))
+        MutableStateFlow(
+            SearchPlaceUiState.QueryEmpty(
+                selectedPlaceList = selectedPlace.toList().reversed(),
+                searchPlace = searchPlace.toList().reversed()
+            )
+        )
     val uiState: StateFlow<SearchPlaceUiState> = _uiState.asStateFlow()
 
     fun setScheduleId(scheduleId: Long) {
         this.scheduleId = scheduleId
     }
 
-    fun search(query: String) {
+    fun query(query: String) {
         _query.update { query }
 
         placeList.onEach { (query, placeList) ->
             val result: SearchPlaceUiState = SearchPlaceUiState.Typing(
                 query = query,
                 placeList = placeList.ifEmpty { throw IllegalArgumentException("List is empty") },
-                selectedPlaceList = selectedPlace.toList()
+                selectedPlaceList = selectedPlace.toList().reversed()
             )
 
             _uiState.update { result }
@@ -67,14 +72,53 @@ class SearchPlaceViewModel @Inject constructor(
             if (it is IllegalArgumentException && it.message == "List is empty") {
                 _uiState.update {
                     SearchPlaceUiState.ResultEmpty(
-                        selectedPlaceList = selectedPlace.toList()
+                        selectedPlaceList = selectedPlace.toList().reversed()
                     )
                 }
             }
             if (it is IllegalArgumentException && it.message == "Query is empty") {
                 _uiState.update {
                     SearchPlaceUiState.QueryEmpty(
-                        selectedPlaceList = selectedPlace.toList()
+                        selectedPlaceList = selectedPlace.toList().reversed(),
+                        searchPlace = searchPlace.toList().reversed(),
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun search(query: String) {
+        searchPlace.add(query)
+
+        queryPlaceUseCase(query).map { placeList ->
+            query to placeList
+        }.onEach { (query, placeList) ->
+            val result: SearchPlaceUiState = SearchPlaceUiState.Typing(
+                query = query,
+                placeList = placeList.ifEmpty { throw IllegalArgumentException("List is empty") },
+                selectedPlaceList = selectedPlace.toList().reversed()
+            )
+
+            _uiState.update {
+                when (it) {
+                    is SearchPlaceUiState.QueryEmpty -> it.copy(searchPlace = searchPlace.toList().reversed())
+                    is SearchPlaceUiState.ResultEmpty -> it
+                    is SearchPlaceUiState.Typing -> result
+                }
+            }
+        }.catch {
+            if (it is IllegalArgumentException && it.message == "List is empty") {
+                _uiState.update {
+                    SearchPlaceUiState.ResultEmpty(
+                        selectedPlaceList = selectedPlace.toList().reversed()
+                    )
+                }
+            }
+            if (it is IllegalArgumentException && it.message == "Query is empty") {
+                _uiState.update {
+                    SearchPlaceUiState.QueryEmpty(
+                        selectedPlaceList = selectedPlace.toList().reversed(),
+                        searchPlace = searchPlace.toList().reversed(),
                     )
                 }
             }
@@ -87,9 +131,9 @@ class SearchPlaceViewModel @Inject constructor(
 
         _uiState.update {
             when (it) {
-                is SearchPlaceUiState.QueryEmpty -> it.copy(selectedPlaceList = selectedPlace.toList())
-                is SearchPlaceUiState.ResultEmpty -> it.copy(selectedPlaceList = selectedPlace.toList())
-                is SearchPlaceUiState.Typing -> it.copy(selectedPlaceList = selectedPlace.toList())
+                is SearchPlaceUiState.QueryEmpty -> it.copy(selectedPlaceList = selectedPlace.toList().reversed())
+                is SearchPlaceUiState.ResultEmpty -> it.copy(selectedPlaceList = selectedPlace.toList().reversed())
+                is SearchPlaceUiState.Typing -> it.copy(selectedPlaceList = selectedPlace.toList().reversed())
             }
         }
     }
@@ -99,6 +143,7 @@ sealed class SearchPlaceUiState(
     open val selectedPlaceList: List<Place>
 ) {
     data class QueryEmpty(
+        val searchPlace: List<String>,
         override val selectedPlaceList: List<Place>
     ) : SearchPlaceUiState(selectedPlaceList)
 

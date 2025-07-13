@@ -8,4 +8,5 @@ data class Place(
     val roadAddress: String,
     val mapX: Int,
     val mapY: Int,
+    val categoryColor: String,
 )
