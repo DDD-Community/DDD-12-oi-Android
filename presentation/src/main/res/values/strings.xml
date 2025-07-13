@@ -72,4 +72,8 @@
     <string name="add_place">장소 추가하기</string>
     <string name="add_selected_place">선택한 장소 추가하기</string>
     <string name="add_selected_multiple_place">선택한 장소 %d개 추가하기</string>
+
+    <string name="recent_search">최근 검색어</string>
+    <string name="delete_all">모두 지우기</string>
+    <string name="no_search_result">앗! 검색 결과가 없어요.</string>
 </resources>
