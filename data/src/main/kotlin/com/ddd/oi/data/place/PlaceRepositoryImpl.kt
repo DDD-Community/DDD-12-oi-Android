@@ -10,6 +10,6 @@ class PlaceRepositoryImpl @Inject constructor(
 ) : PlaceRepository {
 
     override suspend fun queryPlace(query: String): List<Place> {
-        return remoteDataSource.queryPlace(query).items.map { it.toDomain() }
+        return remoteDataSource.queryPlace(query).data.items.map { it.toDomain() }
     }
 }

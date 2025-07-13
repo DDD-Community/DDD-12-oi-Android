@@ -2,7 +2,7 @@ package com.ddd.oi.data.place.di
 
 import com.ddd.oi.data.core.IoDispatcher
 import com.ddd.oi.data.place.PlaceRepositoryImpl
-import com.ddd.oi.data.place.remote.NaverPlaceApi
+import com.ddd.oi.data.place.remote.PlaceApi
 import com.ddd.oi.data.place.remote.PlaceRemoteDataSource
 import com.ddd.oi.data.place.remote.PlaceRemoteDataSourceImpl
 import com.ddd.oi.domain.repository.PlaceRepository
@@ -18,10 +18,10 @@ object PlaceModule {
 
     @Provides
     fun providesPlaceRemoteDataSource(
-        naverPlaceApi: NaverPlaceApi,
+        placeApi: PlaceApi,
         @IoDispatcher dispatcher: CoroutineDispatcher,
     ): PlaceRemoteDataSource {
-        return PlaceRemoteDataSourceImpl(dispatcher, naverPlaceApi)
+        return PlaceRemoteDataSourceImpl(dispatcher, placeApi)
     }
 
     @Provides

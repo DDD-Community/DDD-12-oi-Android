@@ -1,7 +1,7 @@
 package com.ddd.oi.data.core.retrofit.di
 
 import com.ddd.oi.data.BuildConfig
-import com.ddd.oi.data.place.remote.NaverPlaceApi
+import com.ddd.oi.data.place.remote.PlaceApi
 import com.ddd.oi.data.schedule.remote.ScheduleApiService
 import dagger.Module
 import dagger.Provides
@@ -54,17 +54,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @NaverRetrofit
-    fun provideNaverRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.NAVER_API_URL)
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
-            .client(okHttpClient)
-            .build()
-    }
-
-    @Provides
-    @Singleton
     fun provideScheduleApiService(
         @OiApiRetrofit retrofit: Retrofit
     ): ScheduleApiService {
@@ -73,17 +62,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesNaverPlaceApi(
-        @NaverRetrofit retrofit: Retrofit
-    ): NaverPlaceApi {
-        return retrofit.create(NaverPlaceApi::class.java)
+    fun providesPlaceApi(
+        @OiApiRetrofit retrofit: Retrofit
+    ): PlaceApi {
+        return retrofit.create(PlaceApi::class.java)
     }
 }
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class OiApiRetrofit
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class NaverRetrofit
