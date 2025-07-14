@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -154,6 +155,95 @@ fun OiChoiceChip(
                 textAlign = TextAlign.Center,
                 style = getChoiceTextStyle(isSelected),
                 color = getChipTextColor(isSelected)
+            )
+        }
+    }
+}
+
+@Composable
+fun OiSearchChip(
+    modifier: Modifier = Modifier,
+    text: String,
+    onItemClick: (String) -> Unit = {},
+    onIconClick: (String) -> Unit = {},
+) {
+    Row(
+        modifier = modifier
+            .height(height = OiChipDimens.Search.height)
+            .clip(RoundedCornerShape(OiChipDimens.Search.rectRadius))
+            .background(color = Color.Transparent)
+            .border(
+                width = OiChipDimens.Oval.borderStroke,
+                color = OiTheme.colors.borderPrimary,
+                shape = RoundedCornerShape(OiChipDimens.Search.rectRadius)
+            )
+            .clickable { onItemClick(text) }
+            .padding(
+                horizontal = OiChipDimens.Search.horizontalPadding,
+                vertical = OiChipDimens.Search.verticalPadding
+            ),
+        horizontalArrangement = Arrangement.spacedBy(OiChipDimens.Search.componentMargin),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            style = OiTheme.typography.bodySmallSemibold,
+            color = OiTheme.colors.textSecondary
+        )
+
+        IconButton(
+            modifier = Modifier.size(OiChipDimens.Search.iconSize),
+            onClick = {
+                onIconClick(text)
+            }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_x),
+                tint = OiTheme.colors.iconTertiary,
+                contentDescription = "Chip icon"
+            )
+        }
+    }
+}
+
+@Composable
+fun OiRecentSearchChip(
+    modifier: Modifier = Modifier,
+    text: String,
+    onItemClick: (String) -> Unit = {},
+    onIconClick: (String) -> Unit = {},
+) {
+    Row(
+        modifier = modifier
+            .height(height = OiChipDimens.RecentSearch.height)
+            .clip(RoundedCornerShape(OiChipDimens.RecentSearch.radius))
+            .background(color = OiTheme.colors.backgroundUnselected)
+            .clickable { onItemClick(text) }
+            .padding(
+                horizontal = OiChipDimens.RecentSearch.horizontalPadding,
+                vertical = OiChipDimens.RecentSearch.verticalPadding
+            ),
+        horizontalArrangement = Arrangement.spacedBy(OiChipDimens.RecentSearch.componentMargin),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            style = OiTheme.typography.bodySmallSemibold,
+            color = OiTheme.colors.textSecondary
+        )
+
+        IconButton(
+            modifier = Modifier.size(OiChipDimens.RecentSearch.iconSize),
+            onClick = {
+                onIconClick(text)
+            }
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.ic_x),
+                tint = OiTheme.colors.borderFocus,
+                contentDescription = "Chip icon"
             )
         }
     }
@@ -447,4 +537,16 @@ private fun OiOvalChipPreview() {
 @Composable
 private fun OiChoiceChipPreview() {
     OiChoiceChip(textStringRes = R.string.transportation_car)
+}
+
+@Preview
+@Composable
+private fun OiSearchChipPlace() {
+    OiSearchChip(text = "애슐리 서울대입구점")
+}
+
+@Preview
+@Composable
+private fun OiRecentSearchChipPlace() {
+    OiRecentSearchChip(text = "복초밥")
 }

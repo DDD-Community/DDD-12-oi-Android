@@ -1,6 +1,7 @@
 package com.ddd.oi.presentation.searchplace
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -34,10 +34,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddd.oi.domain.model.Place
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
-import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonColorType
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiPlaceCard
+import com.ddd.oi.presentation.core.designsystem.component.common.OiRecentSearchChip
+import com.ddd.oi.presentation.core.designsystem.component.common.OiSearchChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSearchField
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
@@ -50,6 +51,7 @@ fun SearchPlaceScreen(
 ) {
     val query by viewModel.query.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
+    val searchPlace by viewModel.searchPlace.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.setScheduleId(scheduleId)
@@ -62,6 +64,11 @@ fun SearchPlaceScreen(
         onPlaceClick = { viewModel.selectPlace(it) },
         onSearch = { viewModel.search(it) },
         onLeftClick = onBack,
+        searchPlace = searchPlace,
+        clearSearchPlace = { viewModel.clearSearchPlace() },
+        removeSelectedPlace = { viewModel.removePlace(it) },
+        onRecentSearchItemClick = { viewModel.searchImmediate(it) },
+        onRecentSearchIconClick = { viewModel.removeQuery(it) }
     )
 }
 
@@ -74,6 +81,11 @@ private fun SearchPlaceScreen(
     onPlaceClick: (Place) -> Unit,
     onSearch: (String) -> Unit,
     onLeftClick: () -> Unit,
+    searchPlace: List<String>,
+    clearSearchPlace: () -> Unit,
+    removeSelectedPlace: (Place) -> Unit,
+    onRecentSearchItemClick: (String) -> Unit,
+    onRecentSearchIconClick: (String) -> Unit,
 ) {
     Scaffold(
         modifier = modifier.background(white),
@@ -123,10 +135,13 @@ private fun SearchPlaceScreen(
                         .padding(horizontal = 16.dp, vertical = 14.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(uiState.selectedPlaceList) {
-                        Button(onClick = {}) {
-                            Text(it.title)
-                        }
+                    items(uiState.selectedPlaceList) { place ->
+                        OiSearchChip(
+                            text = place.title,
+                            onIconClick = {
+                                removeSelectedPlace(place)
+                            }
+                        )
                     }
                 }
             }
@@ -144,7 +159,11 @@ private fun SearchPlaceScreen(
 
                             // todo remove all
                             Text(
-                                modifier = Modifier.align(Alignment.CenterEnd),
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .clickable {
+                                        clearSearchPlace()
+                                    },
                                 style = OiTheme.typography.bodySmallSemibold,
                                 color = OiTheme.colors.textDisabled,
                                 text = stringResource(R.string.delete_all)
@@ -156,16 +175,11 @@ private fun SearchPlaceScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            uiState.searchPlace.forEach {
-                                OiButton(
-                                    title = it,
-                                    style = OiButtonStyle.Small32Oval,
-                                    colorType = OiButtonColorType.Secondary,
-                                    rightIconDrawableRes = R.drawable.ic_x,
-                                    contentPadding = PaddingValues(
-                                        horizontal = 12.dp,
-                                        vertical = 0.dp
-                                    )
+                            searchPlace.forEach {
+                                OiRecentSearchChip(
+                                    text = it,
+                                    onItemClick = onRecentSearchItemClick,
+                                    onIconClick = onRecentSearchIconClick,
                                 )
                             }
                         }
@@ -257,9 +271,14 @@ private fun SearchPlaceScreenPreview() {
     SearchPlaceScreen(
         query = "애슐리",
         onTextChanged = {},
-        uiState = SearchPlaceUiState.QueryEmpty(emptyList(), emptyList()),
+        uiState = SearchPlaceUiState.QueryEmpty(emptyList()),
         onPlaceClick = {},
         onSearch = {},
-        onLeftClick = {}
+        onLeftClick = {},
+        searchPlace = emptyList(),
+        clearSearchPlace = {},
+        removeSelectedPlace = {},
+        onRecentSearchItemClick = {},
+        onRecentSearchIconClick = {}
     )
 }

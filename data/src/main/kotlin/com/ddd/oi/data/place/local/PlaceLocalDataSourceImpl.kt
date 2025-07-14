@@ -23,7 +23,16 @@ class PlaceLocalDataSourceImpl @Inject constructor(
             pref[DataStoreKey.RECENT_SEARCH_PLACE] =
                 pref[DataStoreKey.RECENT_SEARCH_PLACE]?.split("|")?.toMutableList()?.apply {
                     add("$place|")
-                }?.joinToString("|") ?: ""
+                }?.filter { it.isNotEmpty() }?.joinToString("|") ?: ""
+        }
+    }
+
+    override suspend fun removeRecentSearchPlace(place: String) {
+        dataStore.edit { pref ->
+            pref[DataStoreKey.RECENT_SEARCH_PLACE] =
+                pref[DataStoreKey.RECENT_SEARCH_PLACE]?.split("|")?.toMutableList()?.apply {
+                    remove(place)
+                }?.filter { it.isNotEmpty() }?.joinToString("|") ?: ""
         }
     }
 

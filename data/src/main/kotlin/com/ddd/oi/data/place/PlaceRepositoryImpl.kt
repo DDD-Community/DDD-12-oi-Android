@@ -16,12 +16,16 @@ class PlaceRepositoryImpl @Inject constructor(
         return remoteDataSource.queryPlace(query).data.items.map { it.toDomain() }
     }
 
+    override fun getRecentSearchPlace(): Flow<List<String>> {
+        return localDataSource.getRecentSearchPlace()
+    }
+
     override suspend fun addRecentSearchPlace(place: String) {
         localDataSource.addRecentSearchPlace(place)
     }
 
-    override fun getRecentSearchPlace(): Flow<List<String>> {
-        return localDataSource.getRecentSearchPlace()
+    override suspend fun removeRecentSearchPlace(place: String) {
+        localDataSource.removeRecentSearchPlace(place)
     }
 
     override suspend fun clearRecentSearchPlace() {
