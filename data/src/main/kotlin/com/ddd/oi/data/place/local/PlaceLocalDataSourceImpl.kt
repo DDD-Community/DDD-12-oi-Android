@@ -25,4 +25,10 @@ class PlaceLocalDataSourceImpl @Inject constructor(
                 } ?: hashSetOf()
         }
     }
+
+    override suspend fun clearRecentSearchPlace() {
+        dataStore.edit { pref ->
+            pref[DataStoreKey.RECENT_SEARCH_PLACE] = emptySet()
+        }
+    }
 }

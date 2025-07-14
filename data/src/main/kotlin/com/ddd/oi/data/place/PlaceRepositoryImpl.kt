@@ -23,4 +23,8 @@ class PlaceRepositoryImpl @Inject constructor(
     override fun getRecentSearchPlace(): Flow<Set<String>> {
         return localDataSource.getRecentSearchPlace()
     }
+
+    override suspend fun clearRecentSearchPlace() {
+        localDataSource.clearRecentSearchPlace()
+    }
 }
