@@ -20,7 +20,7 @@ class PlaceRepositoryImpl @Inject constructor(
         localDataSource.addRecentSearchPlace(place)
     }
 
-    override fun getRecentSearchPlace(): Flow<Set<String>> {
+    override fun getRecentSearchPlace(): Flow<List<String>> {
         return localDataSource.getRecentSearchPlace()
     }
 

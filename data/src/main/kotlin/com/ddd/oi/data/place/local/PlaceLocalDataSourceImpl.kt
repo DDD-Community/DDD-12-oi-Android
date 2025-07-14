@@ -11,24 +11,25 @@ import javax.inject.Inject
 class PlaceLocalDataSourceImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : PlaceLocalDataSource {
-    override fun getRecentSearchPlace(): Flow<Set<String>> {
+    override fun getRecentSearchPlace(): Flow<List<String>> {
         return dataStore.data.map { pref ->
-            pref[DataStoreKey.RECENT_SEARCH_PLACE] ?: hashSetOf()
+            pref[DataStoreKey.RECENT_SEARCH_PLACE]?.split("|")?.filter { it.isNotEmpty() }
+                ?: emptyList()
         }
     }
 
     override suspend fun addRecentSearchPlace(place: String) {
         dataStore.edit { pref ->
             pref[DataStoreKey.RECENT_SEARCH_PLACE] =
-                pref[DataStoreKey.RECENT_SEARCH_PLACE]?.toHashSet()?.apply {
-                    this.add(place)
-                } ?: hashSetOf()
+                pref[DataStoreKey.RECENT_SEARCH_PLACE]?.split("|")?.toMutableList()?.apply {
+                    add("$place|")
+                }?.joinToString("|") ?: ""
         }
     }
 
     override suspend fun clearRecentSearchPlace() {
         dataStore.edit { pref ->
-            pref[DataStoreKey.RECENT_SEARCH_PLACE] = emptySet()
+            pref[DataStoreKey.RECENT_SEARCH_PLACE] = ""
         }
     }
 }
