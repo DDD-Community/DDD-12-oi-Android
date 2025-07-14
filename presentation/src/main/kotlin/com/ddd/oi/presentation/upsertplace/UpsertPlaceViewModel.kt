@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.searchplace
+package com.ddd.oi.presentation.upsertplace
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
@@ -10,9 +10,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
@@ -28,11 +30,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SearchPlaceViewModel @Inject constructor(
+class UpsertPlaceViewModel @Inject constructor(
     private val queryPlaceUseCase: QueryPlaceUseCase,
     private val placeRepository: PlaceRepository
 ) : ViewModel() {
     private var scheduleId: Long = 0L
+
+    private val _error = MutableSharedFlow<Unit>()
+    val error = _error.asSharedFlow()
 
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
@@ -168,8 +173,13 @@ class SearchPlaceViewModel @Inject constructor(
     }
 
     fun selectPlace(place: Place) {
-        if (selectedPlace.contains(place)) selectedPlace.remove(place)
-        else selectedPlace.add(place)
+        if (selectedPlace.contains(place)) {
+            selectedPlace.remove(place)
+        } else if (selectedPlace.size > 0) {
+            viewModelScope.launch { _error.emit(Unit) }
+        } else {
+            selectedPlace.add(place)
+        }
 
         _uiState.update {
             when (it) {
@@ -220,7 +230,7 @@ class SearchPlaceViewModel @Inject constructor(
         }
     }
 
-    fun insertPlace() {
+    fun updatePlace() {
         // todo set api
     }
 }

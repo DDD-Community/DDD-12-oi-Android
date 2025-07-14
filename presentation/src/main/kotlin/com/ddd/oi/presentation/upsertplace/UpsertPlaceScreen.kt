@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.searchplace
+package com.ddd.oi.presentation.upsertplace
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -40,24 +41,39 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiPlaceCard
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRecentSearchChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSearchChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSearchField
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 
 @Composable
-fun SearchPlaceScreen(
+fun UpsertPlaceScreen(
     scheduleId: Long,
     onBack: () -> Unit,
-    viewModel: SearchPlaceViewModel = hiltViewModel()
+    onShowSnackBar: (OiSnackbarData) -> Unit,
+    viewModel: UpsertPlaceViewModel = hiltViewModel()
 ) {
     val query by viewModel.query.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val searchPlace by viewModel.searchPlace.collectAsState()
+    val context = LocalContext.current.resources
 
     LaunchedEffect(Unit) {
         viewModel.setScheduleId(scheduleId)
     }
 
-    SearchPlaceScreen(
+    LaunchedEffect(Unit) {
+        viewModel.error.collect {
+            onShowSnackBar.invoke(
+                OiSnackbarData(
+                    message = context.getString(R.string.upsert_place_can_be_one_item),
+                    type = SnackbarType.WARNING
+                )
+            )
+        }
+    }
+
+    UpsertPlaceScreen(
         query = query,
         onTextChanged = { viewModel.query(it) },
         uiState = uiState,
@@ -69,12 +85,12 @@ fun SearchPlaceScreen(
         removeSelectedPlace = { viewModel.removePlace(it) },
         onRecentSearchItemClick = { viewModel.searchImmediate(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
-        onUpdate = { viewModel.insertPlace() }
+        onUpdate = { viewModel.updatePlace() }
     )
 }
 
 @Composable
-private fun SearchPlaceScreen(
+private fun UpsertPlaceScreen(
     modifier: Modifier = Modifier,
     query: String,
     onTextChanged: (String) -> Unit,
@@ -101,10 +117,9 @@ private fun SearchPlaceScreen(
             )
         },
         bottomBar = {
-            SearchPlaceBottom(
+            UpsertPlaceBottom(
                 modifier = Modifier,
                 isButtonEnabled = uiState.selectedPlaceList.isNotEmpty(),
-                selectedPlaceCount = uiState.selectedPlaceList.size,
                 onButtonClick = onUpdate
             )
         }
@@ -242,10 +257,9 @@ private fun SearchPlaceScreen(
 }
 
 @Composable
-private fun SearchPlaceBottom(
+private fun UpsertPlaceBottom(
     modifier: Modifier = Modifier,
     isButtonEnabled: Boolean,
-    selectedPlaceCount: Int,
     onButtonClick: () -> Unit = {},
 ) {
     Box(
@@ -260,9 +274,7 @@ private fun SearchPlaceBottom(
             onClick = onButtonClick,
             style = OiButtonStyle.Large48Oval,
             leftIconDrawableRes = R.drawable.ic_add_plus,
-            title =
-                if (selectedPlaceCount == 1) stringResource(R.string.add_selected_place)
-                else stringResource(R.string.add_selected_multiple_place, selectedPlaceCount),
+            title = stringResource(R.string.upsert_selected_place),
             enabled = isButtonEnabled
         )
     }
@@ -270,8 +282,8 @@ private fun SearchPlaceBottom(
 
 @Preview
 @Composable
-private fun SearchPlaceScreenPreview() {
-    SearchPlaceScreen(
+private fun UpsertPlaceScreenPreview() {
+    UpsertPlaceScreen(
         query = "애슐리",
         onTextChanged = {},
         uiState = SearchPlaceUiState.QueryEmpty(emptyList()),

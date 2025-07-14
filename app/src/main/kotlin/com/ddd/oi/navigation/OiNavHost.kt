@@ -10,6 +10,7 @@ import com.ddd.oi.presentation.home.homeNavGraph
 import com.ddd.oi.presentation.schedule.scheduleNavGraph
 import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
+import com.ddd.oi.presentation.upsertplace.upsertPlaceNavGraph
 
 @Composable
 fun OiNavHost(
@@ -49,13 +50,20 @@ fun OiNavHost(
         )
         scheduleDetailNavGraph(
             navigateToSearchPlace = { id ->
-                navigator.navigateToSchedulePlace(id)
+                navigator.navigateToSearchPlace(id)
             }
         )
         searchPlaceNavGraph(
             navigatePopBack = {
                 navigator.popBackStack()
             }
+        )
+
+        upsertPlaceNavGraph(
+            navigatePopBack = {
+                navigator.popBackStack()
+            },
+            onShowSnackBar = onShowSnackbar
         )
     }
 }

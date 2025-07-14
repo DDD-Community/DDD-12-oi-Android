@@ -76,4 +76,7 @@
     <string name="recent_search">최근 검색어</string>
     <string name="delete_all">모두 지우기</string>
     <string name="no_search_result">앗! 검색 결과가 없어요.</string>
+
+    <string name="upsert_place_can_be_one_item">장소 수정은 한 개만 선택할 수 있어요.</string>
+    <string name="upsert_selected_place">선택한 장소로 변경하기</string>
 </resources>

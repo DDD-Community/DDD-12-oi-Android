@@ -17,6 +17,7 @@ import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.schedule.navigateToSchedule
 import com.ddd.oi.presentation.scheduledetail.navigateToScheduleDetail
 import com.ddd.oi.presentation.searchplace.navigateToSearchPlace
+import com.ddd.oi.presentation.upsertplace.navigateToUpsertPlace
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -87,7 +88,11 @@ class OiNavigator(
     }
 
     fun navigateToScheduleDetail(scheduleId: Long) = navController.navigateToScheduleDetail(scheduleId)
-    fun navigateToSchedulePlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
+
+    fun navigateToSearchPlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
+
+    fun navigateToUpsertPlace(scheduleId: Long) = navController.navigateToUpsertPlace(scheduleId)
+
     fun popBackStack() {
         navController.popBackStack()
     }

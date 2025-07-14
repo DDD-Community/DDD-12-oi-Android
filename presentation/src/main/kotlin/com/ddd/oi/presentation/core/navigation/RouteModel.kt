@@ -10,7 +10,10 @@ sealed interface Route {
     data class ScheduleDetail(val scheduleId: Long): Route
 
     @Serializable
-    data class SearchPlace(val scheduleId: Long, val mode: SchedulePlaceMode = SchedulePlaceMode.ADD): Route
+    data class SearchPlace(val scheduleId: Long): Route
+
+    @Serializable
+    data class UpsertPlace(val scheduleId: Long): Route
 }
 
 sealed interface MainTabRoute : Route {
@@ -27,10 +30,4 @@ enum class UpsertMode {
     CREATE,
     EDIT,
     COPY
-}
-
-@Serializable
-enum class SchedulePlaceMode {
-    ADD,
-    UPDATE
 }
