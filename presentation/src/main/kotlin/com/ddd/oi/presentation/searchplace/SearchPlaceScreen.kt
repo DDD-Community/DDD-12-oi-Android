@@ -68,7 +68,8 @@ fun SearchPlaceScreen(
         clearSearchPlace = { viewModel.clearSearchPlace() },
         removeSelectedPlace = { viewModel.removePlace(it) },
         onRecentSearchItemClick = { viewModel.searchImmediate(it) },
-        onRecentSearchIconClick = { viewModel.removeQuery(it) }
+        onRecentSearchIconClick = { viewModel.removeQuery(it) },
+        onUpdate = { viewModel.updatePlace() }
     )
 }
 
@@ -86,6 +87,7 @@ private fun SearchPlaceScreen(
     removeSelectedPlace: (Place) -> Unit,
     onRecentSearchItemClick: (String) -> Unit,
     onRecentSearchIconClick: (String) -> Unit,
+    onUpdate: () -> Unit,
 ) {
     Scaffold(
         modifier = modifier.background(white),
@@ -102,7 +104,8 @@ private fun SearchPlaceScreen(
             SearchPlaceBottom(
                 modifier = Modifier,
                 isButtonEnabled = uiState.selectedPlaceList.isNotEmpty(),
-                selectedPlaceCount = uiState.selectedPlaceList.size
+                selectedPlaceCount = uiState.selectedPlaceList.size,
+                onButtonClick = onUpdate
             )
         }
     ) { defaultPadding ->
@@ -279,6 +282,7 @@ private fun SearchPlaceScreenPreview() {
         clearSearchPlace = {},
         removeSelectedPlace = {},
         onRecentSearchItemClick = {},
-        onRecentSearchIconClick = {}
+        onRecentSearchIconClick = {},
+        onUpdate = {}
     )
 }

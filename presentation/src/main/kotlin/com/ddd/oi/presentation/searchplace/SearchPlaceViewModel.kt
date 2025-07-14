@@ -218,6 +218,10 @@ class SearchPlaceViewModel @Inject constructor(
             placeRepository.clearRecentSearchPlace()
         }
     }
+
+    fun updatePlace() {
+        // todo set api
+    }
 }
 
 sealed class SearchPlaceUiState(
