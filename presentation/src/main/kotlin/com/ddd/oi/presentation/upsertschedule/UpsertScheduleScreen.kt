@@ -420,8 +420,5 @@ private fun UpsertScreenBottom(
 @Preview
 @Composable
 fun UpsertScheduleScreenPreview() {
-    UpsertScheduleContentItem(
-        titleResId = R.string.copy_schedule,
-        tagText = "seminzzang",
-        content = {})
+    UpsertScheduleScreen()
 }
