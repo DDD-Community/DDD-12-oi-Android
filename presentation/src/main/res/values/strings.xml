@@ -79,4 +79,6 @@
 
     <string name="upsert_place_can_be_one_item">장소 수정은 한 개만 선택할 수 있어요.</string>
     <string name="upsert_selected_place">선택한 장소로 변경하기</string>
+
+    <string name="current_updating_place">현재 변경중인 장소</string>
 </resources>

@@ -91,7 +91,7 @@ class OiNavigator(
 
     fun navigateToSearchPlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
 
-    fun navigateToUpsertPlace(scheduleId: Long) = navController.navigateToUpsertPlace(scheduleId)
+    fun navigateToUpsertPlace(scheduleId: Long, placeName: String) = navController.navigateToUpsertPlace(scheduleId, placeName)
 
     fun popBackStack() {
         navController.popBackStack()

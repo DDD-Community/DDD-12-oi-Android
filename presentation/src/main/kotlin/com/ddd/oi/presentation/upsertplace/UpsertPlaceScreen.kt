@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +34,7 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddd.oi.domain.model.Place
 import com.ddd.oi.presentation.R
+import com.ddd.oi.presentation.core.designsystem.component.common.OiBadge
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
@@ -49,6 +50,7 @@ import com.ddd.oi.presentation.core.designsystem.theme.white
 @Composable
 fun UpsertPlaceScreen(
     scheduleId: Long,
+    placeName: String,
     onBack: () -> Unit,
     onShowSnackBar: (OiSnackbarData) -> Unit,
     viewModel: UpsertPlaceViewModel = hiltViewModel()
@@ -85,7 +87,8 @@ fun UpsertPlaceScreen(
         removeSelectedPlace = { viewModel.removePlace(it) },
         onRecentSearchItemClick = { viewModel.searchImmediate(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
-        onUpdate = { viewModel.updatePlace() }
+        onUpdate = { viewModel.updatePlace() },
+        placeName = placeName
     )
 }
 
@@ -104,6 +107,7 @@ private fun UpsertPlaceScreen(
     onRecentSearchItemClick: (String) -> Unit,
     onRecentSearchIconClick: (String) -> Unit,
     onUpdate: () -> Unit,
+    placeName: String,
 ) {
     Scaffold(
         modifier = modifier.background(white),
@@ -138,11 +142,21 @@ private fun UpsertPlaceScreen(
                 onSearch = onSearch
             )
 
-            HorizontalDivider(
-                modifier = Modifier.fillMaxWidth(),
-                thickness = 1.dp,
-                color = OiTheme.colors.borderSecondary,
-            )
+            Row(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OiBadge(text = stringResource(R.string.current_updating_place))
+
+                Text(
+                    text = placeName,
+                    style = OiTheme.typography.bodySmallMedium,
+                    color = OiTheme.colors.textPrimary
+                )
+            }
 
             if (uiState.selectedPlaceList.isNotEmpty()) {
                 LazyRow(
@@ -295,6 +309,7 @@ private fun UpsertPlaceScreenPreview() {
         removeSelectedPlace = {},
         onRecentSearchItemClick = {},
         onRecentSearchIconClick = {},
-        onUpdate = {}
+        onUpdate = {},
+        placeName = ""
     )
 }

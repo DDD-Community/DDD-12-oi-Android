@@ -13,7 +13,10 @@ sealed interface Route {
     data class SearchPlace(val scheduleId: Long): Route
 
     @Serializable
-    data class UpsertPlace(val scheduleId: Long): Route
+    data class UpsertPlace(
+        val scheduleId: Long,
+        val placeName: String,
+    ): Route
 }
 
 sealed interface MainTabRoute : Route {
