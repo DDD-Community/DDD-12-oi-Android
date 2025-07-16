@@ -115,7 +115,7 @@ private fun UpsertPlaceScreen(
         topBar = {
             OiHeader(
                 leftButtonDrawableRes = R.drawable.ic_arrow_left,
-                titleStringRes = R.string.add_place,
+                titleStringRes = R.string.upsert_place,
                 isDividerVisible = false,
                 onLeftClick = onLeftClick
             )

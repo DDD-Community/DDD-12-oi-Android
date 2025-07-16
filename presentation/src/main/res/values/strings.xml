@@ -81,4 +81,6 @@
     <string name="upsert_selected_place">선택한 장소로 변경하기</string>
 
     <string name="current_updating_place">현재 변경중인 장소</string>
+
+    <string name="upsert_place">장소 수정하기</string>
 </resources>
