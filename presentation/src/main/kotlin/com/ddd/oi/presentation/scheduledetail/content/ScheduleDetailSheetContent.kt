@@ -1,5 +1,7 @@
 package com.ddd.oi.presentation.scheduledetail.content
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,6 +49,7 @@ import com.ddd.oi.domain.model.schedule.Place
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.rippleOrFallbackImplementation
 import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToScheduleDetailActiveDate
+import com.ddd.oi.presentation.core.designsystem.component.mapper.getPlaceCategoryColor
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.scheduledetail.contract.ScheduleDay
@@ -69,13 +73,14 @@ internal fun ScheduleDetailSheetContent(
     lazyListState: LazyListState,
     scheduleDays: ImmutableList<ScheduleDay>,
     activeDate: LocalDate,
-    isAutoSelectionLocked: Boolean = false,
+    isAutoSelectionLocked: Boolean,
     selectedPlace: Place? = null,
-    onUserScroll: () -> Unit,
     onActiveDateChanged: (LocalDate) -> Unit,
     onScrollPlaceChange: (Place) -> Unit,
     onClickPlace: (Place, LocalDate) -> Unit,
+    onUserScroll: () -> Unit,
     editTimeClick: () -> Unit,
+    onMemoEdit: (Place) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -99,8 +104,7 @@ internal fun ScheduleDetailSheetContent(
         val targetIndex = dayStartIndices.getOrNull(dayIndex)
         if (targetIndex != null && lazyListState.firstVisibleItemIndex != targetIndex) {
             scope.launch {
-                if (isAutoSelectionLocked)
-                    lazyListState.animateScrollToItem(index = targetIndex)
+                lazyListState.animateScrollToItem(index = targetIndex)
             }
         }
     }
@@ -123,17 +127,17 @@ internal fun ScheduleDetailSheetContent(
             .mapNotNull { index ->
                 flatListItems.getOrNull(index)
             }
-            .distinctUntilChanged() // 최상단 아이템이 바뀔 때만 수집
             .collect { topVisibleItem ->
-                onActiveDateChanged(topVisibleItem.date)
-                if (topVisibleItem is SheetListItem.PlaceItem) {
-                    onScrollPlaceChange(topVisibleItem.place)
+                if (!isAutoSelectionLocked) {
+                    if (activeDate != topVisibleItem.date) {
+                        Log.d("날짜바뀌기", "날짜바뀌기")
+                        onActiveDateChanged(topVisibleItem.date)
+                    }
+                    if (topVisibleItem is SheetListItem.PlaceItem) {
+                        onScrollPlaceChange(topVisibleItem.place)
+                    }
                 }
             }
-    }
-
-    val isScrollable by remember {
-        derivedStateOf { lazyListState.canScrollForward || lazyListState.canScrollBackward }
     }
 
     LazyColumn(
@@ -178,26 +182,19 @@ internal fun ScheduleDetailSheetContent(
 
             when (item) {
                 is SheetListItem.Header -> {
-                    val isFirstDay = date == scheduleDays.firstOrNull()?.date
-                    val shouldBeHidden = if (isScrollable) {
-                        (date == activeDate)
-                    } else {
-                        isFirstDay
+                    AnimatedVisibility(
+                        visible = activeDate != date,
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(start = 16.dp),
+                            text = "Day${item.day} (${
+                                formatToScheduleDetailActiveDate(
+                                    item.date
+                                )
+                            })",
+                            style = OiTheme.typography.bodyLargeSemibold
+                        )
                     }
-                    // 마지막 아이템이 현재 화면에 보이는지 확인합니다.
-//                    AnimatedVisibility(
-//                        visible = !shouldBeHidden || isAtBottom,
-//                    ) {
-                    Text(
-                        modifier = Modifier.padding(start = 16.dp),
-                        text = "Day${item.day} (${
-                            formatToScheduleDetailActiveDate(
-                                item.date
-                            )
-                        })",
-                        style = OiTheme.typography.bodyLargeSemibold
-                    )
-                    //  }
                 }
 
                 is SheetListItem.PlaceItem -> {
@@ -208,12 +205,19 @@ internal fun ScheduleDetailSheetContent(
                             place = place,
                             order = (day?.places?.indexOf(place) ?: 0) + 1,
                             isSelected = place.id == selectedPlace?.id,
-                            onClick = { onClickPlace(place, item.date) },
+                            onClick = {
+                                onClickPlace(place, item.date)
+                                scope.launch {
+                                    lazyListState.animateScrollToItem(index = index)
+                                }
+                            },
                             editTimeClick = {
                                 onClickPlace(place, item.date)
                                 editTimeClick()
                             },
-                            onMemoClick = {},
+                            onMemoClick = {
+                                onMemoEdit(place)
+                            },
                             onEditClick = {},
                             onDeleteClick = {}
                         )
@@ -224,6 +228,9 @@ internal fun ScheduleDetailSheetContent(
                     EmptyPlace()
                 }
             }
+        }
+        item {
+            Spacer(modifier = Modifier.height(800.dp))
         }
     }
 }
@@ -249,12 +256,14 @@ fun PlaceCard(
             modifier = Modifier
                 .padding(start = 32.dp, end = 24.dp)
                 .clip(CircleShape)
+                .background(getPlaceCategoryColor(place.category))
                 .size(16.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "$order",
-                style = OiTheme.typography.bodyXSmallSemibold
+                style = OiTheme.typography.bodyXSmallSemibold,
+                color = white
             )
         }
 
@@ -263,7 +272,7 @@ fun PlaceCard(
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .weight(1f)
-                .height(70.dp)
+                .height(90.dp)
                 .padding(end = 16.dp, top = 8.dp, bottom = 8.dp),
             color = white,
             shadowElevation = 2.dp,
@@ -300,7 +309,10 @@ fun PlaceCard(
                         tint = Color(0xFFA1A1A1)
                     )
                 }
-
+                VerticalDivider(
+                    modifier = Modifier.height(16.dp),
+                    color = Color(0xFFF6F6F6)
+                )
                 // 장소 이름 및 추가 정보
                 Column(
                     modifier = Modifier.padding(start = 12.dp),
@@ -427,7 +439,8 @@ private fun PlaceCardPreview() {
             startTime = "15:00",
             targetDate = "2025-07-20",
             latitude = 34.2132,
-            longitude = 124.123
+            longitude = 124.123,
+            category = "카페"
         )
         val place2 = Place(
             id = 0,
@@ -436,7 +449,8 @@ private fun PlaceCardPreview() {
             startTime = "15:00",
             targetDate = "2025-07-20",
             latitude = 34.2132,
-            longitude = 124.123
+            longitude = 124.123,
+            category = "숙박시설"
         )
         Column {
             PlaceCard(
