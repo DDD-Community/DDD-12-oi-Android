@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.oi.domain.model.Place
 import com.ddd.oi.domain.repository.PlaceRepository
+import com.ddd.oi.domain.repository.ScheduleDetailRepository
 import com.ddd.oi.domain.usecase.place.QueryPlaceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +33,8 @@ import javax.inject.Inject
 @HiltViewModel
 class UpsertPlaceViewModel @Inject constructor(
     private val queryPlaceUseCase: QueryPlaceUseCase,
-    private val placeRepository: PlaceRepository
+    private val placeRepository: PlaceRepository,
+    private val scheduleDetailRepository: ScheduleDetailRepository,
 ) : ViewModel() {
     private var scheduleId: Long = 0L
 

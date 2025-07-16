@@ -1,10 +1,12 @@
 package com.ddd.oi.presentation.searchplace
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.oi.domain.model.Place
 import com.ddd.oi.domain.repository.PlaceRepository
+import com.ddd.oi.domain.repository.ScheduleDetailRepository
 import com.ddd.oi.domain.usecase.place.QueryPlaceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,7 +32,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchPlaceViewModel @Inject constructor(
     private val queryPlaceUseCase: QueryPlaceUseCase,
-    private val placeRepository: PlaceRepository
+    private val placeRepository: PlaceRepository,
+    private val scheduleDetailRepository: ScheduleDetailRepository,
 ) : ViewModel() {
     private var scheduleId: Long = 0L
 
@@ -221,7 +224,16 @@ class SearchPlaceViewModel @Inject constructor(
     }
 
     fun insertPlace() {
-        // todo set api
+        viewModelScope.launch {
+            try {
+                val result =
+                    scheduleDetailRepository.postScheduleDetail(scheduleId.toInt(), selectedPlace)
+                Log.e("SEARCH_PLACE", result.toString())
+            } catch (e: Exception) {
+                Log.e("SEARCH_PLACE", e.toString())
+            }
+        }
+
     }
 }
 
