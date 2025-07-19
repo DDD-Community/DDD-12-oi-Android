@@ -264,7 +264,7 @@ private fun SearchPlaceBottom(
             style = OiButtonStyle.Large48Oval,
             leftIconDrawableRes = R.drawable.ic_add_plus,
             title =
-                if (selectedPlaceCount == 1) stringResource(R.string.add_selected_place)
+                if (selectedPlaceCount <= 1) stringResource(R.string.add_selected_place)
                 else stringResource(R.string.add_selected_multiple_place, selectedPlaceCount),
             enabled = isButtonEnabled
         )
