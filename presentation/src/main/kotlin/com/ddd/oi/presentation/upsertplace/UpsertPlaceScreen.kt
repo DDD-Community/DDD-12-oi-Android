@@ -138,6 +138,7 @@ private fun UpsertPlaceScreen(
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 12.dp),
                 text = query,
+                hint = stringResource(R.string.search_place_text_field_hint),
                 onTextChanged = onTextChanged,
                 onSearch = onSearch
             )
