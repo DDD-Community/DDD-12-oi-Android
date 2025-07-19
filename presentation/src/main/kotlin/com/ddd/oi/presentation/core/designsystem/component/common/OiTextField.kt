@@ -220,9 +220,7 @@ fun OiSearchField(
                 value = text,
                 textStyle = OiTheme.typography.bodyLargeRegular,
                 onValueChange = {
-                    if (it.length <= MAX_LENGTH) {
-                        onTextChanged(it)
-                    }
+                    onTextChanged(it)
                 },
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions.Default.copy(
