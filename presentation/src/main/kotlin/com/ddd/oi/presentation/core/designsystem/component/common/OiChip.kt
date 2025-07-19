@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -167,6 +169,8 @@ fun OiSearchChip(
     onItemClick: (String) -> Unit = {},
     onIconClick: (String) -> Unit = {},
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Row(
         modifier = modifier
             .height(height = OiChipDimens.Search.height)
@@ -177,8 +181,12 @@ fun OiSearchChip(
                 color = OiTheme.colors.borderPrimary,
                 shape = RoundedCornerShape(OiChipDimens.Search.rectRadius)
             )
-            .clickable { onItemClick(text) }
-            .padding(
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                onItemClick(text)
+            }.padding(
                 horizontal = OiChipDimens.Search.horizontalPadding,
                 vertical = OiChipDimens.Search.verticalPadding
             ),
@@ -214,13 +222,19 @@ fun OiRecentSearchChip(
     onItemClick: (String) -> Unit = {},
     onIconClick: (String) -> Unit = {},
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Row(
         modifier = modifier
             .height(height = OiChipDimens.RecentSearch.height)
             .clip(RoundedCornerShape(OiChipDimens.RecentSearch.radius))
             .background(color = OiTheme.colors.backgroundUnselected)
-            .clickable { onItemClick(text) }
-            .padding(
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                onItemClick(text)
+            }.padding(
                 horizontal = OiChipDimens.RecentSearch.horizontalPadding,
                 vertical = OiChipDimens.RecentSearch.verticalPadding
             ),
