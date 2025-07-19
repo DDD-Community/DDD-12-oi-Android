@@ -39,8 +39,8 @@ class ScheduleDetailRepositoryImpl @Inject constructor(
                 targetDate = targetDate,
                 memo = "",
                 spotName = place.title,
-                latitude = place.mapY.div(10_000_000.0),
-                longitude = place.mapX.div(10_000_000.0),
+                latitude = place.latitude,
+                longitude = place.longitude,
                 category = place.category
             )
         )
@@ -54,13 +54,12 @@ class ScheduleDetailRepositoryImpl @Inject constructor(
         return remoteDataSource.postScheduleDetail(
             scheduleId,
             body.map { place ->
-                val latlng = convertTM128ToWGS84(place.mapX.toDouble(), place.mapY.toDouble())
                 SpotRequest(
                     targetDate = targetDate,
                     memo = "",
                     spotName = place.title,
-                    latitude = place.mapY.div(10_000_000.0),
-                    longitude = place.mapX.div(10_000_000.0),
+                    latitude = place.latitude,
+                    longitude = place.longitude,
                     category = place.category
                 )
             }

@@ -81,6 +81,7 @@ class SearchPlaceViewModel @Inject constructor(
 
             _uiState.update { result }
         }.catch { exception ->
+            Log.e("SEARCH_PLACE", exception.toString())
             if (exception is IllegalArgumentException && exception.message == "List is empty") {
                 _uiState.update {
                     SearchPlaceUiState.ResultEmpty(

@@ -43,8 +43,8 @@ data class PlaceItem(
     val telephone: String,
     val address: String,
     val roadAddress: String,
-    @SerialName("mapx") val mapX: Int,
-    @SerialName("mapy") val mapY: Int,
+    val latitude: Double,
+    val longitude: Double,
     val mainCategory: String,
     val categoryColor: String,
     val title: String,
@@ -52,13 +52,13 @@ data class PlaceItem(
     val description: String
 ) {
     fun toDomain() = Place(
-        id = UUID.nameUUIDFromBytes("$title|$address|$mapX|$mapY".toByteArray()).toString(),
+        id = UUID.nameUUIDFromBytes("$title|$address|$latitude|$longitude".toByteArray()).toString(),
         title = title,
         category = mainCategory,
         address = address,
         roadAddress = roadAddress,
-        mapX = mapX,
-        mapY = mapY,
+        latitude = latitude,
+        longitude = longitude,
         categoryColor = categoryColor
     )
 }
