@@ -17,4 +17,5 @@ data class PlaceInfo(
     val latitude: Double,
     val longitude: Double,
     val memo: String,
+    val category: String,
 )
