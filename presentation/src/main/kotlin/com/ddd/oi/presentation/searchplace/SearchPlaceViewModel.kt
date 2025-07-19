@@ -100,10 +100,6 @@ class SearchPlaceViewModel @Inject constructor(
     }
 
     fun search(query: String) {
-        viewModelScope.launch {
-            placeRepository.addRecentSearchPlace(query)
-        }
-
         queryPlaceUseCase(query)
             .map { placeList ->
                 query to placeList
@@ -113,6 +109,8 @@ class SearchPlaceViewModel @Inject constructor(
                     placeList = placeList.ifEmpty { throw IllegalArgumentException("List is empty") },
                     selectedPlaceList = selectedPlace
                 )
+
+                placeRepository.addRecentSearchPlace(query)
 
                 _uiState.update {
                     when (it) {
@@ -173,7 +171,13 @@ class SearchPlaceViewModel @Inject constructor(
 
     fun selectPlace(place: Place) {
         if (selectedPlace.contains(place)) selectedPlace.remove(place)
-        else selectedPlace.add(place)
+        else {
+            selectedPlace.add(place)
+
+            viewModelScope.launch {
+                placeRepository.addRecentSearchPlace(place.title)
+            }
+        }
 
         _uiState.update {
             when (it) {

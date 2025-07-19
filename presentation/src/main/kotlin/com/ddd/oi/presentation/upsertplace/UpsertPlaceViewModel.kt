@@ -181,6 +181,10 @@ class UpsertPlaceViewModel @Inject constructor(
             viewModelScope.launch { _error.emit(Unit) }
         } else {
             selectedPlace.add(place)
+
+            viewModelScope.launch {
+                placeRepository.addRecentSearchPlace(place.title)
+            }
         }
 
         _uiState.update {
