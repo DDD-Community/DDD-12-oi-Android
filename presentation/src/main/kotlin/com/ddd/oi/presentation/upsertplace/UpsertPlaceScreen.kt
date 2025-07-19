@@ -258,7 +258,7 @@ private fun UpsertPlaceScreen(
                                 place = it.title,
                                 category = it.category,
                                 categoryColor = Color(it.categoryColor.toColorInt()),
-                                address = it.roadAddress,
+                                address = it.shownAddress,
                                 onClick = { onPlaceClick(it) },
                                 isFocused = uiState.selectedPlaceList.contains(it)
                             )

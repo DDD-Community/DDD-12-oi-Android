@@ -9,4 +9,6 @@ data class Place(
     val latitude: Double,
     val longitude: Double,
     val categoryColor: String,
-)
+) {
+    val shownAddress: String get() = roadAddress.ifBlank { address }
+}
