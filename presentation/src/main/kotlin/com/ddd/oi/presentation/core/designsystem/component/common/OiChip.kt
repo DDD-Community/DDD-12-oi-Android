@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
@@ -186,7 +187,8 @@ fun OiSearchChip(
                 indication = null
             ) {
                 onItemClick(text)
-            }.padding(
+            }
+            .padding(
                 horizontal = OiChipDimens.Search.horizontalPadding,
                 vertical = OiChipDimens.Search.verticalPadding
             ),
@@ -194,10 +196,13 @@ fun OiSearchChip(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
+            modifier = Modifier.weight(1f, fill = false),
             text = text,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Start,
             style = OiTheme.typography.bodySmallSemibold,
-            color = OiTheme.colors.textSecondary
+            color = OiTheme.colors.textSecondary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         IconButton(
@@ -234,7 +239,8 @@ fun OiRecentSearchChip(
                 indication = null
             ) {
                 onItemClick(text)
-            }.padding(
+            }
+            .padding(
                 horizontal = OiChipDimens.RecentSearch.horizontalPadding,
                 vertical = OiChipDimens.RecentSearch.verticalPadding
             ),
@@ -242,10 +248,13 @@ fun OiRecentSearchChip(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
+            modifier = Modifier.weight(1f, fill = false),
             text = text,
-            textAlign = TextAlign.Center,
+            textAlign = TextAlign.Start,
             style = OiTheme.typography.bodySmallSemibold,
-            color = OiTheme.colors.textSecondary
+            color = OiTheme.colors.textSecondary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         IconButton(
