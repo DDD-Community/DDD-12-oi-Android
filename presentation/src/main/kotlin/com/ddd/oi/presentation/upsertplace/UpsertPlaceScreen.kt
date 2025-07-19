@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -109,6 +111,15 @@ private fun UpsertPlaceScreen(
     onUpdate: () -> Unit,
     placeName: String,
 ) {
+    val focusManager = LocalFocusManager.current
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (listState.isScrollInProgress) {
+            focusManager.clearFocus()
+        }
+    }
+
     Scaffold(
         modifier = modifier.background(white),
         containerColor = white,
@@ -190,7 +201,6 @@ private fun UpsertPlaceScreen(
                                 text = stringResource(R.string.recent_search),
                             )
 
-                            // todo remove all
                             Text(
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
@@ -252,7 +262,8 @@ private fun UpsertPlaceScreen(
                 is SearchPlaceUiState.Typing -> {
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
+                        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp),
+                        state = listState,
                     ) {
                         items(uiState.placeList) {
                             OiPlaceCard(
@@ -260,7 +271,10 @@ private fun UpsertPlaceScreen(
                                 category = it.category,
                                 categoryColor = Color(it.categoryColor.toColorInt()),
                                 address = it.shownAddress,
-                                onClick = { onPlaceClick(it) },
+                                onClick = {
+                                    onPlaceClick(it)
+                                    focusManager.clearFocus()
+                                },
                                 isFocused = uiState.selectedPlaceList.contains(it)
                             )
                         }
