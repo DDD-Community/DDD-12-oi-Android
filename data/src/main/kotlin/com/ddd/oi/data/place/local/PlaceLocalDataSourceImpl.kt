@@ -22,7 +22,13 @@ class PlaceLocalDataSourceImpl @Inject constructor(
         dataStore.edit { pref ->
             pref[DataStoreKey.RECENT_SEARCH_PLACE] =
                 pref[DataStoreKey.RECENT_SEARCH_PLACE]?.split("|")?.toMutableList()?.apply {
-                    add("$place|")
+                    if (contains(place).not()) {
+                        add(place)
+                    }
+
+                    if (size > 10) {
+                        removeAt(0)
+                    }
                 }?.filter { it.isNotEmpty() }?.joinToString("|") ?: ""
         }
     }
@@ -31,7 +37,9 @@ class PlaceLocalDataSourceImpl @Inject constructor(
         dataStore.edit { pref ->
             pref[DataStoreKey.RECENT_SEARCH_PLACE] =
                 pref[DataStoreKey.RECENT_SEARCH_PLACE]?.split("|")?.toMutableList()?.apply {
-                    remove(place)
+                    if (contains(place)) {
+                        remove(place)
+                    }
                 }?.filter { it.isNotEmpty() }?.joinToString("|") ?: ""
         }
     }

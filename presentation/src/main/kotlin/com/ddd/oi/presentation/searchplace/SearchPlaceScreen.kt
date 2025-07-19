@@ -2,6 +2,7 @@ package com.ddd.oi.presentation.searchplace
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -21,9 +23,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -69,7 +73,10 @@ fun SearchPlaceScreen(
         removeSelectedPlace = { viewModel.removePlace(it) },
         onRecentSearchItemClick = { viewModel.searchImmediate(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
-        onUpdate = { viewModel.insertPlace() }
+        onUpdate = {
+            viewModel.insertPlace()
+            onBack()
+        }
     )
 }
 
@@ -89,6 +96,15 @@ private fun SearchPlaceScreen(
     onRecentSearchIconClick: (String) -> Unit,
     onUpdate: () -> Unit,
 ) {
+    val focusManager = LocalFocusManager.current
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (listState.isScrollInProgress) {
+            focusManager.clearFocus()
+        }
+    }
+
     Scaffold(
         modifier = modifier.background(white),
         containerColor = white,
@@ -101,12 +117,14 @@ private fun SearchPlaceScreen(
             )
         },
         bottomBar = {
-            SearchPlaceBottom(
-                modifier = Modifier,
-                isButtonEnabled = uiState.selectedPlaceList.isNotEmpty(),
-                selectedPlaceCount = uiState.selectedPlaceList.size,
-                onButtonClick = onUpdate
-            )
+            if (query.isNotEmpty() || uiState.selectedPlaceList.isNotEmpty()) {
+                SearchPlaceBottom(
+                    modifier = Modifier,
+                    isButtonEnabled = uiState.selectedPlaceList.isNotEmpty(),
+                    selectedPlaceCount = uiState.selectedPlaceList.size,
+                    onButtonClick = onUpdate
+                )
+            }
         }
     ) { defaultPadding ->
         Column(
@@ -119,6 +137,7 @@ private fun SearchPlaceScreen(
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 12.dp),
                 text = query,
+                hint = stringResource(R.string.search_place_text_field_hint),
                 onTextChanged = onTextChanged,
                 onSearch = onSearch
             )
@@ -160,7 +179,6 @@ private fun SearchPlaceScreen(
                                 text = stringResource(R.string.recent_search),
                             )
 
-                            // todo remove all
                             Text(
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
@@ -222,15 +240,19 @@ private fun SearchPlaceScreen(
                 is SearchPlaceUiState.Typing -> {
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
+                        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp),
+                        state = listState,
                     ) {
                         items(uiState.placeList) {
                             OiPlaceCard(
                                 place = it.title,
                                 category = it.category,
                                 categoryColor = Color(it.categoryColor.toColorInt()),
-                                address = it.roadAddress,
-                                onClick = { onPlaceClick(it) },
+                                address = it.shownAddress,
+                                onClick = {
+                                    onPlaceClick(it)
+                                    focusManager.clearFocus()
+                                },
                                 isFocused = uiState.selectedPlaceList.contains(it)
                             )
                         }
@@ -261,7 +283,7 @@ private fun SearchPlaceBottom(
             style = OiButtonStyle.Large48Oval,
             leftIconDrawableRes = R.drawable.ic_add_plus,
             title =
-                if (selectedPlaceCount == 1) stringResource(R.string.add_selected_place)
+                if (selectedPlaceCount <= 1) stringResource(R.string.add_selected_place)
                 else stringResource(R.string.add_selected_multiple_place, selectedPlaceCount),
             enabled = isButtonEnabled
         )
