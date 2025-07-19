@@ -31,7 +31,6 @@ class ScheduleDetailRepositoryImpl @Inject constructor(
             .toLocalDateTime(TimeZone.currentSystemDefault())
             .toJavaLocalDateTime()
             .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-//        val latlng = convertTM128ToWGS84(place.mapX.toDouble(), place.mapY.toDouble())
         return remoteDataSource.putScheduleDetail(
             scheduleId,
             detailId,
