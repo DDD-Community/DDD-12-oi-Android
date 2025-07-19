@@ -57,6 +57,8 @@
     <string name="button_cancel">취소하기</string>
     <string name="button_delete">삭제하기</string>
     <string name="button_register">등록하기</string>
+    <string name="save">저장하기</string>
+
     <string name="dialog_delete_message">해당 일정을 삭제하시겠습니까?</string>
     <string name="dialog_past_date_message1">선택한 기간은</string>
     <string name="dialog_past_date_message2">이미 지난 날짜</string>

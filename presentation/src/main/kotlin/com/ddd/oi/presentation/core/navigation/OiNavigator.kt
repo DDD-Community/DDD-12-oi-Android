@@ -11,6 +11,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.ddd.oi.domain.model.schedule.Schedule
+import com.ddd.oi.domain.model.schedule.ScheduleDetail
 import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
 import com.ddd.oi.presentation.home.navigateToHome
 import com.ddd.oi.presentation.schedule.model.ScheduleNavData
@@ -87,7 +89,10 @@ class OiNavigator(
         navController.navigateToInsertSchedule(scheduleCopyState)
     }
 
-    fun navigateToScheduleDetail(scheduleId: Long) = navController.navigateToScheduleDetail(scheduleId)
+
+    fun navigateToSchedulePlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
+
+    fun navigateToScheduleDetail(scheduleId: Schedule) = navController.navigateToScheduleDetail(scheduleId)
 
     fun navigateToSearchPlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
 

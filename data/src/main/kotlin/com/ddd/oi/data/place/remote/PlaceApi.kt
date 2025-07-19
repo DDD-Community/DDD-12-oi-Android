@@ -10,7 +10,7 @@ import java.util.UUID
 
 interface PlaceApi {
 
-    @GET("api/search/places")
+    @GET("api/v1/search/places")
     suspend fun getPlace(
         @Query("query") query: String,
         @Query("display") display: Int,

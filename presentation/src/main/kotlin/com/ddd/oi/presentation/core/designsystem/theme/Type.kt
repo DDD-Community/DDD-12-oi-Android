@@ -17,6 +17,18 @@ internal val Typography = OiTypography(
         lineHeight = 36.sp,
         letterSpacing = 0.sp
     ),
+    headlineLargeSemiBold = PretendardStyle.copy(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineMediumRegular = PretendardStyle.copy(
+        fontWeight = FontWeight.Normal,
+        fontSize = 20.sp,
+        lineHeight = 30.sp,
+        letterSpacing = 0.sp
+    ),
     headlineMediumBold = PretendardStyle.copy(
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
@@ -112,7 +124,10 @@ internal val Typography = OiTypography(
 @Immutable
 data class OiTypography(
     val headlineLargeBold: TextStyle,
+    val headlineLargeSemiBold: TextStyle,
+
     val headlineMediumBold: TextStyle,
+    val headlineMediumRegular: TextStyle,
     val headlineSmallBold: TextStyle,
     val headLineSmallSemibold: TextStyle,
 
@@ -134,6 +149,8 @@ val LocalTypography = staticCompositionLocalOf {
     OiTypography(
         headlineSmallBold = PretendardStyle,
         headlineMediumBold = PretendardStyle,
+        headlineMediumRegular = PretendardStyle,
+        headlineLargeSemiBold = PretendardStyle,
         headlineLargeBold = PretendardStyle,
         headLineSmallSemibold = PretendardStyle,
         bodyLargeSemibold = PretendardStyle,

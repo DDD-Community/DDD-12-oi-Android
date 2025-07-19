@@ -2,6 +2,7 @@ package com.ddd.oi.data.schedule.remote
 
 import com.ddd.oi.data.schedule.model.ScheduleDto
 import com.ddd.oi.data.core.model.safeApiCall
+import com.ddd.oi.data.core.retrofit.api.ScheduleApiService
 import com.ddd.oi.data.schedule.model.ScheduleRequest
 import javax.inject.Inject
 

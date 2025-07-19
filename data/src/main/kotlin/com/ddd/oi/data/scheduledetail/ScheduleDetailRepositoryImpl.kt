@@ -1,6 +1,8 @@
 package com.ddd.oi.data.scheduledetail
 
+import com.ddd.oi.data.scheduledetail.mapper.toDomain
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteDataSource
+import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteSource
 import com.ddd.oi.data.scheduledetail.remote.SpotRequest
 import com.ddd.oi.domain.model.Place
 import com.ddd.oi.domain.repository.ScheduleDetailRepository
@@ -16,7 +18,8 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class ScheduleDetailRepositoryImpl @Inject constructor(
-    private val remoteDataSource: ScheduleDetailRemoteDataSource
+    private val remoteDataSource: ScheduleDetailRemoteDataSource,
+    private val scheduleDetailRemoteSource: ScheduleDetailRemoteSource
 ) : ScheduleDetailRepository {
 
     override suspend fun putScheduleDetail(
@@ -62,6 +65,17 @@ class ScheduleDetailRepositoryImpl @Inject constructor(
                 )
             }
         )
+    }
+
+    override suspend fun getScheduleDetail(scheduleId: Long): Result<Map<String, List<com.ddd.oi.domain.model.schedule.Place>>> {
+        return scheduleDetailRemoteSource.getScheduleDetails(scheduleId).map { dtoList ->
+            dtoList.associateBy(
+                keySelector = { it.targetDate },
+                valueTransform = { placeDto->
+                    placeDto.details.map { it.toDomain() }
+                }
+            )
+        }
     }
 
     data class LatLng(val latitude: Double, val longitude: Double)

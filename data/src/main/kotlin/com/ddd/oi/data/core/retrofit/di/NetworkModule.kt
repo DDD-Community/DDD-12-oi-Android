@@ -1,8 +1,8 @@
 package com.ddd.oi.data.core.retrofit.di
 
 import com.ddd.oi.data.BuildConfig
+import com.ddd.oi.data.core.retrofit.api.ScheduleApiService
 import com.ddd.oi.data.place.remote.PlaceApi
-import com.ddd.oi.data.schedule.remote.ScheduleApiService
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailApi
 import dagger.Module
 import dagger.Provides

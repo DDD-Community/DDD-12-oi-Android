@@ -1,23 +1,29 @@
 package com.ddd.oi.presentation.scheduledetail
 
+import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.presentation.core.navigation.Route
+import com.ddd.oi.presentation.core.navigation.ScheduleNavType
+import kotlin.reflect.typeOf
 
-fun NavController.navigateToScheduleDetail(scheduleId: Long) {
-    navigate(Route.ScheduleDetail(scheduleId))
+fun NavController.navigateToScheduleDetail(schedule: Schedule) {
+    navigate(Route.ScheduleDetail(schedule))
 }
 
 fun NavGraphBuilder.scheduleDetailNavGraph(
-    navigateToSearchPlace: (Long) -> Unit
+    navigateToSearchPlace: (Long) -> Unit,
+    onBackClick: () -> Unit
 ) {
-    composable<Route.ScheduleDetail> { backStackEntry ->
-        val scheduleId = backStackEntry.toRoute<Route.ScheduleDetail>().scheduleId
+    composable<Route.ScheduleDetail>(
+        typeMap = mapOf(typeOf<Schedule>() to ScheduleNavType)
+    ) {
         ScheduleDetailScreen(
-            scheduleId = scheduleId,
-            navigateToSearchPlace = { navigateToSearchPlace(scheduleId) }
+            onBackClick = onBackClick,
+            navigateToSearchPlace = navigateToSearchPlace
         )
     }
 }

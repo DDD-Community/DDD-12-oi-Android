@@ -1,8 +1,9 @@
-package com.ddd.oi.data.schedule.remote
+package com.ddd.oi.data.core.retrofit.api
 
 import com.ddd.oi.data.core.model.BaseResponse
 import com.ddd.oi.data.schedule.model.ScheduleDto
 import com.ddd.oi.data.schedule.model.ScheduleRequest
+import com.ddd.oi.data.scheduledetail.model.PlaceDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -12,7 +13,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface ScheduleApiService {
-    
+
     @GET("api/v1/schedules/{year}/{month}")
     suspend fun getSchedules(
         @Header("user-no") userId: Long = 1L,
@@ -40,4 +41,15 @@ interface ScheduleApiService {
         @Path("scheduleId") scheduleId: Long,
         @Body request: ScheduleRequest
     ): BaseResponse<ScheduleDto>
+
+    @GET("api/v1/schedules/{scheduleId}/details")
+    suspend fun getScheduleDetails(
+        @Path("scheduleId") scheduleId: Long
+    ): BaseResponse<List<PlaceDto>>
+
+    @PUT("api/v1/schedules/{scheduleId}/details/{detailId}")
+    suspend fun updateScheduleDetail(
+        @Path("scheduleId") scheduleId: Long,
+        @Path("detailId") detailId: Long
+    )
 }

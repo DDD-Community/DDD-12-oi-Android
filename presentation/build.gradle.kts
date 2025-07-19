@@ -65,6 +65,9 @@ dependencies {
     //kotlinx-datetime
     implementation(libs.kotlinx.datetime)
 
+    //naverMap
+    implementation(libs.naver.map.compose)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

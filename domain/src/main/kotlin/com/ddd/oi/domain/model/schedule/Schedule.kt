@@ -20,18 +20,15 @@ data class Schedule(
 @Serializable
 data class Place(
     val id: Long,
-    val title: String,
+    val startTime: String? = null,
+    val targetDate: String,
     val memo: String,
-    val startedAt: Long,
-    val endedAt: Long,
-    val latLng: LatLng
+    val spotName: String,
+    val latitude: Double,
+    val longitude: Double,
+    val category: String,
 )
 
-@Serializable
-data class LatLng(
-    val latitude: Double,
-    val longitude: Double
-)
 
 @Serializable
 enum class Category {
@@ -47,3 +44,7 @@ enum class Transportation {
 enum class Party {
     Alone, Friend, OtherHalf, Parent, Sibling, Children, Pet, Etc
 }
+
+data class ScheduleDetail(
+    val details: Map<String, List<Place>>
+)
