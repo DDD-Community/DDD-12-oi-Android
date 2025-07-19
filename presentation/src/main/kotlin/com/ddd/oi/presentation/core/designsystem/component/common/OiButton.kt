@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,9 +40,10 @@ fun OiButton(
     style: OiButtonStyle,
     colorType: OiButtonColorType = OiButtonColorType.Primary,
     enabled: Boolean = true,
-    @StringRes textStringRes: Int,
+    title: String,
     @DrawableRes leftIconDrawableRes: Int? = null,
     @DrawableRes rightIconDrawableRes: Int? = null,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -48,6 +51,7 @@ fun OiButton(
     Button(
         modifier = modifier
             .height(style.height),
+        contentPadding = contentPadding,
         shape = style.shape,
         enabled = enabled,
         colors = getButtonColors(colorType, isPressed),
@@ -66,7 +70,7 @@ fun OiButton(
             }
 
             Text(
-                text = stringResource(textStringRes),
+                text = title,
                 style = style.getTextStyle(),
             )
 
@@ -282,7 +286,7 @@ private fun OiButtonPreview() {
                     OiButton(
                         style = style,
                         colorType = colorType,
-                        textStringRes = R.string.button_eng,
+                        title = stringResource(R.string.button_eng),
                         leftIconDrawableRes = R.drawable.ic_add_plus,
                         rightIconDrawableRes = R.drawable.ic_chevron_right,
                     )

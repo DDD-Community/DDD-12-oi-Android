@@ -30,7 +30,7 @@ fun NavGraphBuilder.scheduleNavGraph(
             navigateToCreateSchedule = navigateToCreateSchedule,
             navigateToScheduleDetail = navigateToScheduleDetail,
             onShowSnackbar = onShowSnackbar,
-            scheduleCreated = scheduleCreated
+            scheduleCreated = scheduleCreated,
         )
     }
 }

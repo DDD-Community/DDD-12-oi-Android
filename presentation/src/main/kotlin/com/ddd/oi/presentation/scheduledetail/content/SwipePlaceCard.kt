@@ -135,36 +135,5 @@ private fun ActionButton(
 @Composable
 @Preview(showBackground = true)
 private fun SwipePlaceCardPreview() {
-    OiTheme {
-        val place1 = Place(
-            id = 0,
-            spotName = "부산",
-            memo = "오후 4시부터 체크인",
-            startTime = "15:00",
-            targetDate = "2025-07-20",
-            latitude = 34.2132,
-            longitude = 124.123
-        )
-        val place2 = Place(
-            id = 0,
-            spotName = "부산",
-            memo = "",
-            startTime = "15:00",
-            targetDate = "2025-07-20",
-            latitude = 34.2132,
-            longitude = 124.123
-        )
-        Column {
-            SwipePlaceCard(
-                place = place1,
-                order = 1,
-                isSelected = true,
-                onClick = {},
-                editTimeClick = {},
-                onMemoClick = {},
-                onEditClick = {},
-                onDeleteClick = {}
-            )
-        }
-    }
+
 }

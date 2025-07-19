@@ -126,7 +126,7 @@ fun OiDateRangeBottomSheet(
                         horizontal = Dimens.paddingMedium,
                         vertical = Dimens.paddingSmall
                     ),
-                textStringRes = R.string.confirm,
+                title = stringResource(R.string.confirm),
                 style = OiButtonStyle.Large48Oval,
                 enabled = uiState.isButtonEnabled,
                 onClick = {

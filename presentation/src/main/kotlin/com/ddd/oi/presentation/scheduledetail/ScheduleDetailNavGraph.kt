@@ -1,5 +1,6 @@
 package com.ddd.oi.presentation.scheduledetail
 
+import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -14,13 +15,15 @@ fun NavController.navigateToScheduleDetail(schedule: Schedule) {
 }
 
 fun NavGraphBuilder.scheduleDetailNavGraph(
+    navigateToSearchPlace: (Long) -> Unit,
     onBackClick: () -> Unit
 ) {
     composable<Route.ScheduleDetail>(
         typeMap = mapOf(typeOf<Schedule>() to ScheduleNavType)
     ) {
         ScheduleDetailScreen(
-            onBackClick = onBackClick
+            onBackClick = onBackClick,
+            navigateToSearchPlace = navigateToSearchPlace
         )
     }
 }

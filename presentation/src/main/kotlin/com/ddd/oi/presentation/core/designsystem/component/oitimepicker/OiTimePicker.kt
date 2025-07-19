@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -127,7 +128,7 @@ fun OiTimePicker(
                 .padding(top = 12.dp),
             style = OiButtonStyle.Large48Oval,
             colorType = OiButtonColorType.Primary,
-            textStringRes = R.string.button_register,
+            title = stringResource(R.string.button_register),
             onClick = {
                 val hour12 = selectedHour.toIntOrNull() ?: 12
                 val hour24 = when (selectedPeriod) {

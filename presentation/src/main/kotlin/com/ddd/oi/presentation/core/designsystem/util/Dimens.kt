@@ -66,6 +66,30 @@ object OiChipDimens {
         val horizontalPadding = 16.dp
         val verticalPadding = 11.dp
     }
+
+    object Search {
+        val height = 32.dp
+
+        val rectRadius = 8.dp
+        val iconSize = 16.dp
+
+        val horizontalPadding = 12.dp
+        val verticalPadding = 6.dp
+
+        val componentMargin = 4.dp
+    }
+
+    object RecentSearch {
+        val height = 32.dp
+
+        val radius = 999.dp
+        val iconSize = 16.dp
+
+        val horizontalPadding = 12.dp
+        val verticalPadding = 7.dp
+
+        val componentMargin = 8.dp
+    }
 }
 
 object OiChipTabDimes {
@@ -124,6 +148,7 @@ object OiCardDimens {
     val dividerHeight = 8.dp
     val moreIconSize = 16.dp
     val elevation = 2.dp
+    val stroke = 1.dp
 }
 
 object DialogDimens {

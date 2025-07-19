@@ -2,6 +2,8 @@ package com.ddd.oi.data.core.retrofit.di
 
 import com.ddd.oi.data.BuildConfig
 import com.ddd.oi.data.core.retrofit.api.ScheduleApiService
+import com.ddd.oi.data.place.remote.PlaceApi
+import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,6 +14,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -41,7 +44,8 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @OiApiRetrofit
+    fun provideOiApiRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
@@ -51,7 +55,29 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideScheduleApiService(retrofit: Retrofit): ScheduleApiService {
+    fun provideScheduleApiService(
+        @OiApiRetrofit retrofit: Retrofit
+    ): ScheduleApiService {
         return retrofit.create(ScheduleApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun providesPlaceApi(
+        @OiApiRetrofit retrofit: Retrofit
+    ): PlaceApi {
+        return retrofit.create(PlaceApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun providesScheduleDetailApi(
+        @OiApiRetrofit retrofit: Retrofit
+    ): ScheduleDetailApi {
+        return retrofit.create(ScheduleDetailApi::class.java)
+    }
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class OiApiRetrofit

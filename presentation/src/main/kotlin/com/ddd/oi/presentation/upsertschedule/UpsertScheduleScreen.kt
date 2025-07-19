@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
@@ -37,6 +36,7 @@ import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
 import com.ddd.oi.domain.model.schedule.Transportation
 import com.ddd.oi.presentation.R
+import com.ddd.oi.presentation.core.designsystem.component.common.OiBadge
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiChipIcon
 import com.ddd.oi.presentation.core.designsystem.component.common.OiChoiceChip
@@ -206,6 +206,7 @@ private fun UpsertScreenContent(
     Column(
         modifier = modifier
             .padding(horizontal = 16.dp)
+            .padding(bottom = 52.dp)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -340,21 +341,7 @@ private fun UpsertScheduleContentItem(
             )
 
             tagText?.let {
-                Box(
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .background(
-                            color = OiTheme.colors.backgroundUnselected,
-                            shape = RoundedCornerShape(4.dp)
-                        )
-                ) {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp),
-                        text = it,
-                        color = OiTheme.colors.textTertiary,
-                        style = OiTheme.typography.bodyXSmallMedium
-                    )
-                }
+                OiBadge(text = it)
             }
         }
 
@@ -420,7 +407,7 @@ private fun UpsertScreenBottom(
         OiNavigationButton(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .padding(top = (12 + 52).dp, bottom = 8.dp),
+                .padding(top = 12.dp, bottom = 8.dp),
             onClick = onButtonClick,
             style = OiButtonStyle.Large48Oval,
             textStringRes = R.string.next,

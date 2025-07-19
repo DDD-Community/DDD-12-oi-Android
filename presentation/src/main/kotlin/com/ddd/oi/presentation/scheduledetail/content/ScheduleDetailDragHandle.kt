@@ -88,7 +88,7 @@ internal fun ScheduleDetailDragHandle(
             Spacer(modifier = Modifier.weight(1f))
             OiAddButton(
                 title = R.string.add_place,
-                onClick = {}
+                onClick = navigateToSearchPlace
             )
         }
     }

@@ -79,8 +79,8 @@ fun ScheduleScreen(
     modifier: Modifier = Modifier,
     viewModel: ScheduleViewModel = hiltViewModel(),
     navigateToCreateSchedule: (ScheduleNavData?, Route.UpsertSchedule) -> Unit,
-    navigateToScheduleDetail: (Schedule) -> Unit = {},
     onShowSnackbar: (OiSnackbarData) -> Unit = {},
+    navigateToScheduleDetail: (Schedule) -> Unit,
     scheduleCreated: Boolean = false
 ) {
     val uiState by viewModel.collectAsState()
@@ -115,7 +115,7 @@ fun ScheduleScreen(
         },
         navigateToScheduleDetail = navigateToScheduleDetail,
         onShowSnackbar = onShowSnackbar,
-        onDropdownClick = { showMonthGridBottomSheet = true }
+        onDropdownClick = { showMonthGridBottomSheet = true },
     )
 
     if (showBottomSheet) {
@@ -191,9 +191,9 @@ private fun ScheduleScreen(
     scheduleState: ScheduleState,
     updateDate: (LocalDate) -> Unit,
     updateSelectedCategory: (CategoryFilter) -> Unit,
-    navigateToScheduleDetail: (Schedule) -> Unit,
     onMoreClick: (Schedule) -> Unit,
     navigateToCreateSchedule: () -> Unit,
+    navigateToScheduleDetail: (Schedule) -> Unit,
     onShowSnackbar: (OiSnackbarData) -> Unit,
     onDropdownClick: () -> Unit
 ) {
@@ -247,9 +247,7 @@ private fun ScheduleScreen(
                 todaySchedule.forEach { schedule ->
                     OiCard(
                         schedule = schedule,
-                        onClick = {
-                            navigateToScheduleDetail(schedule)
-                        },
+                        onClick = { navigateToScheduleDetail(schedule) },
                         onMoreClick = { onMoreClick(schedule) }
                     )
                 }
@@ -404,7 +402,8 @@ private fun ScheduleScreenPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(OiTheme.colors.backgroundContents),
-            navigateToCreateSchedule = { _, _ -> }
+            navigateToCreateSchedule = { _, _ -> },
+            navigateToScheduleDetail = {}
         )
     }
 }

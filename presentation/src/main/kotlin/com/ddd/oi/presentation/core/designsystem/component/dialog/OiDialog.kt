@@ -85,7 +85,7 @@ fun OiDeleteDialog(
                 modifier = Modifier.fillMaxWidth(),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Danger,
-                textStringRes = R.string.button_delete,
+                title = stringResource(R.string.button_delete),
                 onClick = {
                     onConfirm()
                     onDismiss()
@@ -100,7 +100,7 @@ fun OiDeleteDialog(
                     ),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Secondary,
-                textStringRes = R.string.button_cancel,
+                title = stringResource(R.string.button_cancel),
                 onClick = onDismiss
             )
         }
@@ -123,7 +123,7 @@ fun OiRegisterDialog(
                 modifier = Modifier.fillMaxWidth(),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Primary,
-                textStringRes = R.string.button_register,
+                title = stringResource(R.string.button_register),
                 onClick = {
                     onConfirm()
                     onDismiss()
@@ -138,7 +138,7 @@ fun OiRegisterDialog(
                     ),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Secondary,
-                textStringRes = R.string.button_cancel,
+                title = stringResource(R.string.button_cancel),
                 onClick = onDismiss
             )
         }
@@ -204,18 +204,18 @@ private fun OiDialogPreview() {
             OiButton(
                 modifier = Modifier.fillMaxWidth(),
                 style = OiButtonStyle.Medium40Rect,
-                textStringRes = R.string.button_delete,
+                title = stringResource(R.string.button_delete),
                 onClick = { showDeleteDialog = true }
             )
 
             OiButton(
                 style = OiButtonStyle.Medium40Rect,
-                textStringRes = R.string.button_register,
+                title = stringResource(R.string.button_register),
                 onClick = { showRegisterDialog = true }
             )
             OiButton(
                 style = OiButtonStyle.Medium40Rect,
-                textStringRes = R.string.edit_schedule,
+                title = stringResource(R.string.edit_schedule),
                 onClick = { showActionScheduleDialog = true }
             )
         }

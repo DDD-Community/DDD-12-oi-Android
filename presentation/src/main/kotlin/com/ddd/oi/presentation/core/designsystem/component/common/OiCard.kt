@@ -1,6 +1,6 @@
 package com.ddd.oi.presentation.core.designsystem.component.common
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +22,7 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -97,8 +98,7 @@ fun OiCard(
                     VerticalDivider(
                         modifier = Modifier
                             .padding(horizontal = Dimens.paddingSmall)
-                            .height(OiCardDimens.dividerHeight)
-                            ,
+                            .height(OiCardDimens.dividerHeight),
                         color = OiTheme.colors.borderSecondary
                     )
                     Icon(
@@ -129,6 +129,69 @@ fun OiCard(
 }
 
 @Composable
+fun OiPlaceCard(
+    modifier: Modifier = Modifier,
+    place: String,
+    category: String,
+    categoryColor: Color,
+    address: String,
+    onClick: () -> Unit = {},
+    isFocused: Boolean = true,
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(OiCardDimens.cardHeight),
+        shape = RoundedCornerShape(OiCardDimens.cornerRadius),
+        colors = CardDefaults.cardColors(containerColor = white),
+        elevation = CardDefaults.cardElevation(1.dp),
+        onClick = onClick
+    ) {
+        Column(
+            modifier = Modifier.getOiPlaceCardModifier(isFocused),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = place,
+                    style = OiTheme.typography.bodyMediumSemibold,
+                    color = OiTheme.colors.textPrimary
+                )
+                Text(
+                    modifier = Modifier.padding(start = 8.dp),
+                    text = category,
+                    style = OiTheme.typography.bodyXSmallMedium,
+                    color = categoryColor,
+                )
+            }
+            Text(
+                modifier = Modifier.padding(top = 4.dp),
+                text = address,
+                style = OiTheme.typography.bodySmallRegular,
+                color = OiTheme.colors.textTertiary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun Modifier.getOiPlaceCardModifier(isFocused: Boolean): Modifier {
+    return this
+        .fillMaxWidth()
+        .height(OiCardDimens.cardHeight)
+        .border(
+            width = OiCardDimens.stroke,
+            color = if (isFocused) OiTheme.colors.borderFocus else Color.White,
+            shape = RoundedCornerShape(OiCardDimens.cornerRadius),
+        )
+        .padding(horizontal = Dimens.paddingMedium)
+        .fillMaxSize()
+}
+
+@Composable
 @Preview(showBackground = true)
 private fun OiCardPreview() {
     OiTheme {
@@ -148,6 +211,13 @@ private fun OiCardPreview() {
                     partySet = setOf(Party.Friend, Party.Pet),
                     placeList = emptyList()
                 )
+            )
+
+            OiPlaceCard(
+                place = "애슐리 서울대입구점",
+                category = "카페",
+                address = "서울 관악구 남부순환로 1820",
+                categoryColor = Color(0xFF09B596)
             )
         }
     }

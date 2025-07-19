@@ -42,6 +42,8 @@ coroutines-test = " 1.10.1"
 appcompat = "1.7.0"
 material = "1.10.0"
 jetbrainsKotlinJvm = "2.0.21"
+datastore = "1.0.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -84,7 +86,7 @@ orbit-compose = { module = "org.orbit-mvi:orbit-compose", version.ref = "orbitCo
 orbit-core = { module = "org.orbit-mvi:orbit-core", version.ref = "orbitCore" }
 orbit-viewmodel = { module = "org.orbit-mvi:orbit-viewmodel", version.ref = "orbitViewmodel" }
 
-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
 
 kotlinx-coroutine = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutine" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines-test" }
@@ -93,6 +95,8 @@ material = { group = "com.google.android.material", name = "material", version.r
 kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinxImmutable" }
 
 naver-map-compose = { module = "io.github.fornewid:naver-map-compose", version.ref = "naverMapCompose" }
+datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+javax-inject = { module = "javax.inject:javax.inject", version = "1" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

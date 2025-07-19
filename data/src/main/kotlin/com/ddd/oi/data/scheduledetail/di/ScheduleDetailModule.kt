@@ -1,18 +1,15 @@
 package com.ddd.oi.data.scheduledetail.di
 
-import com.ddd.oi.data.schedule.ScheduleRepositoryImpl
-import com.ddd.oi.data.schedule.remote.ScheduleRemoteDataSource
-import com.ddd.oi.data.schedule.remote.ScheduleRemoteDataSourceImpl
 import com.ddd.oi.data.scheduledetail.ScheduleDetailRepositoryImpl
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteSource
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteSourceImpl
 import com.ddd.oi.domain.repository.ScheduleDetailRepository
-import com.ddd.oi.domain.repository.ScheduleRepository
-import com.ddd.oi.domain.usecase.schedule.GetSchedulesUseCase
-import com.ddd.oi.domain.usecase.schedule.GetSchedulesUseCaseImpl
 import com.ddd.oi.domain.usecase.scheduledetail.GetScheduleDetailsUseCase
 import com.ddd.oi.domain.usecase.scheduledetail.GetScheduleDetailsUseCaseImpl
 import dagger.Binds
+import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailApi
+import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteDataSource
+import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,5 +40,16 @@ object ScheduleDetailUseCaseModule {
         scheduleDetailRepository: ScheduleDetailRepository
     ): GetScheduleDetailsUseCase {
         return GetScheduleDetailsUseCaseImpl(scheduleDetailRepository)
+    }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ScheduleDetailModule2 {
+    @Provides
+    fun providesRemoteDataSource(
+        scheduleDetailApi: ScheduleDetailApi
+    ): ScheduleDetailRemoteDataSource {
+        return ScheduleDetailRemoteDataSourceImpl(scheduleDetailApi)
     }
 }

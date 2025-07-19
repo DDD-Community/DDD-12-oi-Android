@@ -17,8 +17,13 @@ sealed interface Route {
     data class ScheduleDetail(val schedule: Schedule) : Route
 
     @Serializable
-    data class SearchPlace(val scheduleId: Long, val mode: SchedulePlaceMode = SchedulePlaceMode.ADD) :
-        Route
+    data class SearchPlace(val scheduleId: Long): Route
+
+    @Serializable
+    data class UpsertPlace(
+        val scheduleId: Long,
+        val placeName: String,
+    ): Route
 }
 
 sealed interface MainTabRoute : Route {

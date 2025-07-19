@@ -17,12 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +33,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -110,6 +112,7 @@ fun OiTextField(
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.temp_ic_textfield_close),
                     contentDescription = "Close button",
+                    tint = Color.Unspecified
                 )
             }
         }
@@ -176,6 +179,96 @@ fun OiDateField(
     }
 }
 
+@Composable
+fun OiSearchField(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    hint: String = "",
+    onTextChanged: (String) -> Unit = {},
+    onSearch: (String) -> Unit = {},
+) {
+    var isFocused by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(OiTextFieldDimens.height)
+            .getOiTextFieldModifier(isFocused),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier
+                .size(OiTextFieldDimens.iconSize),
+            imageVector = ImageVector.vectorResource(R.drawable.ic_search),
+            contentDescription = "Close button"
+        )
+
+        Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
+
+        Box(
+            modifier = Modifier
+                .weight(1F)
+        ) {
+            BasicTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterStart)
+                    .onFocusChanged { focusState ->
+                        isFocused = focusState.isFocused
+                    },
+                value = text,
+                textStyle = OiTheme.typography.bodyLargeRegular,
+                onValueChange = {
+                    if (it.length <= MAX_LENGTH) {
+                        onTextChanged(it)
+                    }
+                },
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Search
+                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = {
+                        keyboardController?.hide()
+                        onSearch(text)
+                    }
+                )
+            )
+
+            if (text.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 1.dp)
+                        .align(Alignment.CenterStart),
+                    text = hint,
+                    style = OiTheme.typography.bodyLargeRegular,
+                    color = OiTheme.colors.textDisabled,
+                )
+            }
+        }
+
+        if (text.isNotEmpty()) {
+            Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
+
+            IconButton(
+                modifier = Modifier
+                    .size(OiTextFieldDimens.iconSize),
+                onClick = {
+                    onTextChanged("")
+                }
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.temp_ic_textfield_close),
+                    contentDescription = "Close button",
+                    tint = Color.Unspecified
+                )
+            }
+        }
+    }
+}
+
 private fun getFormattedDate(
     startDate: Long,
     endDate: Long
@@ -225,7 +318,7 @@ private fun Modifier.getOiTextFieldModifier(isFocused: Boolean): Modifier {
         .clip(RoundedCornerShape(OiTextFieldDimens.roundedRectRadius))
         .border(
             width = OiTextFieldDimens.stroke,
-            color = if (isFocused) OiTheme.colors.borderBrand else OiTheme.colors.textDisabled,
+            color = if (isFocused) OiTheme.colors.borderFocus else OiTheme.colors.textDisabled,
             shape = RoundedCornerShape(OiTextFieldDimens.roundedRectRadius)
         )
         .fillMaxSize()
@@ -246,5 +339,7 @@ private fun OiTextFieldPreview() {
             endDate = System.currentTimeMillis()
         )
         OiDateField(hint = "YY.MM.DD - YY.MM.DD")
+
+        OiSearchField()
     }
 }

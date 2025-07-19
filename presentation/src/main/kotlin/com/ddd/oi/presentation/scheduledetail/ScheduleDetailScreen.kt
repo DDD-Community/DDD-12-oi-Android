@@ -1,5 +1,7 @@
 package com.ddd.oi.presentation.scheduledetail
 
+import androidx.compose.ui.res.stringResource
+
 import android.view.Gravity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -67,6 +69,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 fun ScheduleDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: ScheduleDetailViewModel = hiltViewModel(),
+    navigateToSearchPlace: (Long) -> Unit,
     onBackClick: () -> Unit
 ) {
     val uiState by viewModel.collectAsState()
@@ -97,14 +100,14 @@ fun ScheduleDetailScreen(
         modifier = modifier,
         sheetDragHandle = {
             ScheduleDetailDragHandle(
-                navigateToSearchPlace = {},
+                navigateToSearchPlace = { navigateToSearchPlace(uiState.schedule.id) },
                 isMoreDateVisible = uiState.isMoreDateVisible,
                 activeDate = "Day${uiState.schedule.startedAt.daysUntil(activeLocalDate) + 1} (${
                     formatToScheduleDetailActiveDate(
                         activeLocalDate
                     )
                 })",
-                onMoreDateClick = { isMoreDateDialogVisible = true }
+                onMoreDateClick = { isMoreDateDialogVisible = true },
             )
         },
         topBar = {
@@ -283,7 +286,7 @@ private fun EditMemoDialog(
                 modifier = Modifier.fillMaxWidth(),
                 style = OiButtonStyle.Large48Oval,
                 colorType = OiButtonColorType.Primary,
-                textStringRes = R.string.save,
+                title = stringResource(R.string.save),
                 onClick = {
 
                 }
