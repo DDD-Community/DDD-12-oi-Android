@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -68,23 +69,26 @@ fun OiTextField(
             modifier = Modifier
                 .weight(1F)
         ) {
-            BasicTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterStart)
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
+            SelectionContainer {
+                BasicTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterStart)
+                        .onFocusChanged { focusState ->
+                            isFocused = focusState.isFocused
+                        },
+                    value = text,
+                    textStyle = OiTheme.typography.bodyLargeRegular,
+                    onValueChange = {
+                        if (it.length <= MAX_LENGTH) {
+                            onTextChanged(it)
+                        }
                     },
-                value = text,
-                textStyle = OiTheme.typography.bodyLargeRegular,
-                onValueChange = {
-                    if (it.length <= MAX_LENGTH) {
-                        onTextChanged(it)
-                    }
-                },
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            )
+                    maxLines = 1,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                )
+            }
 
             if (text.isEmpty()) {
                 Text(
@@ -210,29 +214,32 @@ fun OiSearchField(
             modifier = Modifier
                 .weight(1F)
         ) {
-            BasicTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterStart)
-                    .onFocusChanged { focusState ->
-                        isFocused = focusState.isFocused
+            SelectionContainer {
+                BasicTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterStart)
+                        .onFocusChanged { focusState ->
+                            isFocused = focusState.isFocused
+                        },
+                    value = text,
+                    textStyle = OiTheme.typography.bodyLargeRegular,
+                    onValueChange = {
+                        onTextChanged(it)
                     },
-                value = text,
-                textStyle = OiTheme.typography.bodyLargeRegular,
-                onValueChange = {
-                    onTextChanged(it)
-                },
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions.Default.copy(
-                    imeAction = ImeAction.Search
-                ),
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        keyboardController?.hide()
-                        onSearch(text)
-                    }
+                    maxLines = 1,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Search
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onSearch = {
+                            keyboardController?.hide()
+                            onSearch(text)
+                        }
+                    )
                 )
-            )
+            }
 
             if (text.isEmpty()) {
                 Text(
