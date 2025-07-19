@@ -25,6 +25,10 @@ class PlaceLocalDataSourceImpl @Inject constructor(
                     if (contains(place).not()) {
                         add(place)
                     }
+
+                    if (size > 10) {
+                        removeAt(0)
+                    }
                 }?.filter { it.isNotEmpty() }?.joinToString("|") ?: ""
         }
     }
