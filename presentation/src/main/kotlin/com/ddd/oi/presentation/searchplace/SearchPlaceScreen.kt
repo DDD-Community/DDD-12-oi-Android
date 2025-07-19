@@ -73,7 +73,10 @@ fun SearchPlaceScreen(
         removeSelectedPlace = { viewModel.removePlace(it) },
         onRecentSearchItemClick = { viewModel.searchImmediate(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
-        onUpdate = { viewModel.insertPlace() }
+        onUpdate = {
+            viewModel.insertPlace()
+            onBack()
+        }
     )
 }
 

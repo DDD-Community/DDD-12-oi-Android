@@ -89,7 +89,10 @@ fun UpsertPlaceScreen(
         removeSelectedPlace = { viewModel.removePlace(it) },
         onRecentSearchItemClick = { viewModel.searchImmediate(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
-        onUpdate = { viewModel.updatePlace() },
+        onUpdate = {
+            viewModel.updatePlace()
+            onBack()
+        },
         placeName = placeName
     )
 }
@@ -134,7 +137,7 @@ private fun UpsertPlaceScreen(
         bottomBar = {
             UpsertPlaceBottom(
                 modifier = Modifier,
-                isButtonEnabled = uiState.selectedPlaceList.isNotEmpty(),
+                isButtonEnabled = uiState.selectedPlace != null,
                 onButtonClick = onUpdate
             )
         }
@@ -168,26 +171,6 @@ private fun UpsertPlaceScreen(
                     style = OiTheme.typography.bodySmallMedium,
                     color = OiTheme.colors.textPrimary
                 )
-            }
-
-            if (uiState.selectedPlaceList.isNotEmpty()) {
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(OiTheme.colors.backgroundContents)
-                        .height(60.dp)
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(uiState.selectedPlaceList) { place ->
-                        OiSearchChip(
-                            text = place.title,
-                            onIconClick = {
-                                removeSelectedPlace(place)
-                            }
-                        )
-                    }
-                }
             }
 
             when (uiState) {
@@ -275,7 +258,7 @@ private fun UpsertPlaceScreen(
                                     onPlaceClick(it)
                                     focusManager.clearFocus()
                                 },
-                                isFocused = uiState.selectedPlaceList.contains(it)
+                                isFocused = uiState.selectedPlace == it
                             )
                         }
                     }
@@ -315,7 +298,7 @@ private fun UpsertPlaceScreenPreview() {
     UpsertPlaceScreen(
         query = "애슐리",
         onTextChanged = {},
-        uiState = SearchPlaceUiState.QueryEmpty(emptyList()),
+        uiState = SearchPlaceUiState.QueryEmpty(null),
         onPlaceClick = {},
         onSearch = {},
         onLeftClick = {},
