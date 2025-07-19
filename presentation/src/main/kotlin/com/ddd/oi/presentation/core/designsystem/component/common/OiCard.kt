@@ -147,32 +147,59 @@ fun OiPlaceCard(
         elevation = CardDefaults.cardElevation(1.dp),
         onClick = onClick
     ) {
-        Column(
+        Row(
             modifier = Modifier.getOiPlaceCardModifier(isFocused),
-            verticalArrangement = Arrangement.Center
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .weight(1F),
+                verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = place,
-                    style = OiTheme.typography.bodyMediumSemibold,
-                    color = OiTheme.colors.textPrimary
-                )
-                Text(
-                    modifier = Modifier.padding(start = 8.dp),
-                    text = category,
-                    style = OiTheme.typography.bodyXSmallMedium,
-                    color = categoryColor,
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = place,
+                        style = OiTheme.typography.bodyMediumSemibold,
+                        color = OiTheme.colors.textPrimary,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp, top = 2.dp),
+                        text = category,
+                        style = OiTheme.typography.bodyXSmallMedium,
+                        color = categoryColor,
+                    )
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp)
+                ) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = address,
+                        style = OiTheme.typography.bodySmallRegular,
+                        color = OiTheme.colors.textTertiary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = category,
+                        style = OiTheme.typography.bodyXSmallMedium,
+                        color = Color.Transparent,
+                    )
+                }
             }
-            Text(
-                modifier = Modifier.padding(top = 4.dp),
-                text = address,
-                style = OiTheme.typography.bodySmallRegular,
-                color = OiTheme.colors.textTertiary,
-            )
         }
     }
 }
@@ -180,7 +207,7 @@ fun OiPlaceCard(
 @Composable
 private fun Modifier.getOiPlaceCardModifier(isFocused: Boolean): Modifier {
     return this
-        .fillMaxWidth()
+        .fillMaxSize()
         .height(OiCardDimens.cardHeight)
         .border(
             width = OiCardDimens.stroke,
@@ -211,6 +238,13 @@ private fun OiCardPreview() {
                     partySet = setOf(Party.Friend, Party.Pet),
                     placeList = emptyList()
                 )
+            )
+
+            OiPlaceCard(
+                place = "애슐리 서울대입구점애슐리 서울대입구점애슐리 서울대입구점애슐리 서울대입구점애슐리 서울대입구점애슐리 서울대입구점",
+                category = "카페",
+                address = "서울 관악구 남부순환로 1820서울 관악구 남부순환로 1820서울 관악구 남부순환로 1820",
+                categoryColor = Color(0xFF09B596)
             )
 
             OiPlaceCard(
