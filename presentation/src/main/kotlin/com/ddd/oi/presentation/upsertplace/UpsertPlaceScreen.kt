@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -87,7 +89,10 @@ fun UpsertPlaceScreen(
         removeSelectedPlace = { viewModel.removePlace(it) },
         onRecentSearchItemClick = { viewModel.searchImmediate(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
-        onUpdate = { viewModel.updatePlace() },
+        onUpdate = {
+            viewModel.updatePlace()
+            onBack()
+        },
         placeName = placeName
     )
 }
@@ -109,6 +114,15 @@ private fun UpsertPlaceScreen(
     onUpdate: () -> Unit,
     placeName: String,
 ) {
+    val focusManager = LocalFocusManager.current
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (listState.isScrollInProgress) {
+            focusManager.clearFocus()
+        }
+    }
+
     Scaffold(
         modifier = modifier.background(white),
         containerColor = white,
@@ -123,7 +137,7 @@ private fun UpsertPlaceScreen(
         bottomBar = {
             UpsertPlaceBottom(
                 modifier = Modifier,
-                isButtonEnabled = uiState.selectedPlaceList.isNotEmpty(),
+                isButtonEnabled = uiState.selectedPlace != null,
                 onButtonClick = onUpdate
             )
         }
@@ -138,6 +152,7 @@ private fun UpsertPlaceScreen(
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 12.dp),
                 text = query,
+                hint = stringResource(R.string.search_place_text_field_hint),
                 onTextChanged = onTextChanged,
                 onSearch = onSearch
             )
@@ -158,26 +173,6 @@ private fun UpsertPlaceScreen(
                 )
             }
 
-            if (uiState.selectedPlaceList.isNotEmpty()) {
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(OiTheme.colors.backgroundContents)
-                        .height(60.dp)
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(uiState.selectedPlaceList) { place ->
-                        OiSearchChip(
-                            text = place.title,
-                            onIconClick = {
-                                removeSelectedPlace(place)
-                            }
-                        )
-                    }
-                }
-            }
-
             when (uiState) {
                 is SearchPlaceUiState.QueryEmpty -> {
                     Column(modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp)) {
@@ -189,7 +184,6 @@ private fun UpsertPlaceScreen(
                                 text = stringResource(R.string.recent_search),
                             )
 
-                            // todo remove all
                             Text(
                                 modifier = Modifier
                                     .align(Alignment.CenterEnd)
@@ -251,16 +245,20 @@ private fun UpsertPlaceScreen(
                 is SearchPlaceUiState.Typing -> {
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp)
+                        contentPadding = PaddingValues(vertical = 24.dp, horizontal = 16.dp),
+                        state = listState,
                     ) {
                         items(uiState.placeList) {
                             OiPlaceCard(
                                 place = it.title,
                                 category = it.category,
                                 categoryColor = Color(it.categoryColor.toColorInt()),
-                                address = it.roadAddress,
-                                onClick = { onPlaceClick(it) },
-                                isFocused = uiState.selectedPlaceList.contains(it)
+                                address = it.shownAddress,
+                                onClick = {
+                                    onPlaceClick(it)
+                                    focusManager.clearFocus()
+                                },
+                                isFocused = uiState.selectedPlace == it
                             )
                         }
                     }
@@ -300,7 +298,7 @@ private fun UpsertPlaceScreenPreview() {
     UpsertPlaceScreen(
         query = "애슐리",
         onTextChanged = {},
-        uiState = SearchPlaceUiState.QueryEmpty(emptyList()),
+        uiState = SearchPlaceUiState.QueryEmpty(null),
         onPlaceClick = {},
         onSearch = {},
         onLeftClick = {},

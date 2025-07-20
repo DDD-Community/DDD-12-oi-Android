@@ -85,4 +85,5 @@
     <string name="current_updating_place">현재 변경중인 장소</string>
 
     <string name="upsert_place">장소 수정하기</string>
+    <string name="search_place_text_field_hint">장소나 키워드로 검색해보세요.</string>
 </resources>
