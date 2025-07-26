@@ -8,4 +8,6 @@ interface ScheduleDetailRemoteSource {
     suspend fun getScheduleDetails(scheduleId: Long): Result<List<PlaceDto>>
 
     suspend fun updateScheduleDetail(scheduleId: Long, schedulePlace: SchedulePlace): Result<EditPlaceDto>
+
+    suspend fun deleteScheduleDetail(scheduleId: Long, scheduleDetailId: Long): Result<Boolean>
 }
