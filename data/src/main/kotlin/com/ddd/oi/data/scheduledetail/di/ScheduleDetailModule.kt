@@ -10,6 +10,8 @@ import dagger.Binds
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailApi
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteDataSource
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteDataSourceImpl
+import com.ddd.oi.domain.usecase.scheduledetail.DeleteScheduleDetailUseCase
+import com.ddd.oi.domain.usecase.scheduledetail.DeleteScheduleDetailUseCaseImpl
 import com.ddd.oi.domain.usecase.scheduledetail.UpdateScheduleDetailUseCase
 import com.ddd.oi.domain.usecase.scheduledetail.UpdateScheduleDetailUseCaseImpl
 import dagger.Module
@@ -50,6 +52,14 @@ object ScheduleDetailUseCaseModule {
         scheduleDetailRepository: ScheduleDetailRepository
     ): UpdateScheduleDetailUseCase {
         return UpdateScheduleDetailUseCaseImpl(scheduleDetailRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteScheduleDetailUseCase(
+        scheduleDetailRepository: ScheduleDetailRepository
+    ): DeleteScheduleDetailUseCase {
+        return DeleteScheduleDetailUseCaseImpl(scheduleDetailRepository)
     }
 }
 
