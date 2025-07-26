@@ -128,7 +128,7 @@ fun OiTimePicker(
                 .padding(top = 12.dp),
             style = OiButtonStyle.Large48Oval,
             colorType = OiButtonColorType.Primary,
-            title = stringResource(R.string.button_register),
+            title = stringResource(R.string.complete),
             onClick = {
                 val hour12 = selectedHour.toIntOrNull() ?: 12
                 val hour24 = when (selectedPeriod) {
