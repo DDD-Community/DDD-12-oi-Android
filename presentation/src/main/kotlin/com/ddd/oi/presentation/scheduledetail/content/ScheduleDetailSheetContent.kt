@@ -70,6 +70,8 @@ internal fun ScheduleDetailSheetContent(
     onUserScroll: () -> Unit,
     editTimeClick: () -> Unit,
     onMemoEdit: (SchedulePlace) -> Unit,
+    onDelete: (SchedulePlace) -> Unit,
+    onEdit: (SchedulePlace) -> Unit,
 ) {
     LaunchedEffect(lazyListState, flatListItems) {
         snapshotFlow { lazyListState.firstVisibleItemIndex }
@@ -162,8 +164,12 @@ internal fun ScheduleDetailSheetContent(
                             onMemoClick = {
                                 onMemoEdit(place)
                             },
-                            onEditClick = {},
-                            onDeleteClick = {}
+                            onEditClick = {
+                                onEdit(place)
+                            },
+                            onDeleteClick = {
+                                onDelete(place)
+                            }
                         )
                     }
                 }
@@ -174,7 +180,7 @@ internal fun ScheduleDetailSheetContent(
             }
         }
         item {
-            Spacer(modifier = Modifier.height(800.dp))
+            Spacer(modifier = Modifier.height(650.dp))
         }
     }
 }
