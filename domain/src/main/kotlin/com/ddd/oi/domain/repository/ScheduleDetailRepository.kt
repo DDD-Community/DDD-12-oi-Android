@@ -9,6 +9,8 @@ interface ScheduleDetailRepository {
 
     suspend fun updateScheduleDetail(scheduleId: Long, scheduleDetail: SchedulePlace): Result<SchedulePlace>
 
+    suspend fun deleteScheduleDetail(scheduleId: Long, scheduleDetailId: Long): Result<Boolean>
+
     suspend fun putScheduleDetail(
         scheduleId: Int,
         detailId: Int,

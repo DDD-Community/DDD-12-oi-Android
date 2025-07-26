@@ -25,4 +25,13 @@ class ScheduleDetailRemoteSourceImpl @Inject constructor(
             scheduleApiService.updateScheduleDetail(scheduleId = scheduleId, detailId = detailId, request = request)
         }
     }
+
+    override suspend fun deleteScheduleDetail(
+        scheduleId: Long,
+        scheduleDetailId: Long
+    ): Result<Boolean> {
+        return safeApiCall {
+            scheduleApiService.deleteScheduleDetail(scheduleId, scheduleDetailId)
+        }
+    }
 }

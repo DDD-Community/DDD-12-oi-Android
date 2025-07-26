@@ -79,6 +79,13 @@ class ScheduleDetailRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteScheduleDetail(
+        scheduleId: Long,
+        scheduleDetailId: Long
+    ): Result<Boolean> {
+        return scheduleDetailRemoteSource.deleteScheduleDetail(scheduleId, scheduleDetailId)
+    }
+
     data class LatLng(val latitude: Double, val longitude: Double)
 
     private fun convertTM128ToWGS84(mapX: Double, mapY: Double): LatLng {
