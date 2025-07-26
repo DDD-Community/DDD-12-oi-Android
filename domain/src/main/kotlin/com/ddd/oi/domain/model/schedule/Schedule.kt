@@ -13,12 +13,12 @@ data class Schedule(
     val endedAt: LocalDate,
     val transportation: Transportation,
     val partySet: Set<Party>,
-    val placeList: List<Place>
+    val placeList: List<SchedulePlace>
 )
 
 // todo api 응답이랑 매핑 되게 수정 필요
 @Serializable
-data class Place(
+data class SchedulePlace(
     val id: Long,
     val startTime: String? = null,
     val targetDate: String,
@@ -46,5 +46,5 @@ enum class Party {
 }
 
 data class ScheduleDetail(
-    val details: Map<String, List<Place>>
+    val details: Map<String, List<SchedulePlace>>
 )
