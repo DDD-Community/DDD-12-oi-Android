@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.navigation.NavType
 import androidx.savedstate.SavedState
 import com.ddd.oi.domain.model.schedule.Schedule
+import com.ddd.oi.domain.model.schedule.SchedulePlace
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 sealed interface Route {
@@ -17,13 +17,13 @@ sealed interface Route {
     data class ScheduleDetail(val schedule: Schedule) : Route
 
     @Serializable
-    data class SearchPlace(val scheduleId: Long, val targetDate: String): Route
+    data class SearchPlace(val scheduleId: Long, val targetDate: String) : Route
 
     @Serializable
     data class UpsertPlace(
         val scheduleId: Long,
-        val placeName: String,
-    ): Route
+        val schedulePlace: SchedulePlace
+    ) : Route
 }
 
 sealed interface MainTabRoute : Route {
@@ -62,6 +62,24 @@ object ScheduleNavType : NavType<Schedule>(isNullableAllowed = false) {
     }
 
     override fun parseValue(value: String): Schedule {
+        return Json.decodeFromString(Uri.decode(value))
+    }
+}
+
+object SchedulePlaceNavType : NavType<SchedulePlace>(isNullableAllowed = false) {
+    override fun put(bundle: Bundle, key: String, value: SchedulePlace) {
+        bundle.putString(key, Json.encodeToString(value))
+    }
+
+    override fun serializeAsValue(value: SchedulePlace): String {
+        return Uri.encode(Json.encodeToString(value))
+    }
+
+    override fun get(bundle: Bundle, key: String): SchedulePlace? {
+        return Json.decodeFromString(bundle.getString(key) ?: return null)
+    }
+
+    override fun parseValue(value: String): SchedulePlace {
         return Json.decodeFromString(Uri.decode(value))
     }
 }
