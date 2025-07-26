@@ -17,7 +17,7 @@ sealed interface Route {
     data class ScheduleDetail(val schedule: Schedule) : Route
 
     @Serializable
-    data class SearchPlace(val scheduleId: Long): Route
+    data class SearchPlace(val scheduleId: Long, val targetDate: String): Route
 
     @Serializable
     data class UpsertPlace(
