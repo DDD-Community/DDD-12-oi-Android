@@ -69,6 +69,10 @@ class SearchPlaceViewModel @Inject constructor(
         this.scheduleId = scheduleId
     }
 
+    fun setTargetDate(targetDate: String) {
+
+    }
+
     fun query(query: String) {
         _query.update { query }
 
@@ -228,11 +232,11 @@ class SearchPlaceViewModel @Inject constructor(
         }
     }
 
-    fun insertPlace() {
+    fun insertPlace(targetDate: String) {
         viewModelScope.launch {
             try {
                 val result =
-                    scheduleDetailRepository.postScheduleDetail(scheduleId.toInt(), selectedPlace)
+                    scheduleDetailRepository.postScheduleDetail(scheduleId.toInt(), selectedPlace, targetDate)
                 Log.e("SEARCH_PLACE", result.toString())
             } catch (e: Exception) {
                 Log.e("SEARCH_PLACE", e.toString())

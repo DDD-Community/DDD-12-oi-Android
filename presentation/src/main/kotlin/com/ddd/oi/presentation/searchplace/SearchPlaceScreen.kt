@@ -50,6 +50,7 @@ import com.ddd.oi.presentation.core.designsystem.theme.white
 @Composable
 fun SearchPlaceScreen(
     scheduleId: Long,
+    targetDate: String,
     onBack: () -> Unit,
     viewModel: SearchPlaceViewModel = hiltViewModel()
 ) {
@@ -74,7 +75,7 @@ fun SearchPlaceScreen(
         onRecentSearchItemClick = { viewModel.searchImmediate(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
         onUpdate = {
-            viewModel.insertPlace()
+            viewModel.insertPlace(targetDate)
             onBack()
         }
     )
