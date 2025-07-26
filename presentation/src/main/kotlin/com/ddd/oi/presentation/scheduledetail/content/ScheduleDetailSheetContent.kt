@@ -2,6 +2,8 @@ package com.ddd.oi.presentation.scheduledetail.content
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,10 +28,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,96 +43,46 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ddd.oi.domain.model.schedule.Place
+import com.ddd.oi.domain.model.schedule.SchedulePlace
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.rippleOrFallbackImplementation
 import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToScheduleDetailActiveDate
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getPlaceCategoryColor
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
-import com.ddd.oi.presentation.scheduledetail.contract.ScheduleDay
+import com.ddd.oi.presentation.scheduledetail.contract.SheetListItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-
-private sealed interface SheetListItem {
-    val date: LocalDate
-
-    data class Header(val day: Int, override val date: LocalDate) : SheetListItem
-    data class PlaceItem(val place: Place, override val date: LocalDate) : SheetListItem
-    data class EmptyPlace(override val date: LocalDate) : SheetListItem
-}
 
 @Composable
 internal fun ScheduleDetailSheetContent(
     modifier: Modifier = Modifier,
+    flatListItems: ImmutableList<SheetListItem>,
     lazyListState: LazyListState,
-    scheduleDays: ImmutableList<ScheduleDay>,
     activeDate: LocalDate,
     isAutoSelectionLocked: Boolean,
-    selectedPlace: Place? = null,
+    selectedPlace: SchedulePlace? = null,
     onActiveDateChanged: (LocalDate) -> Unit,
-    onScrollPlaceChange: (Place) -> Unit,
-    onClickPlace: (Place, LocalDate) -> Unit,
+    onScrollPlaceChange: (SchedulePlace, LocalDate) -> Unit,
+    onClickPlace: (SchedulePlace, LocalDate, Int) -> Unit,
     onUserScroll: () -> Unit,
     editTimeClick: () -> Unit,
-    onMemoEdit: (Place) -> Unit,
+    onMemoEdit: (SchedulePlace) -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-
-    /**
-     *  각 날짜(Day)가 LazyColumn 시작하는 인덱스를 계산
-     */
-    val dayStartIndices = remember(scheduleDays) {
-        val indices = mutableListOf<Int>()
-        var currentIndex = 0
-        scheduleDays.forEach { day ->
-            indices.add(currentIndex) // Day의 시작 인덱스를 추가
-            currentIndex += 1 + if (day.places.isNotEmpty()) day.places.size else 1
-        }
-        indices
-    }
-
-    LaunchedEffect(activeDate) {
-        val dayIndex = scheduleDays.indexOfFirst { it.date == activeDate }
-        if (dayIndex == -1) return@LaunchedEffect
-
-        val targetIndex = dayStartIndices.getOrNull(dayIndex)
-        if (targetIndex != null && lazyListState.firstVisibleItemIndex != targetIndex) {
-            scope.launch {
-                lazyListState.animateScrollToItem(index = targetIndex)
-            }
-        }
-    }
-
-    val flatListItems = remember(scheduleDays) {
-        buildList<SheetListItem> {
-            scheduleDays.forEach { day ->
-                add(SheetListItem.Header(day.day, day.date))
-                if (day.places.isNotEmpty()) {
-                    day.places.forEach { place -> add(SheetListItem.PlaceItem(place, day.date)) }
-                } else {
-                    add(SheetListItem.EmptyPlace(day.date))
-                }
-            }
-        }
-    }
-
     LaunchedEffect(lazyListState, flatListItems) {
         snapshotFlow { lazyListState.firstVisibleItemIndex }
             .mapNotNull { index ->
                 flatListItems.getOrNull(index)
             }
+            .distinctUntilChanged()
             .collect { topVisibleItem ->
                 if (!isAutoSelectionLocked) {
-                    if (activeDate != topVisibleItem.date) {
-                        Log.d("날짜바뀌기", "날짜바뀌기")
-                        onActiveDateChanged(topVisibleItem.date)
-                    }
                     if (topVisibleItem is SheetListItem.PlaceItem) {
-                        onScrollPlaceChange(topVisibleItem.place)
+                        onScrollPlaceChange(topVisibleItem.place, topVisibleItem.date)
+                    } else {
+                        onActiveDateChanged(topVisibleItem.date)
                     }
                 }
             }
@@ -199,20 +147,16 @@ internal fun ScheduleDetailSheetContent(
 
                 is SheetListItem.PlaceItem -> {
                     val place = item.place
-                    val day = scheduleDays.find { it.date == date }
                     Box(modifier = Modifier.fillMaxWidth()) {
                         SwipePlaceCard(
                             place = place,
-                            order = (day?.places?.indexOf(place) ?: 0) + 1,
+                            order = item.index,
                             isSelected = place.id == selectedPlace?.id,
                             onClick = {
-                                onClickPlace(place, item.date)
-                                scope.launch {
-                                    lazyListState.animateScrollToItem(index = index)
-                                }
+                                onClickPlace(place, item.date, index)
                             },
                             editTimeClick = {
-                                onClickPlace(place, item.date)
+                                onClickPlace(place, item.date, index)
                                 editTimeClick()
                             },
                             onMemoClick = {
@@ -239,8 +183,9 @@ internal fun ScheduleDetailSheetContent(
 @Composable
 fun PlaceCard(
     modifier: Modifier = Modifier,
-    place: Place,
+    place: SchedulePlace,
     order: Int,
+    isVisibleTitle: Boolean = false,
     isSelected: Boolean,
     onClick: () -> Unit,
     editTimeClick: () -> Unit,
@@ -284,50 +229,50 @@ fun PlaceCard(
                     .padding(horizontal = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = place.startTime ?: "-- : --",
-                    style = OiTheme.typography.bodyMediumSemibold
-                )
-                Box(
-                    modifier = Modifier
-                        .clickable(
-                            onClick = {
-                                onClick()
-                                editTimeClick()
-                            },
-                            role = Role.Button,
-                            interactionSource = null,
-                            indication = rippleOrFallbackImplementation(
-                                bounded = false,
-                                radius = 8.dp
-                            )
-                        )
+                Row(
+                    modifier = Modifier.clickable { editTimeClick() },
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_calendar_dropdown),
-                        contentDescription = "시간 선택",
-                        tint = Color(0xFFA1A1A1)
+                    Text(
+                        text = place.startTime ?: "-- : --",
+                        style = OiTheme.typography.bodyMediumSemibold
                     )
+                    Box(
+                        modifier = Modifier
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_calendar_dropdown),
+                            contentDescription = "시간 선택",
+                            tint = Color(0xFFA1A1A1)
+                        )
+                    }
                 }
                 VerticalDivider(
                     modifier = Modifier.height(16.dp),
                     color = Color(0xFFF6F6F6)
                 )
                 // 장소 이름 및 추가 정보
-                Column(
-                    modifier = Modifier.padding(start = 12.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+
+                AnimatedVisibility(
+                    visible = isVisibleTitle,
+                    enter = fadeIn(),
+                    exit = fadeOut()
                 ) {
-                    Text(
-                        text = place.spotName,
-                        style = OiTheme.typography.bodyMediumSemibold
-                    )
-                    if (place.memo.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.padding(start = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         Text(
-                            text = place.memo,
-                            style = OiTheme.typography.bodySmallRegular,
-                            color = OiTheme.colors.textTertiary
+                            text = place.spotName,
+                            style = OiTheme.typography.bodyMediumSemibold
                         )
+                        if (place.memo.isNotEmpty()) {
+                            Text(
+                                text = place.memo,
+                                style = OiTheme.typography.bodySmallRegular,
+                                color = OiTheme.colors.textTertiary
+                            )
+                        }
                     }
                 }
             }
@@ -432,7 +377,7 @@ private fun RouteButton(
 @Preview(showBackground = true)
 private fun PlaceCardPreview() {
     OiTheme {
-        val place1 = Place(
+        val place1 = SchedulePlace(
             id = 0,
             spotName = "부산",
             memo = "오후 4시부터 체크인",
@@ -442,7 +387,7 @@ private fun PlaceCardPreview() {
             longitude = 124.123,
             category = "카페"
         )
-        val place2 = Place(
+        val place2 = SchedulePlace(
             id = 0,
             spotName = "부산",
             memo = "",
