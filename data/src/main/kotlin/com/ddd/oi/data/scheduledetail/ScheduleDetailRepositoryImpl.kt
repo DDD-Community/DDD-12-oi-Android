@@ -5,6 +5,7 @@ import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteDataSource
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailRemoteSource
 import com.ddd.oi.data.scheduledetail.remote.SpotRequest
 import com.ddd.oi.domain.model.Place
+import com.ddd.oi.domain.model.schedule.SchedulePlace
 import com.ddd.oi.domain.repository.ScheduleDetailRepository
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -45,11 +46,7 @@ class ScheduleDetailRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun postScheduleDetail(scheduleId: Int, body: List<Place>): Boolean {
-        val targetDate = Clock.System.now()
-            .toLocalDateTime(TimeZone.currentSystemDefault())
-            .toJavaLocalDateTime()
-            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+    override suspend fun postScheduleDetail(scheduleId: Int, body: List<Place>, targetDate: String): Boolean {
         return remoteDataSource.postScheduleDetail(
             scheduleId,
             body.map { place ->
@@ -65,7 +62,7 @@ class ScheduleDetailRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun getScheduleDetail(scheduleId: Long): Result<Map<String, List<com.ddd.oi.domain.model.schedule.Place>>> {
+    override suspend fun getScheduleDetail(scheduleId: Long): Result<Map<String, List<SchedulePlace>>> {
         return scheduleDetailRemoteSource.getScheduleDetails(scheduleId).map { dtoList ->
             dtoList.associateBy(
                 keySelector = { it.targetDate },
@@ -73,6 +70,12 @@ class ScheduleDetailRepositoryImpl @Inject constructor(
                     placeDto.details.map { it.toDomain() }
                 }
             )
+        }
+    }
+
+    override suspend fun updateScheduleDetail(scheduleId: Long, scheduleDetail: SchedulePlace): Result<SchedulePlace> {
+        return scheduleDetailRemoteSource.updateScheduleDetail(scheduleId, scheduleDetail).map {
+            it.toDomain()
         }
     }
 
