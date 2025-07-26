@@ -31,8 +31,8 @@ data class ScheduleDetailState(
                 date = currentDate,
                 places = placesByDate[currentDate.toString()]?.sortedWith(
                     compareBy(
+                        { it.startTime },
                         { it.startTime == null },
-                        { it.startTime }
                     ))?.toImmutableList() ?: persistentListOf()
             )
         }.toPersistentList()
