@@ -48,7 +48,8 @@ fun OiNavHost(
         )
         scheduleDetailNavGraph(
             onBackClick = { navigator.popBackStack() },
-            navigateToSearchPlace = { navigator.navigateToSearchPlace(it) }
+            navigateToSearchPlace = { navigator.navigateToSearchPlace(it) },
+            navigateToEditPlace = { navigator.navigateToUpsertPlace(it) }
         )
 
         searchPlaceNavGraph(
