@@ -1,21 +1,27 @@
 package com.ddd.oi.presentation.upsertplace
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import com.ddd.oi.domain.model.Place
+import com.ddd.oi.domain.model.schedule.SchedulePlace
 import com.ddd.oi.domain.repository.PlaceRepository
 import com.ddd.oi.domain.repository.ScheduleDetailRepository
 import com.ddd.oi.domain.usecase.place.QueryPlaceUseCase
+import com.ddd.oi.domain.usecase.scheduledetail.UpdateScheduleDetailUseCase
+import com.ddd.oi.presentation.core.navigation.Route
+import com.ddd.oi.presentation.core.navigation.SchedulePlaceNavType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.debounce
@@ -25,21 +31,34 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 @HiltViewModel
 class UpsertPlaceViewModel @Inject constructor(
     private val queryPlaceUseCase: QueryPlaceUseCase,
     private val placeRepository: PlaceRepository,
     private val scheduleDetailRepository: ScheduleDetailRepository,
+    private val updateScheduleDetailUseCase: UpdateScheduleDetailUseCase,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private var scheduleId: Long = 0L
 
-    private val _error = MutableSharedFlow<Unit>()
-    val error = _error.asSharedFlow()
+    private val schedulePlace = savedStateHandle.toRoute<Route.UpsertPlace>(
+        typeMap = mapOf(typeOf<SchedulePlace>() to SchedulePlaceNavType)
+    )
+    private val schedulePaceInfo = schedulePlace.schedulePlace
+    private var scheduleId: Long = schedulePlace.scheduleId
+
+
+    private val _eventChannel = Channel<SearchPlaceEvent>(Channel.BUFFERED)
+    val eventFlow = _eventChannel.receiveAsFlow()
+
+//    private val _error = MutableSharedFlow<SearchPlaceEvent>()
+//    val error = _error.asSharedFlow()
 
     private val _query = MutableStateFlow("")
     val query = _query.asStateFlow()
@@ -68,10 +87,6 @@ class UpsertPlaceViewModel @Inject constructor(
             )
         )
     val uiState: StateFlow<SearchPlaceUiState> = _uiState.asStateFlow()
-
-    fun setScheduleId(scheduleId: Long) {
-        this.scheduleId = scheduleId
-    }
 
     fun query(query: String) {
         _query.update { query }
@@ -178,9 +193,9 @@ class UpsertPlaceViewModel @Inject constructor(
         if (selectedPlace == place) {
             selectedPlace = null
         } else if (selectedPlace != null) {
-            viewModelScope.launch { _error.emit(Unit) }
+            viewModelScope.launch { _eventChannel.send(SearchPlaceEvent.ShowErrorMessage("선택 실패")) }
         } else {
-            selectedPlace= place
+            selectedPlace = place
 
             viewModelScope.launch {
                 placeRepository.addRecentSearchPlace(place.title)
@@ -237,7 +252,24 @@ class UpsertPlaceViewModel @Inject constructor(
     }
 
     fun updatePlace() {
-        // todo set api
+        selectedPlace?.let {
+            val schedulePlace = schedulePaceInfo.copy(
+                spotName = it.title,
+                latitude = it.latitude,
+                longitude = it.longitude,
+                category = it.category
+            )
+            Log.d("selectedPlace", scheduleId.toString())
+            Log.d("selectedPlace", schedulePlace.toString())
+            viewModelScope.launch {
+                updateScheduleDetailUseCase(scheduleId, schedulePlace)
+                    .onSuccess {
+                        _eventChannel.send(SearchPlaceEvent.CompleteEditPlace)
+                    }.onFailure {
+                        _eventChannel.send(SearchPlaceEvent.ShowErrorMessage("일정 수정에 실패했습니다."))
+                    }
+            }
+        }
     }
 }
 
@@ -257,4 +289,9 @@ sealed class SearchPlaceUiState(
     data class ResultEmpty(
         override val selectedPlace: Place?,
     ) : SearchPlaceUiState(selectedPlace)
+}
+
+sealed class SearchPlaceEvent {
+    data object CompleteEditPlace: SearchPlaceEvent()
+    data class ShowErrorMessage(val message: String?): SearchPlaceEvent()
 }

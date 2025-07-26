@@ -2,7 +2,7 @@ package com.ddd.oi.presentation.schedule.model
 
 import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
-import com.ddd.oi.domain.model.schedule.Place
+import com.ddd.oi.domain.model.schedule.SchedulePlace
 import com.ddd.oi.domain.model.schedule.Transportation
 import kotlinx.serialization.Serializable
 
@@ -15,5 +15,5 @@ data class ScheduleNavData(
     val endedAt: Long? = null,
     val transportation: Transportation? = null,
     val party: Set<Party>? = null,
-    val placeList: List<Place>? = null
+    val placeList: List<SchedulePlace>? = null
 )

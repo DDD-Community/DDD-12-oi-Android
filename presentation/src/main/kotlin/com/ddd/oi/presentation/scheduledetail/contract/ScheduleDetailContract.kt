@@ -1,8 +1,9 @@
 package com.ddd.oi.presentation.scheduledetail.contract
 
-import com.ddd.oi.domain.model.schedule.Place
+import com.ddd.oi.domain.model.schedule.SchedulePlace
 import com.ddd.oi.domain.model.schedule.Schedule
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -30,12 +31,35 @@ data class ScheduleDetailState(
                 date = currentDate,
                 places = placesByDate[currentDate.toString()]?.sortedWith(
                     compareBy(
-                    { it.startTime == null },
-                    { it.startTime }
-                ))?.toImmutableList() ?: persistentListOf()
+                        { it.startTime },
+                        { it.startTime == null },
+                    ))?.toImmutableList() ?: persistentListOf()
             )
         }.toPersistentList()
     }
+
+    val lazyColumnList: PersistentList<SheetListItem>
+        get() {
+            return buildList<SheetListItem> {
+                scheduleDays.forEach { day ->
+                    add(SheetListItem.Header(day.day, day.date))
+                    if (day.places.isNotEmpty()) {
+                        day.places.forEachIndexed { index, place ->
+                            add(
+                                SheetListItem.PlaceItem(
+                                    place,
+                                    day.date,
+                                    index + 1
+                                )
+                            )
+                        }
+                    } else {
+                        add(SheetListItem.EmptyPlace(day.date))
+                    }
+                }
+            }.toPersistentList()
+        }
+
 
     val dateList: ImmutableList<LocalDate>
         get() {
@@ -48,7 +72,7 @@ data class ScheduleDetailState(
             return list.toImmutableList()
         }
 
-    fun placesForDate(date: LocalDate): ImmutableList<Place> {
+    fun placesForDate(date: LocalDate): ImmutableList<SchedulePlace> {
         return when (placeUiState) {
             is PlaceUiState.Success -> placeUiState.places[date.toString()]?.toImmutableList()
                 ?: persistentListOf()
@@ -61,13 +85,23 @@ data class ScheduleDetailState(
 data class ScheduleDay(
     val day: Int,
     val date: LocalDate,
-    val places: ImmutableList<Place>
+    val places: ImmutableList<SchedulePlace>
 )
 
 sealed interface PlaceUiState {
     data object Loading : PlaceUiState
 
-    data class Success(val places: Map<String, List<Place>>) : PlaceUiState
+    data class Success(val places: Map<String, List<SchedulePlace>>) : PlaceUiState
 
     data class Error(val message: String? = null) : PlaceUiState
+}
+
+sealed interface SheetListItem {
+    val date: LocalDate
+
+    data class Header(val day: Int, override val date: LocalDate) : SheetListItem
+    data class PlaceItem(val place: SchedulePlace, override val date: LocalDate, val index: Int) :
+        SheetListItem
+
+    data class EmptyPlace(override val date: LocalDate) : SheetListItem
 }

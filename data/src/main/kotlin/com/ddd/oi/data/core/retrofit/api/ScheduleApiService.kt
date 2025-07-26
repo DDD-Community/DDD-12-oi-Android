@@ -3,6 +3,8 @@ package com.ddd.oi.data.core.retrofit.api
 import com.ddd.oi.data.core.model.BaseResponse
 import com.ddd.oi.data.schedule.model.ScheduleDto
 import com.ddd.oi.data.schedule.model.ScheduleRequest
+import com.ddd.oi.data.scheduledetail.model.EditPlaceDto
+import com.ddd.oi.data.scheduledetail.model.EditPlaceRequest
 import com.ddd.oi.data.scheduledetail.model.PlaceDto
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -50,6 +52,13 @@ interface ScheduleApiService {
     @PUT("api/v1/schedules/{scheduleId}/details/{detailId}")
     suspend fun updateScheduleDetail(
         @Path("scheduleId") scheduleId: Long,
+        @Path("detailId") detailId: Long,
+        @Body request: EditPlaceRequest
+    ): BaseResponse<EditPlaceDto>
+
+    @DELETE("api/v1/schedules/{scheduleId}/details/{detailId}")
+    suspend fun deleteScheduleDetail(
+        @Path("scheduleId") scheduleId: Long,
         @Path("detailId") detailId: Long
-    )
+    ): BaseResponse<Boolean>
 }
