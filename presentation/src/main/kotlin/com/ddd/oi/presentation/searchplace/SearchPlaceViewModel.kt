@@ -8,9 +8,11 @@ import com.ddd.oi.domain.model.Place
 import com.ddd.oi.domain.repository.PlaceRepository
 import com.ddd.oi.domain.repository.ScheduleDetailRepository
 import com.ddd.oi.domain.usecase.place.QueryPlaceUseCase
+import com.ddd.oi.presentation.upsertplace.SearchPlaceEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,6 +26,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -41,6 +44,9 @@ class SearchPlaceViewModel @Inject constructor(
     val query = _query.asStateFlow()
 
     private val selectedPlace: MutableList<Place> = mutableStateListOf()
+
+    private val _eventChannel = Channel<SearchPlaceEvent>(Channel.BUFFERED)
+    val eventFlow = _eventChannel.receiveAsFlow()
 
     val searchPlace = placeRepository.getRecentSearchPlace()
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
@@ -237,10 +243,13 @@ class SearchPlaceViewModel @Inject constructor(
             try {
                 val result =
                     scheduleDetailRepository.postScheduleDetail(scheduleId.toInt(), selectedPlace, targetDate)
-                Log.e("SEARCH_PLACE", result.toString())
+                if (result) {
+                    _eventChannel.send(SearchPlaceEvent.CompleteEditPlace)
+                } else {
+                    _eventChannel.send(SearchPlaceEvent.ShowErrorMessage("일정 추가에 실패했습니다."))
+                }
             } catch (e: Exception) {
-                Log.e("SEARCH_PLACE", e.toString())
-            }
+                _eventChannel.send(SearchPlaceEvent.ShowErrorMessage("일정 추가에 실패했습니다."))            }
         }
 
     }
