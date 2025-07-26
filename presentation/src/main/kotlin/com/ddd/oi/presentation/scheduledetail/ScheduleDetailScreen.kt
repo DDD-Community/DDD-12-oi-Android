@@ -91,6 +91,7 @@ fun ScheduleDetailScreen(
     viewModel: ScheduleDetailViewModel = hiltViewModel(),
     navigateToSearchPlace: (Long, String) -> Unit,
     onBackClick: () -> Unit,
+    navigateToEditPlace: (Long, SchedulePlace) -> Unit,
     isRefresh: Boolean = true
 ) {
     val uiState by viewModel.collectAsState()
@@ -113,7 +114,7 @@ fun ScheduleDetailScreen(
         }
     }
 
-    LaunchedEffect(isRefresh) {
+    LaunchedEffect(Unit) {
         viewModel.getSchedulePlaces()
     }
 
@@ -194,6 +195,14 @@ fun ScheduleDetailScreen(
                 onMemoEdit = { place ->
                     swipeSelectedPlace = place
                     isPlaceMemoVisible = true
+                },
+                onDelete = { place ->
+                    viewModel.deleteScheduleDetail(place)
+                },
+                onEdit = { place ->
+                    Log.d("ScheduleDetailScreen", uiState.schedule.id.toString())
+                    Log.d("ScheduleDetailScreen", "onEdit: $place")
+                    navigateToEditPlace(uiState.schedule.id, place)
                 }
             )
         }
