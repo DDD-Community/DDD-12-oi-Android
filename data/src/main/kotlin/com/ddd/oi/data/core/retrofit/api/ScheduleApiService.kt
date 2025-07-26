@@ -55,4 +55,10 @@ interface ScheduleApiService {
         @Path("detailId") detailId: Long,
         @Body request: EditPlaceRequest
     ): BaseResponse<EditPlaceDto>
+
+    @DELETE("api/v1/schedules/{scheduleId}/details/{detailId}")
+    suspend fun deleteScheduleDetail(
+        @Path("scheduleId") scheduleId: Long,
+        @Path("detailId") detailId: Long
+    ): BaseResponse<Boolean>
 }
