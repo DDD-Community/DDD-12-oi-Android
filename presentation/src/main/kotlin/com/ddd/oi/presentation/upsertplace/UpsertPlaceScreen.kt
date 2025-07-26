@@ -34,6 +34,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.ddd.oi.domain.model.Place
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiBadge
@@ -61,19 +64,22 @@ fun UpsertPlaceScreen(
     val uiState by viewModel.uiState.collectAsState()
     val searchPlace by viewModel.searchPlace.collectAsState()
     val context = LocalContext.current.resources
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(Unit) {
-        viewModel.setScheduleId(scheduleId)
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.error.collect {
-            onShowSnackBar.invoke(
-                OiSnackbarData(
-                    message = context.getString(R.string.upsert_place_can_be_one_item),
-                    type = SnackbarType.WARNING
-                )
-            )
+    // TODO: Orbit SideEffect
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.eventFlow.collect { event ->
+                when (event) {
+                    SearchPlaceEvent.CompleteEditPlace -> onBack()
+                    is SearchPlaceEvent.ShowErrorMessage -> onShowSnackBar.invoke(
+                        OiSnackbarData(
+                            message = context.getString(R.string.upsert_place_can_be_one_item),
+                            type = SnackbarType.WARNING
+                        )
+                    )
+                }
+            }
         }
     }
 
@@ -91,7 +97,6 @@ fun UpsertPlaceScreen(
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
         onUpdate = {
             viewModel.updatePlace()
-            onBack()
         },
         placeName = placeName
     )
