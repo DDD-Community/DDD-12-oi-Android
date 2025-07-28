@@ -11,6 +11,8 @@ import com.ddd.oi.presentation.schedule.scheduleNavGraph
 import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
 import com.ddd.oi.presentation.upsertplace.upsertPlaceNavGraph
+import com.ddd.oi.presentation.recommendedlist.recommendedListNavGraph
+import com.ddd.oi.presentation.recommendeddetail.recommendedDetailNavGraph
 
 @Composable
 fun OiNavHost(
@@ -26,7 +28,10 @@ fun OiNavHost(
         startDestination = navigator.startDestination,
         modifier = modifier
     ) {
-        homeNavGraph()
+        homeNavGraph(
+            navigateToRecommendedList = navigator::navigateToRecommendedList,
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail
+        )
 
         scheduleNavGraph(
             navigateToScheduleDetail = navigator::navigateToScheduleDetail,
@@ -63,5 +68,11 @@ fun OiNavHost(
             },
             onShowSnackBar = onShowSnackbar
         )
+
+        recommendedListNavGraph(
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail
+        )
+
+        recommendedDetailNavGraph()
     }
 }

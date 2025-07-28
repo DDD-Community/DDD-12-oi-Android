@@ -12,14 +12,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.ddd.oi.domain.model.schedule.Schedule
-import com.ddd.oi.domain.model.schedule.ScheduleDetail
-import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
 import com.ddd.oi.presentation.home.navigateToHome
+import com.ddd.oi.presentation.recommendeddetail.navigateToRecommendedDetail
+import com.ddd.oi.presentation.recommendedlist.navigateToRecommendedList
 import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.schedule.navigateToSchedule
 import com.ddd.oi.presentation.scheduledetail.navigateToScheduleDetail
 import com.ddd.oi.presentation.searchplace.navigateToSearchPlace
 import com.ddd.oi.presentation.upsertplace.navigateToUpsertPlace
+import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -97,6 +98,10 @@ class OiNavigator(
     fun navigateToSearchPlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
 
     fun navigateToUpsertPlace(scheduleId: Long, placeName: String) = navController.navigateToUpsertPlace(scheduleId, placeName)
+
+    fun navigateToRecommendedList() = navController.navigateToRecommendedList()
+
+    fun navigateToRecommendedDetail() = navController.navigateToRecommendedDetail()
 
     fun popBackStack() {
         navController.popBackStack()

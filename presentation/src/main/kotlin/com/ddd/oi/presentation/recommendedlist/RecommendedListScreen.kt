@@ -1,4 +1,4 @@
-package com.ddd.oi.presentation.home
+package com.ddd.oi.presentation.recommendedlist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,9 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 
 @Composable
-fun HomeScreen(
+fun RecommendedListScreen(
     modifier: Modifier = Modifier,
-    onNavigateToRecommendedList: () -> Unit = {},
-    onNavigateToRecommendedDetail: () -> Unit = {}
+    onNavigateToDetail: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -25,20 +24,13 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Home Screen")
+        Text(text = "Recommended List Screen")
         
         OiButton(
-            title = "Go to Recommended List",
+            title = "Go to Detail",
             style = OiButtonStyle.Large48Oval,
-            onClick = onNavigateToRecommendedList,
+            onClick = onNavigateToDetail,
             modifier = Modifier.padding(top = 16.dp)
-        )
-        
-        OiButton(
-            title = "Go to Recommended Detail",
-            style = OiButtonStyle.Large48Oval,
-            onClick = onNavigateToRecommendedDetail,
-            modifier = Modifier.padding(top = 8.dp)
         )
     }
 }
