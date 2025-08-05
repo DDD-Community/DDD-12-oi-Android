@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
+import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 
 @Composable
 fun RecommendedListScreen(
@@ -19,18 +20,28 @@ fun RecommendedListScreen(
 ) {
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxSize(),
     ) {
-        Text(text = "Recommended List Screen")
-        
-        OiButton(
-            title = "Go to Detail",
-            style = OiButtonStyle.Large48Oval,
-            onClick = onNavigateToDetail,
-            modifier = Modifier.padding(top = 16.dp)
+        OiHeader(
+            onLeftClick = {},
+            title = "추천 코스 모아보기",
         )
+
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = "Recommended List Screen")
+
+            OiButton(
+                title = "Go to Detail",
+                style = OiButtonStyle.Large48Oval,
+                onClick = onNavigateToDetail,
+                modifier = Modifier.padding(top = 16.dp)
+            )
+        }
     }
 }
