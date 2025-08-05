@@ -319,8 +319,10 @@ private fun RecommendedCourseContent(
         ) {
             items(3) {
                 RecommendedCourseItem(
+                    onClick = onNavigateToRecommendedDetail,
                     tag = "인기",
-                    onClick = onNavigateToRecommendedDetail
+                    title = "한강 드라이브 코스",
+                    description = "종로구 · 10만원대"
                 )
             }
         }
@@ -332,8 +334,10 @@ private fun RecommendedCourseItem(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     tag: String,
+    title: String,
+    description: String,
 ) {
-    Row {
+    Column {
         Card(
             modifier = modifier,
             shape = RoundedCornerShape(OiCardDimens.cornerRadius),
@@ -367,10 +371,24 @@ private fun RecommendedCourseItem(
                 )
             }
         }
+
+        Text(
+            modifier = Modifier.padding(top = 8.dp),
+            text = title,
+            style = OiTheme.typography.bodyMediumSemibold,
+            color = Color.Black
+        )
+
+        Text(
+            modifier = Modifier.padding(top = 4.dp),
+            text = description,
+            style = OiTheme.typography.bodySmallRegular,
+            color = OiTheme.colors.textTertiary
+        )
     }
 }
 
-private enum class RecommendedCategory(
+enum class RecommendedCategory(
     val text: String
 ) {
     All("전체"),
