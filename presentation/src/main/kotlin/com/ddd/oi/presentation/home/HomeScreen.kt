@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,6 +20,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,17 +39,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.ddd.oi.domain.model.Content
+import com.ddd.oi.domain.model.Spot
 import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.presentation.R
-import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
-import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiDotList
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiScheduleCard
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiWeeklyCalendar
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
-import com.ddd.oi.presentation.core.designsystem.theme.white
-import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
@@ -63,10 +63,15 @@ fun HomeScreen(
     onNavigateToRecommendedDetail: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.getContents()
+    }
     HomeContent(
         modifier = modifier,
         onNavigateToRecommendedList = onNavigateToRecommendedList,
-        onNavigateToRecommendedDetail = onNavigateToRecommendedDetail
+        onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
+        contentsList = uiState.contents
     )
 }
 
@@ -74,7 +79,8 @@ fun HomeScreen(
 private fun HomeContent(
     modifier: Modifier = Modifier,
     onNavigateToRecommendedList: () -> Unit = {},
-    onNavigateToRecommendedDetail: () -> Unit = {}
+    onNavigateToRecommendedDetail: () -> Unit = {},
+    contentsList: List<Content> = emptyList(),
 ) {
     Column(
         modifier = modifier,
@@ -89,7 +95,8 @@ private fun HomeContent(
 
         HomeRecommendedCourse(
             onNavigateToRecommendedList = onNavigateToRecommendedList,
-            onNavigateToRecommendedDetail = onNavigateToRecommendedDetail
+            onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
+            contentsList = contentsList
         )
 
         Spacer(
@@ -242,8 +249,9 @@ private fun WeeklyScheduleContent(
 private fun HomeRecommendedCourse(
     modifier: Modifier = Modifier,
     onNavigateToRecommendedList: () -> Unit = {},
-    onNavigateToRecommendedDetail: () -> Unit = {}
-) {
+    onNavigateToRecommendedDetail: () -> Unit = {},
+    contentsList: List<Content>,
+    ) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -259,7 +267,8 @@ private fun HomeRecommendedCourse(
             modifier = Modifier.padding(horizontal = 16.dp),
             currentCategory = RecommendedCategory.All,
             onCategoryClick = {},
-            onNavigateToRecommendedDetail = onNavigateToRecommendedDetail
+            onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
+            contentsList = contentsList
         )
     }
 }
@@ -289,6 +298,7 @@ private fun RecommendedCourseTitle(
 @Composable
 private fun RecommendedCourseContent(
     modifier: Modifier = Modifier,
+    contentsList: List<Content>,
     currentCategory: RecommendedCategory,
     onCategoryClick: (RecommendedCategory) -> Unit,
     onNavigateToRecommendedDetail: () -> Unit,
@@ -317,12 +327,13 @@ private fun RecommendedCourseContent(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(3) {
+            items(contentsList) {
                 RecommendedCourseItem(
                     onClick = onNavigateToRecommendedDetail,
                     tag = "인기",
-                    title = "한강 드라이브 코스",
-                    description = "종로구 · 10만원대"
+                    title = it.title,
+                    description = it.displayDescription,
+                    imageUrl = it.imageUrl
                 )
             }
         }
@@ -336,6 +347,7 @@ private fun RecommendedCourseItem(
     tag: String,
     title: String,
     description: String,
+    imageUrl: String,
 ) {
     Column {
         Card(
@@ -348,7 +360,7 @@ private fun RecommendedCourseItem(
                 AsyncImage(
                     modifier = Modifier.size(148.dp),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data("https://picsum.photos/id/237/200/300")
+                        .data(imageUrl)
                         .crossfade(true)
                         .build(),
                     contentDescription = "",
