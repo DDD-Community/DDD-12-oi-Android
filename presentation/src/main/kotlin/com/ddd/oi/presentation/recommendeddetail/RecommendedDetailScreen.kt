@@ -266,11 +266,10 @@ private fun RecommendedDetailPlaceContent() {
                                         color = Color(0XFFA052F0),
                                         shape = CircleShape
                                     ),
+                                contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    modifier = Modifier.fillMaxSize(),
                                     text = "${index.inc()}",
-                                    textAlign = TextAlign.Center,
                                     style = OiTheme.typography.bodyXSmallSemibold,
                                     color = Color.White
                                 )
