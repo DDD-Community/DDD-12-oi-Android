@@ -267,24 +267,36 @@ private fun WeeklyScheduleContent(
             dotList = dotList
         )
 
-        // 선택된 날짜의 스케줄 카드들 표시
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(selectedDateSchedules) { schedule ->
-                val dayOffset = calculateDayOffset(schedule.startedAt, currentDate)
-                OiScheduleCard(
-                    categoryText = stringResource(schedule.category.toUi().getCategoryName()) ,
-                    categoryTextColor = Color(0xFFF98247),
-                    dayOffset = dayOffset,
-                    titleText = schedule.title,
-                    partnerList = schedule.partySet.map { stringResource(it.toStringResource()) },
-                    date = "${schedule.startedAt} - ${schedule.endedAt}"
-                )
+        if (selectedDateSchedules.isNotEmpty()) {
+            // 선택된 날짜의 스케줄 카드들 표시
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(selectedDateSchedules) { schedule ->
+                    val dayOffset = calculateDayOffset(schedule.startedAt, currentDate)
+                    OiScheduleCard(
+                        categoryText = stringResource(schedule.category.toUi().getCategoryName()),
+                        categoryTextColor = Color(0xFFF98247),
+                        dayOffset = dayOffset,
+                        titleText = schedule.title,
+                        partnerList = schedule.partySet.map { stringResource(it.toStringResource()) },
+                        date = "${schedule.startedAt} - ${schedule.endedAt}"
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp)
+                    .height(125.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                // todo empty schedules ui
             }
         }
     }
