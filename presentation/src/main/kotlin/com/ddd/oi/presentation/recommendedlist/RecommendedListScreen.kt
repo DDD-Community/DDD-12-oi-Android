@@ -39,7 +39,7 @@ import com.ddd.oi.presentation.home.RecommendedCategory
 @Composable
 fun RecommendedListScreen(
     modifier: Modifier = Modifier,
-    onNavigateToDetail: () -> Unit = {}
+    onNavigateToDetail: (Long) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -53,7 +53,7 @@ fun RecommendedListScreen(
         RecommendedCourseContent(
             currentCategory = RecommendedCategory.All,
             onCategoryClick = { _ -> },
-            onNavigateToRecommendedDetail = {}
+            onNavigateToRecommendedDetail = { onNavigateToDetail(1L) }
         )
 
         Column(
@@ -68,7 +68,7 @@ fun RecommendedListScreen(
             OiButton(
                 title = "Go to Detail",
                 style = OiButtonStyle.Large48Oval,
-                onClick = onNavigateToDetail,
+                onClick = { onNavigateToDetail(1L) },
                 modifier = Modifier.padding(top = 16.dp)
             )
         }

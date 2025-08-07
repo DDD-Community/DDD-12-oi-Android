@@ -10,7 +10,7 @@ fun NavController.navigateToRecommendedList() {
 }
 
 fun NavGraphBuilder.recommendedListNavGraph(
-    navigateToRecommendedDetail: () -> Unit
+    navigateToRecommendedDetail: (Long) -> Unit
 ) {
     composable<Route.RecommendedList> {
         RecommendedListScreen(

@@ -101,7 +101,7 @@ class OiNavigator(
 
     fun navigateToRecommendedList() = navController.navigateToRecommendedList()
 
-    fun navigateToRecommendedDetail() = navController.navigateToRecommendedDetail()
+    fun navigateToRecommendedDetail(contentId: Long) = navController.navigateToRecommendedDetail(contentId)
 
     fun popBackStack() {
         navController.popBackStack()

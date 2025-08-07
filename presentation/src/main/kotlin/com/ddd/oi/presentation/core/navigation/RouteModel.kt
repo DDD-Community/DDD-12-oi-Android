@@ -29,7 +29,7 @@ sealed interface Route {
     data object RecommendedList : Route
 
     @Serializable
-    data object RecommendedDetail : Route
+    data class RecommendedDetail(val contentId: Long) : Route
 }
 
 sealed interface MainTabRoute : Route {

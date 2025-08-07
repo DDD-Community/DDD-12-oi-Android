@@ -60,7 +60,7 @@ import kotlinx.datetime.toLocalDateTime
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigateToRecommendedList: () -> Unit = {},
-    onNavigateToRecommendedDetail: () -> Unit = {},
+    onNavigateToRecommendedDetail: (Long) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -79,7 +79,7 @@ fun HomeScreen(
 private fun HomeContent(
     modifier: Modifier = Modifier,
     onNavigateToRecommendedList: () -> Unit = {},
-    onNavigateToRecommendedDetail: () -> Unit = {},
+    onNavigateToRecommendedDetail: (Long) -> Unit = {},
     contentsList: List<Content> = emptyList(),
 ) {
     Column(
@@ -249,7 +249,7 @@ private fun WeeklyScheduleContent(
 private fun HomeRecommendedCourse(
     modifier: Modifier = Modifier,
     onNavigateToRecommendedList: () -> Unit = {},
-    onNavigateToRecommendedDetail: () -> Unit = {},
+    onNavigateToRecommendedDetail: (Long) -> Unit = {},
     contentsList: List<Content>,
     ) {
     Column(
@@ -301,7 +301,7 @@ private fun RecommendedCourseContent(
     contentsList: List<Content>,
     currentCategory: RecommendedCategory,
     onCategoryClick: (RecommendedCategory) -> Unit,
-    onNavigateToRecommendedDetail: () -> Unit,
+    onNavigateToRecommendedDetail: (Long) -> Unit,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -327,13 +327,13 @@ private fun RecommendedCourseContent(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(contentsList) {
+            items(contentsList) { content ->
                 RecommendedCourseItem(
-                    onClick = onNavigateToRecommendedDetail,
+                    onClick = { onNavigateToRecommendedDetail(content.id) },
                     tag = "인기",
-                    title = it.title,
-                    description = it.displayDescription,
-                    imageUrl = it.imageUrl
+                    title = content.title,
+                    description = content.displayDescription,
+                    imageUrl = content.imageUrl
                 )
             }
         }

@@ -48,7 +48,8 @@ import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
 
 @Composable
 fun RecommendedDetailScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    contentId: Long
 ) {
     Column(
         modifier = modifier
@@ -292,5 +293,5 @@ private fun RecommendedDetailPlaceContent() {
 @Composable
 @Preview
 private fun RecommendedDetailScreenPreview() {
-    RecommendedDetailScreen()
+    RecommendedDetailScreen(contentId = 1L)
 }
