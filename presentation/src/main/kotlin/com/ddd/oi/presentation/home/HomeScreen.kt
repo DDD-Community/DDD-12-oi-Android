@@ -53,6 +53,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 
@@ -71,7 +72,8 @@ fun HomeScreen(
         modifier = modifier,
         onNavigateToRecommendedList = onNavigateToRecommendedList,
         onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
-        contentsList = uiState.contents
+        contentsList = uiState.contents,
+        weeklySchedules = uiState.weeklySchedules
     )
 }
 
@@ -81,6 +83,7 @@ private fun HomeContent(
     onNavigateToRecommendedList: () -> Unit = {},
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
     contentsList: List<Content> = emptyList(),
+    weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
 ) {
     Column(
         modifier = modifier,
@@ -90,7 +93,7 @@ private fun HomeContent(
         HomeHeader()
 
         HomeWeeklySchedule(
-            scheduleList = emptyList()
+            weeklySchedules = weeklySchedules
         )
 
         HomeRecommendedCourse(
@@ -143,7 +146,7 @@ private fun HomeHeader(
 @Composable
 private fun HomeWeeklySchedule(
     modifier: Modifier = Modifier,
-    scheduleList: List<Schedule>
+    weeklySchedules: Map<LocalDate, List<Schedule>>
 ) {
     Column(
         modifier = modifier
@@ -151,14 +154,17 @@ private fun HomeWeeklySchedule(
             .padding(vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
+        val totalScheduleCount = weeklySchedules.values.sumOf { it.size }
+        
         WeeklyScheduleTitle(
             modifier = Modifier.padding(horizontal = 16.dp),
-            scheduleCount = scheduleList.size,
+            scheduleCount = totalScheduleCount,
             onRightArrowClick = {}
         )
 
         WeeklyScheduleContent(
             modifier = Modifier.padding(horizontal = 16.dp),
+            weeklySchedules = weeklySchedules
         )
     }
 }
@@ -200,10 +206,23 @@ private fun WeeklyScheduleTitle(
 @Composable
 private fun WeeklyScheduleContent(
     modifier: Modifier = Modifier,
+    weeklySchedules: Map<LocalDate, List<Schedule>>
 ) {
     val currentDate: LocalDate = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
         .date
+        
+    // 이번 주의 시작일 계산 (월요일부터)
+    val startOfWeek = currentDate.minus(currentDate.dayOfWeek.ordinal, DateTimeUnit.DAY)
+    
+    // 7일간의 dot 리스트 생성
+    val dotList = (0..6).map { dayOffset ->
+        val targetDate = startOfWeek.plus(dayOffset, DateTimeUnit.DAY)
+        val schedulesForDay = weeklySchedules[targetDate] ?: emptyList()
+        // 스케줄 개수에 따라 색상 점 생성 (최대 3개까지 표시)
+        schedulesForDay.take(3).map { Color.Red } // 임시로 빨간색으로 설정
+    }
+    
     Column {
         OiWeeklyCalendar(
             modifier = modifier,
@@ -213,17 +232,12 @@ private fun WeeklyScheduleContent(
 
         OiDotList(
             modifier = modifier,
-            dotList = listOf(
-                listOf(Color.Red),
-                listOf(Color.Red, Color.Blue),
-                listOf(Color.Red, Color.Blue, Color.Green),
-                listOf(Color.Red),
-                listOf(Color.Red, Color.Blue),
-                listOf(Color.Red, Color.Blue, Color.Green),
-                listOf(Color.Red),
-            )
+            dotList = dotList
         )
 
+        // 이번 주 스케줄 카드들 표시
+        val allWeeklySchedules = weeklySchedules.values.flatten().take(3) // 최대 3개까지만 표시
+        
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -231,14 +245,14 @@ private fun WeeklyScheduleContent(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(3) {
+            items(allWeeklySchedules) { schedule ->
                 OiScheduleCard(
-                    categoryText = "데이트",
+                    categoryText = schedule.category.name,
                     categoryTextColor = Color(0xFFF98247),
-                    dayOffset = 4,
-                    titleText = "남자친구와 성수동 데이트",
-                    partnerList = listOf("친구", "반려동물", "연인", "연인"),
-                    date = "25.06.06 - 25.06.08"
+                    dayOffset = 0, // TODO: 실제 날짜 차이 계산
+                    titleText = schedule.title,
+                    partnerList = schedule.partySet.map { it.name },
+                    date = "${schedule.startedAt} - ${schedule.endedAt}"
                 )
             }
         }
