@@ -38,12 +38,14 @@ class HomeViewModel @Inject constructor(
                 val contents = getContentsUseCase(userId)
                 _uiState.value = _uiState.value.copy(
                     contents = contents,
+                    filteredContents = contents,
                     isLoading = false,
                     error = null
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     contents = emptyList(),
+                    filteredContents = emptyList(),
                     isLoading = false,
                     error = "Failed to load contents"
                 )
@@ -90,6 +92,21 @@ class HomeViewModel @Inject constructor(
         )
     }
 
+    fun selectCategory(category: RecommendedCategory) {
+        val filteredContents = if (category == RecommendedCategory.ALL) {
+            _uiState.value.contents
+        } else {
+            _uiState.value.contents.filter { content ->
+                content.contentsTag.contains(category.name, ignoreCase = true)
+            }
+        }
+        
+        _uiState.value = _uiState.value.copy(
+            selectedCategory = category,
+            filteredContents = filteredContents
+        )
+    }
+
     fun refreshContents() {
         getContents()
         getWeeklySchedules()
@@ -98,6 +115,8 @@ class HomeViewModel @Inject constructor(
 
 data class HomeUiState(
     val contents: List<Content> = emptyList(),
+    val filteredContents: List<Content> = emptyList(),
+    val selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
     val weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
     val selectedDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
     val selectedDateSchedules: List<Schedule> = emptyList(),

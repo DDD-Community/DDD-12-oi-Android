@@ -40,7 +40,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ddd.oi.domain.model.Content
-import com.ddd.oi.domain.model.Spot
 import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiDotList
@@ -73,11 +72,13 @@ fun HomeScreen(
         modifier = modifier,
         onNavigateToRecommendedList = onNavigateToRecommendedList,
         onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
-        contentsList = uiState.contents,
+        contentsList = uiState.filteredContents,
+        selectedCategory = uiState.selectedCategory,
         weeklySchedules = uiState.weeklySchedules,
         selectedDate = uiState.selectedDate,
         selectedDateSchedules = uiState.selectedDateSchedules,
-        onDateSelected = viewModel::selectDate
+        onDateSelected = viewModel::selectDate,
+        onCategorySelected = viewModel::selectCategory
     )
 }
 
@@ -87,10 +88,12 @@ private fun HomeContent(
     onNavigateToRecommendedList: () -> Unit = {},
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
     contentsList: List<Content> = emptyList(),
+    selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
     weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
     selectedDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
     selectedDateSchedules: List<Schedule> = emptyList(),
     onDateSelected: (LocalDate) -> Unit = {},
+    onCategorySelected: (RecommendedCategory) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
@@ -109,7 +112,9 @@ private fun HomeContent(
         HomeRecommendedCourse(
             onNavigateToRecommendedList = onNavigateToRecommendedList,
             onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
-            contentsList = contentsList
+            contentsList = contentsList,
+            selectedCategory = selectedCategory,
+            onCategorySelected = onCategorySelected
         )
 
         Spacer(
@@ -291,6 +296,8 @@ private fun HomeRecommendedCourse(
     onNavigateToRecommendedList: () -> Unit = {},
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
     contentsList: List<Content>,
+    selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
+    onCategorySelected: (RecommendedCategory) -> Unit = {},
     ) {
     Column(
         modifier = modifier
@@ -305,8 +312,8 @@ private fun HomeRecommendedCourse(
 
         RecommendedCourseContent(
             modifier = Modifier.padding(horizontal = 16.dp),
-            currentCategory = RecommendedCategory.All,
-            onCategoryClick = {},
+            currentCategory = selectedCategory,
+            onCategoryClick = onCategorySelected,
             onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
             contentsList = contentsList
         )
@@ -443,11 +450,11 @@ private fun RecommendedCourseItem(
 enum class RecommendedCategory(
     val text: String
 ) {
-    All("전체"),
-    Travel("여행"),
-    Date("데이트"),
-    Friend("친구랑"),
-    Partner("연인과")
+    ALL("전체"),
+    TRAVEL("여행"),
+    DATE("데이트"),
+    FRIEND("친구랑"),
+    FAMILY("가족과")
 }
 
 @Composable

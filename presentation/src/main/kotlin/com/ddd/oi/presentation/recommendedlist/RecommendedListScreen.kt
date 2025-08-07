@@ -34,8 +34,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ddd.oi.domain.model.Content
-import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
-import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
@@ -68,10 +66,10 @@ fun RecommendedListScreen(
             // Error state - you can add error UI here
         } else {
             RecommendedCourseContent(
-                currentCategory = RecommendedCategory.All,
-                onCategoryClick = { _ -> },
+                currentCategory = uiState.selectedCategory,
+                onCategoryClick = viewModel::selectCategory,
                 onNavigateToRecommendedDetail = onNavigateToDetail,
-                contentsList = uiState.contents
+                contentsList = uiState.filteredContents
             )
         }
     }
