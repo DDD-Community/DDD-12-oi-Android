@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -20,14 +21,19 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.ddd.oi.domain.model.Content
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
@@ -39,8 +45,14 @@ import com.ddd.oi.presentation.home.RecommendedCategory
 @Composable
 fun RecommendedListScreen(
     modifier: Modifier = Modifier,
-    onNavigateToDetail: (Long) -> Unit = {}
+    onNavigateToDetail: (Long) -> Unit = {},
+    viewModel: RecommendedListViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getContents()
+    }
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -50,26 +62,16 @@ fun RecommendedListScreen(
             title = "추천 코스 모아보기",
         )
 
-        RecommendedCourseContent(
-            currentCategory = RecommendedCategory.All,
-            onCategoryClick = { _ -> },
-            onNavigateToRecommendedDetail = { onNavigateToDetail(1L) }
-        )
-
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = "Recommended List Screen")
-
-            OiButton(
-                title = "Go to Detail",
-                style = OiButtonStyle.Large48Oval,
-                onClick = { onNavigateToDetail(1L) },
-                modifier = Modifier.padding(top = 16.dp)
+        if (uiState.isLoading) {
+            // Loading state - you can add a loading indicator here
+        } else if (uiState.error != null) {
+            // Error state - you can add error UI here
+        } else {
+            RecommendedCourseContent(
+                currentCategory = RecommendedCategory.All,
+                onCategoryClick = { _ -> },
+                onNavigateToRecommendedDetail = onNavigateToDetail,
+                contentsList = uiState.contents
             )
         }
     }
@@ -80,7 +82,8 @@ private fun RecommendedCourseContent(
     modifier: Modifier = Modifier,
     currentCategory: RecommendedCategory,
     onCategoryClick: (RecommendedCategory) -> Unit,
-    onNavigateToRecommendedDetail: () -> Unit,
+    onNavigateToRecommendedDetail: (Long) -> Unit,
+    contentsList: List<Content>
 ) {
     Column(
         modifier = modifier.padding(
@@ -131,12 +134,13 @@ private fun RecommendedCourseContent(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.fillMaxSize()
         ) {
-            items(20) {
+            items(contentsList) { content ->
                 RecommendedCourseItem(
-                    onClick = onNavigateToRecommendedDetail,
+                    onClick = { onNavigateToRecommendedDetail(content.id) },
                     tag = "인기",
-                    title = "한강 드라이브 코스",
-                    description = "종로구 · 10만원대"
+                    title = content.title,
+                    description = content.displayDescription,
+                    imageUrl = content.imageUrl
                 )
             }
         }
@@ -150,6 +154,7 @@ private fun RecommendedCourseItem(
     tag: String,
     title: String,
     description: String,
+    imageUrl: String
 ) {
     Column {
         Card(
@@ -164,7 +169,7 @@ private fun RecommendedCourseItem(
                         .fillMaxWidth()
                         .aspectRatio(1F),
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data("https://picsum.photos/id/237/200/300")
+                        .data(imageUrl)
                         .crossfade(true)
                         .build(),
                     contentDescription = "",
