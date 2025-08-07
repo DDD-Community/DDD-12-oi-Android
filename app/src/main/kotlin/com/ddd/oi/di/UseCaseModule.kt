@@ -1,6 +1,7 @@
 package com.ddd.oi.di
 
 import com.ddd.oi.domain.repository.ContentRepository
+import com.ddd.oi.domain.usecase.content.GetContentByIdUseCase
 import com.ddd.oi.domain.usecase.content.GetContentsUseCase
 import dagger.Module
 import dagger.Provides
@@ -18,5 +19,13 @@ object UseCaseModule {
         contentRepository: ContentRepository
     ): GetContentsUseCase {
         return GetContentsUseCase(contentRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetContentByIdUseCase(
+        contentRepository: ContentRepository
+    ): GetContentByIdUseCase {
+        return GetContentByIdUseCase(contentRepository)
     }
 }

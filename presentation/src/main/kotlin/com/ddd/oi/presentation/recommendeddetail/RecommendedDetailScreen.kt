@@ -24,70 +24,84 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.ddd.oi.domain.model.Content
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSpotCard
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
-import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
 
 @Composable
 fun RecommendedDetailScreen(
     modifier: Modifier = Modifier,
-    contentId: Long
+    contentId: Long,
+    viewModel: RecommendedDetailViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(contentId) {
+        viewModel.getContentById(contentId)
+    }
     Column(
         modifier = modifier
             .fillMaxSize(),
     ) {
         OiHeader(
             onLeftClick = {},
-            title = "경복궁 철쭉 스팟 총정리",
+            title = uiState.content.title,
         )
 
-        RecommendedDetailContent()
-
-        RecommendedDetailPlaceContent()
+        if (uiState.isLoading) {
+            // Loading state - you can add a loading indicator here
+        } else if (uiState.error != null) {
+            // Error state - you can add error UI here
+        } else {
+            RecommendedDetailContent(content = uiState.content)
+            RecommendedDetailPlaceContent(content = uiState.content)
+        }
     }
 }
 
 @Composable
-private fun RecommendedDetailContent() {
+private fun RecommendedDetailContent(content: Content) {
     Column {
         AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(2F),
             model = ImageRequest.Builder(LocalContext.current)
-                .data("https://picsum.photos/id/237/200/300")
+                .data(content.imageUrl)
                 .crossfade(true)
                 .build(),
             contentDescription = "",
             contentScale = ContentScale.Crop
         )
 
-        RecommendedDetailContentText()
+        RecommendedDetailContentText(content = content)
     }
 }
 
 @Composable
 private fun RecommendedDetailContentText(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    content: Content
 ) {
     Column(
         modifier = modifier
@@ -102,7 +116,7 @@ private fun RecommendedDetailContentText(
 
         Text(
             modifier = Modifier.padding(top = 8.dp),
-            text = "햇살 좋은 날, 고궁 속 산책 어때요? 고즈넉한 경복궁의 돌길을 따라 바람처럼 걷다 보면 마음까지 가벼워지는 힐링 코스예요. 사진과 추억을 가득 담으며 하루를 시작해보세요 청량한 나무 그늘 아래 쉬어가며 전각 곳곳을 천천히 둘러보면 도심 속에서도 잠시 머리가 맑아져요.",
+            text = content.shortDescription,
             color = OiTheme.colors.textSecondary,
             style = OiTheme.typography.bodySmallMedium,
         )
@@ -116,25 +130,25 @@ private fun RecommendedDetailContentText(
             RecommendedDetailContentTag(
                 modifier = Modifier.weight(1F),
                 title = "추천일정",
-                content = "여름휴가에요"
+                content = content.recommendedSchedule
             )
 
             RecommendedDetailContentTag(
                 modifier = Modifier.weight(1F),
-                title = "추천일정",
-                content = "여름휴가에요"
+                title = "소요시간",
+                content = "약 ${content.duration.div(60)}시간"
             )
 
             RecommendedDetailContentTag(
                 modifier = Modifier.weight(1F),
-                title = "추천일정",
-                content = "여름휴가에요"
+                title = "예상경비",
+                content = "${content.cost.div(10_000)}만원"
             )
 
             RecommendedDetailContentTag(
                 modifier = Modifier.weight(1F),
-                title = "추천일정",
-                content = "여름휴가에요"
+                title = "방문장소",
+                content = "${content.spots.size}개"
             )
         }
     }
@@ -175,27 +189,14 @@ private fun RecommendedDetailContentTag(
 }
 
 @Composable
-private fun RecommendedDetailPlaceContent() {
-    val items = listOf(
-        "Item 1",
-        "Item 2",
-        "Item 3",
-        "Item 4",
-        "Item 1",
-        "Item 2",
-        "Item 3",
-        "Item 4",
-        "Item 1",
-        "Item 2",
-        "Item 3",
-        "Item 4"
-    )
+private fun RecommendedDetailPlaceContent(content: Content? = null) {
+    val spots = content?.spots ?: emptyList()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        itemsIndexed(items) { index, item ->
+        itemsIndexed(spots) { index, spot ->
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -278,10 +279,10 @@ private fun RecommendedDetailPlaceContent() {
                         }
 
                         OiSpotCard(
-                            placeName = "경복궁",
-                            category = "궁궐",
-                            address = "서울 종로구 사직로 161",
-                            imageUrl = "https://picsum.photos/64/64"
+                            placeName = spot.name,
+                            category = "관광지",
+                            address = spot.address,
+                            imageUrl = spot.imageUrl ?: "https://picsum.photos/64/64"
                         )
                     }
                 }
