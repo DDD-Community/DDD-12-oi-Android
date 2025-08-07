@@ -46,7 +46,9 @@ import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiDotList
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiScheduleCard
+import com.ddd.oi.presentation.core.designsystem.component.mapper.getCategoryName
 import com.ddd.oi.presentation.core.designsystem.component.mapper.toStringResource
+import com.ddd.oi.presentation.core.designsystem.component.mapper.toUi
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiWeeklyCalendar
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
@@ -276,7 +278,7 @@ private fun WeeklyScheduleContent(
             items(selectedDateSchedules) { schedule ->
                 val dayOffset = calculateDayOffset(schedule.startedAt, currentDate)
                 OiScheduleCard(
-                    categoryText = schedule.category.name,
+                    categoryText = stringResource(schedule.category.toUi().getCategoryName()) ,
                     categoryTextColor = Color(0xFFF98247),
                     dayOffset = dayOffset,
                     titleText = schedule.title,

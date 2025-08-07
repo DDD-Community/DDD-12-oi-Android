@@ -41,7 +41,7 @@ fun OiScheduleCard(
     date: String,
 ) {
     Card(
-        modifier = modifier.width(200.dp),
+        modifier = modifier.width(200.dp).height(125.dp),
         shape = RoundedCornerShape(OiCardDimens.cornerRadius),
         colors = CardDefaults.cardColors(containerColor = white),
         elevation = CardDefaults.cardElevation(1.dp),
