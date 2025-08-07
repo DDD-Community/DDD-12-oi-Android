@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.ParagraphStyle
 import androidx.compose.ui.text.SpanStyle
@@ -45,6 +46,7 @@ import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiDotList
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiScheduleCard
+import com.ddd.oi.presentation.core.designsystem.component.mapper.toStringResource
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiWeeklyCalendar
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
@@ -90,7 +92,8 @@ private fun HomeContent(
     contentsList: List<Content> = emptyList(),
     selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
     weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
-    selectedDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    selectedDate: LocalDate = Clock.System.now()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).date,
     selectedDateSchedules: List<Schedule> = emptyList(),
     onDateSelected: (LocalDate) -> Unit = {},
     onCategorySelected: (RecommendedCategory) -> Unit = {},
@@ -173,7 +176,7 @@ private fun HomeWeeklySchedule(
         verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
         val totalScheduleCount = weeklySchedules.values.sumOf { it.size }
-        
+
         WeeklyScheduleTitle(
             modifier = Modifier.padding(horizontal = 16.dp),
             scheduleCount = totalScheduleCount,
@@ -235,11 +238,12 @@ private fun WeeklyScheduleContent(
     val currentDate: LocalDate = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
         .date
-        
+
     // 이번 주의 시작일 계산 (일요일부터)
-    val sundayOffset = if (currentDate.dayOfWeek == DayOfWeek.SUNDAY) 0 else 7 - currentDate.dayOfWeek.ordinal
+    val sundayOffset =
+        if (currentDate.dayOfWeek == DayOfWeek.SUNDAY) 0 else 7 - currentDate.dayOfWeek.ordinal
     val startOfWeek = currentDate.minus(sundayOffset, DateTimeUnit.DAY)
-    
+
     // 7일간의 dot 리스트 생성
     val dotList = (0..6).map { dayOffset ->
         val targetDate = startOfWeek.plus(dayOffset, DateTimeUnit.DAY)
@@ -247,7 +251,7 @@ private fun WeeklyScheduleContent(
         // 스케줄 개수에 따라 색상 점 생성 (최대 3개까지 표시)
         schedulesForDay.take(3).map { Color.Red } // 임시로 빨간색으로 설정
     }
-    
+
     Column {
         OiWeeklyCalendar(
             modifier = modifier,
@@ -276,7 +280,7 @@ private fun WeeklyScheduleContent(
                     categoryTextColor = Color(0xFFF98247),
                     dayOffset = dayOffset,
                     titleText = schedule.title,
-                    partnerList = schedule.partySet.map { it.name },
+                    partnerList = schedule.partySet.map { stringResource(it.toStringResource()) },
                     date = "${schedule.startedAt} - ${schedule.endedAt}"
                 )
             }
@@ -298,7 +302,7 @@ private fun HomeRecommendedCourse(
     contentsList: List<Content>,
     selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
     onCategorySelected: (RecommendedCategory) -> Unit = {},
-    ) {
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
