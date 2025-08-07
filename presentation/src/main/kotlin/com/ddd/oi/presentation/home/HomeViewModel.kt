@@ -60,6 +60,7 @@ class HomeViewModel @Inject constructor(
                         _uiState.value = _uiState.value.copy(
                             weeklySchedules = weeklySchedules
                         )
+                        updateSelectedDateSchedules()
                     }
                     .onFailure {
                         _uiState.value = _uiState.value.copy(
@@ -74,6 +75,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun selectDate(date: LocalDate) {
+        val selectedSchedules = _uiState.value.weeklySchedules[date] ?: emptyList()
+        _uiState.value = _uiState.value.copy(
+            selectedDate = date,
+            selectedDateSchedules = selectedSchedules
+        )
+    }
+
+    private fun updateSelectedDateSchedules() {
+        val selectedSchedules = _uiState.value.weeklySchedules[_uiState.value.selectedDate] ?: emptyList()
+        _uiState.value = _uiState.value.copy(
+            selectedDateSchedules = selectedSchedules
+        )
+    }
+
     fun refreshContents() {
         getContents()
         getWeeklySchedules()
@@ -83,6 +99,8 @@ class HomeViewModel @Inject constructor(
 data class HomeUiState(
     val contents: List<Content> = emptyList(),
     val weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
+    val selectedDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    val selectedDateSchedules: List<Schedule> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null
 )

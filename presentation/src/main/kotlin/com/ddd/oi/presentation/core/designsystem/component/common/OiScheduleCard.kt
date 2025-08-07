@@ -27,6 +27,7 @@ import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
+import kotlin.math.abs
 
 @Composable
 fun OiScheduleCard(
@@ -148,8 +149,8 @@ private fun OiDDayBadge(
 
 private fun getDayOffsetText(dayOffset: Int): String {
     return when {
-        dayOffset > 0 -> "D-$dayOffset"
-        dayOffset < 0 -> "D+$dayOffset"
+        dayOffset > 0 -> "D-${abs(dayOffset)} "
+        dayOffset < 0 -> "D+${abs(dayOffset)}"
         else -> "D-Day"
     }
 }

@@ -51,6 +51,7 @@ import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
@@ -73,7 +74,10 @@ fun HomeScreen(
         onNavigateToRecommendedList = onNavigateToRecommendedList,
         onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
         contentsList = uiState.contents,
-        weeklySchedules = uiState.weeklySchedules
+        weeklySchedules = uiState.weeklySchedules,
+        selectedDate = uiState.selectedDate,
+        selectedDateSchedules = uiState.selectedDateSchedules,
+        onDateSelected = viewModel::selectDate
     )
 }
 
@@ -84,6 +88,9 @@ private fun HomeContent(
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
     contentsList: List<Content> = emptyList(),
     weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
+    selectedDate: LocalDate = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date,
+    selectedDateSchedules: List<Schedule> = emptyList(),
+    onDateSelected: (LocalDate) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
@@ -93,7 +100,10 @@ private fun HomeContent(
         HomeHeader()
 
         HomeWeeklySchedule(
-            weeklySchedules = weeklySchedules
+            weeklySchedules = weeklySchedules,
+            selectedDate = selectedDate,
+            selectedDateSchedules = selectedDateSchedules,
+            onDateSelected = onDateSelected
         )
 
         HomeRecommendedCourse(
@@ -146,7 +156,10 @@ private fun HomeHeader(
 @Composable
 private fun HomeWeeklySchedule(
     modifier: Modifier = Modifier,
-    weeklySchedules: Map<LocalDate, List<Schedule>>
+    weeklySchedules: Map<LocalDate, List<Schedule>>,
+    selectedDate: LocalDate,
+    selectedDateSchedules: List<Schedule>,
+    onDateSelected: (LocalDate) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -164,7 +177,10 @@ private fun HomeWeeklySchedule(
 
         WeeklyScheduleContent(
             modifier = Modifier.padding(horizontal = 16.dp),
-            weeklySchedules = weeklySchedules
+            weeklySchedules = weeklySchedules,
+            selectedDate = selectedDate,
+            selectedDateSchedules = selectedDateSchedules,
+            onDateSelected = onDateSelected
         )
     }
 }
@@ -206,14 +222,18 @@ private fun WeeklyScheduleTitle(
 @Composable
 private fun WeeklyScheduleContent(
     modifier: Modifier = Modifier,
-    weeklySchedules: Map<LocalDate, List<Schedule>>
+    weeklySchedules: Map<LocalDate, List<Schedule>>,
+    selectedDate: LocalDate,
+    selectedDateSchedules: List<Schedule>,
+    onDateSelected: (LocalDate) -> Unit
 ) {
     val currentDate: LocalDate = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
         .date
         
-    // 이번 주의 시작일 계산 (월요일부터)
-    val startOfWeek = currentDate.minus(currentDate.dayOfWeek.ordinal, DateTimeUnit.DAY)
+    // 이번 주의 시작일 계산 (일요일부터)
+    val sundayOffset = if (currentDate.dayOfWeek == DayOfWeek.SUNDAY) 0 else 7 - currentDate.dayOfWeek.ordinal
+    val startOfWeek = currentDate.minus(sundayOffset, DateTimeUnit.DAY)
     
     // 7일간의 dot 리스트 생성
     val dotList = (0..6).map { dayOffset ->
@@ -227,7 +247,8 @@ private fun WeeklyScheduleContent(
         OiWeeklyCalendar(
             modifier = modifier,
             today = currentDate,
-            selectedDate = currentDate.plus(1, DateTimeUnit.DAY)
+            selectedDate = selectedDate,
+            onDateSelected = onDateSelected
         )
 
         OiDotList(
@@ -235,9 +256,7 @@ private fun WeeklyScheduleContent(
             dotList = dotList
         )
 
-        // 이번 주 스케줄 카드들 표시
-        val allWeeklySchedules = weeklySchedules.values.flatten().take(3) // 최대 3개까지만 표시
-        
+        // 선택된 날짜의 스케줄 카드들 표시
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -245,11 +264,12 @@ private fun WeeklyScheduleContent(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(allWeeklySchedules) { schedule ->
+            items(selectedDateSchedules) { schedule ->
+                val dayOffset = calculateDayOffset(schedule.startedAt, currentDate)
                 OiScheduleCard(
                     categoryText = schedule.category.name,
                     categoryTextColor = Color(0xFFF98247),
-                    dayOffset = 0, // TODO: 실제 날짜 차이 계산
+                    dayOffset = dayOffset,
                     titleText = schedule.title,
                     partnerList = schedule.partySet.map { it.name },
                     date = "${schedule.startedAt} - ${schedule.endedAt}"
@@ -257,6 +277,12 @@ private fun WeeklyScheduleContent(
             }
         }
     }
+}
+
+private fun calculateDayOffset(startDate: LocalDate, currentDate: LocalDate): Int {
+    val startDateInDays = startDate.toEpochDays()
+    val currentDateInDays = currentDate.toEpochDays()
+    return startDateInDays - currentDateInDays
 }
 
 @Composable
