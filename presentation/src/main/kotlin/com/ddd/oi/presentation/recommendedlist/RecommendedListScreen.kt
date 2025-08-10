@@ -24,6 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -70,7 +74,9 @@ fun RecommendedListScreen(
         if (uiState.isLoading) {
             RecommendedLoadingScreen()
         } else if (uiState.error != null) {
-            RecommendedErrorScreen()
+            RecommendedErrorScreen(
+                onRefreshClick = viewModel::getContents
+            )
         } else {
             RecommendedCourseContent(
                 currentCategory = uiState.selectedCategory,
@@ -256,13 +262,33 @@ private fun RecommendedErrorScreen(
 private fun RecommendedLoadingScreen(
     modifier: Modifier = Modifier,
 ) {
+    var currentFrame by remember { mutableIntStateOf(1) }
+    
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(100)
+            currentFrame = if (currentFrame == 8) 1 else currentFrame + 1
+        }
+    }
+    
+    val loadingIcons = listOf(
+        R.drawable.ic_loading_1,
+        R.drawable.ic_loading_2,
+        R.drawable.ic_loading_3,
+        R.drawable.ic_loading_4,
+        R.drawable.ic_loading_5,
+        R.drawable.ic_loading_6,
+        R.drawable.ic_loading_7,
+        R.drawable.ic_loading_8
+    )
+    
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_loading_1),
+            painter = painterResource(loadingIcons[currentFrame - 1]),
             contentDescription = "",
             tint = Color.Unspecified,
         )
