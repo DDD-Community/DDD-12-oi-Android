@@ -40,6 +40,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,6 +56,7 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSpotCard
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
+import androidx.core.net.toUri
 
 @Composable
 fun RecommendedDetailScreen(
@@ -205,6 +208,30 @@ private fun RecommendedDetailPlaceContent(
     content: Content? = null
 ) {
     val spots = content?.spots ?: emptyList()
+    val context = LocalContext.current
+
+    fun openNaverMapRoute(fromSpot: com.ddd.oi.domain.model.Spot, toSpot: com.ddd.oi.domain.model.Spot) {
+        if (fromSpot.latitude != null && fromSpot.longitude != null && 
+            toSpot.latitude != null && toSpot.longitude != null) {
+            
+            val naverMapUrl = "nmap://route/public?" +
+                    "slat=${fromSpot.latitude}&slng=${fromSpot.longitude}&sname=${fromSpot.name}" +
+                    "&dlat=${toSpot.latitude}&dlng=${toSpot.longitude}&dname=${toSpot.name}" +
+                    "&appname=com.ddd.oi"
+            
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, naverMapUrl.toUri())
+                context.startActivity(intent)
+            } catch (e: Exception) {
+                // 네이버 지도 앱이 없는 경우 웹 버전으로 fallback
+                val webUrl = "https://map.naver.com/v5/directions/" +
+                        "${fromSpot.longitude},${fromSpot.latitude},${fromSpot.name}/" +
+                        "${toSpot.longitude},${toSpot.latitude},${toSpot.name}/-/transit"
+                val webIntent = Intent(Intent.ACTION_VIEW, webUrl.toUri())
+                context.startActivity(webIntent)
+            }
+        }
+    }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -217,7 +244,9 @@ private fun RecommendedDetailPlaceContent(
             ) {
                 if (index > 0) {
                     Button(
-                        onClick = { },
+                        onClick = { 
+                            openNaverMapRoute(spots[index - 1], spot)
+                        },
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .width(48.dp)
