@@ -55,6 +55,14 @@ class RecommendedListViewModel @Inject constructor(
             filteredContents = filteredContents
         )
     }
+    
+    fun selectSortOption(sortOption: SortOption) {
+        _uiState.value = _uiState.value.copy(
+            selectedSortOption = sortOption
+        )
+        // 실제 정렬은 여기서 구현할 수 있지만, 
+        // 현재는 UI 상태만 변경
+    }
 }
 
 data class RecommendedListUiState(
@@ -62,5 +70,6 @@ data class RecommendedListUiState(
     val contents: List<Content> = emptyList(),
     val filteredContents: List<Content> = emptyList(),
     val selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
+    val selectedSortOption: SortOption = SortOption.POPULAR,
     val error: String? = null
 )

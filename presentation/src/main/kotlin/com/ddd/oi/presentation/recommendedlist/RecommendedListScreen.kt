@@ -1,6 +1,7 @@
 package com.ddd.oi.presentation.recommendedlist
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,15 +17,18 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
@@ -36,6 +40,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -82,8 +88,16 @@ fun RecommendedListScreen(
         } else {
             RecommendedCourseContent(
                 currentCategory = uiState.selectedCategory,
+                selectedSortOption = uiState.selectedSortOption,
                 onCategoryClick = viewModel::selectCategory,
-                onNavigateToRecommendedDetail = { contentId -> throttledNavigation { onNavigateToDetail(contentId) } },
+                onSortOptionClick = viewModel::selectSortOption,
+                onNavigateToRecommendedDetail = { contentId ->
+                    throttledNavigation {
+                        onNavigateToDetail(
+                            contentId
+                        )
+                    }
+                },
                 contentsList = uiState.filteredContents
             )
         }
@@ -94,7 +108,9 @@ fun RecommendedListScreen(
 private fun RecommendedCourseContent(
     modifier: Modifier = Modifier,
     currentCategory: RecommendedCategory,
+    selectedSortOption: SortOption,
     onCategoryClick: (RecommendedCategory) -> Unit,
+    onSortOptionClick: (SortOption) -> Unit,
     onNavigateToRecommendedDetail: (Long) -> Unit,
     contentsList: List<Content>
 ) {
@@ -121,13 +137,17 @@ private fun RecommendedCourseContent(
         Box(
             modifier = Modifier.fillMaxWidth()
         ) {
+            var showSortDialog by remember { mutableStateOf(false) }
+
             Row(
-                modifier = Modifier.align(Alignment.CenterEnd),
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable { showSortDialog = true },
                 horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "인기순",
+                    text = selectedSortOption.displayName,
                     style = OiTheme.typography.bodyMediumSemibold,
                     color = OiTheme.colors.textPrimary
                 )
@@ -137,6 +157,17 @@ private fun RecommendedCourseContent(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "",
                     tint = Color.Unspecified,
+                )
+            }
+
+            if (showSortDialog) {
+                SortOptionDialog(
+                    selectedOption = selectedSortOption,
+                    onOptionSelected = { sortOption ->
+                        onSortOptionClick(sortOption)
+                        showSortDialog = false
+                    },
+                    onDismiss = { showSortDialog = false }
                 )
             }
         }
@@ -161,7 +192,7 @@ private fun RecommendedCourseContent(
 }
 
 private fun getTagString(badge: String): String {
-    return runCatching { Badge.valueOf(badge).tag }.getOrNull()?:""
+    return runCatching { Badge.valueOf(badge).tag }.getOrNull() ?: ""
 }
 
 @Composable
@@ -240,7 +271,7 @@ private fun RecommendedErrorScreen(
             text = "연결상태가 불안정해요\n다시 시도 해주세요",
             textAlign = TextAlign.Center,
             style = OiTheme.typography.headlineSmallBold,
-            color =  OiTheme.colors.textPrimary,
+            color = OiTheme.colors.textPrimary,
         )
 
         Icon(
@@ -265,14 +296,14 @@ private fun RecommendedLoadingScreen(
     modifier: Modifier = Modifier,
 ) {
     var currentFrame by remember { mutableIntStateOf(1) }
-    
+
     LaunchedEffect(Unit) {
         while (true) {
             delay(100)
             currentFrame = if (currentFrame == 8) 1 else currentFrame + 1
         }
     }
-    
+
     val loadingIcons = listOf(
         R.drawable.ic_loading_1,
         R.drawable.ic_loading_2,
@@ -283,7 +314,7 @@ private fun RecommendedLoadingScreen(
         R.drawable.ic_loading_7,
         R.drawable.ic_loading_8
     )
-    
+
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -301,4 +332,46 @@ private fun RecommendedLoadingScreen(
             color = OiTheme.colors.textPrimary,
         )
     }
+}
+
+@Composable
+private fun SortOptionDialog(
+    selectedOption: SortOption,
+    onOptionSelected: (SortOption) -> Unit,
+    onDismiss: () -> Unit
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.White, shape = RoundedCornerShape(24.dp))
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            SortOption.entries.forEach { sortOption ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onOptionSelected(sortOption) }
+                        .padding(vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = sortOption.displayName,
+                        style = OiTheme.typography.bodyLargeMedium,
+                        color = OiTheme.colors.textPrimary,
+                        modifier = Modifier.weight(1f),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
+}
+
+enum class SortOption(val displayName: String) {
+    POPULAR("인기순"),
+    LATEST("최신순"),
+    RECOMMENDED("추천순")
 }
