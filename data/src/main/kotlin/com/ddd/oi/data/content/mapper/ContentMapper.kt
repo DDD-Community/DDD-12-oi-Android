@@ -18,10 +18,11 @@ fun ContentData.toDomain(): Content {
         shortTitle = shortTitle ?: "",
         shortDescription = shortDescription ?: "",
         imageUrl = contentsImage ?: "",
-        recommendationScore = recommendationScore ?: 0.0, // API에 없는 필드는 기본값
+        recommendationScore = recommendationScore ?: 0.0,
         viewCount = viewCount ?: 0,
         createdAt = createdAt ?: "",
-        spots = spots?.map { it.toDomain() } ?: emptyList()
+        spots = spots?.map { it.toDomain() } ?: emptyList(),
+        badge = badge ?: ""
     )
 }
 

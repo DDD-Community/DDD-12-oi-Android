@@ -52,6 +52,7 @@ import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 fun RecommendedDetailScreen(
     modifier: Modifier = Modifier,
     contentId: Long,
+    onNavigateBack: () -> Unit = {},
     viewModel: RecommendedDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -64,7 +65,7 @@ fun RecommendedDetailScreen(
             .fillMaxSize(),
     ) {
         OiHeader(
-            onLeftClick = {},
+            onLeftClick = onNavigateBack,
             title = uiState.content.title,
         )
 

@@ -38,12 +38,14 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
+import com.ddd.oi.presentation.home.Badge
 import com.ddd.oi.presentation.home.RecommendedCategory
 
 @Composable
 fun RecommendedListScreen(
     modifier: Modifier = Modifier,
     onNavigateToDetail: (Long) -> Unit = {},
+    onNavigateBack: () -> Unit = {},
     viewModel: RecommendedListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -56,7 +58,7 @@ fun RecommendedListScreen(
             .fillMaxSize(),
     ) {
         OiHeader(
-            onLeftClick = {},
+            onLeftClick = onNavigateBack,
             title = "추천 코스 모아보기",
         )
 
@@ -135,7 +137,7 @@ private fun RecommendedCourseContent(
             items(contentsList) { content ->
                 RecommendedCourseItem(
                     onClick = { onNavigateToRecommendedDetail(content.id) },
-                    tag = "인기",
+                    tag = getTagString(content.badge),
                     title = content.title,
                     description = content.displayDescription,
                     imageUrl = content.imageUrl
@@ -143,6 +145,10 @@ private fun RecommendedCourseContent(
             }
         }
     }
+}
+
+private fun getTagString(badge: String): String {
+    return runCatching { Badge.valueOf(badge).tag }.getOrNull()?:""
 }
 
 @Composable

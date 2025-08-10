@@ -91,7 +91,8 @@ data class ContentData(
     val contentsImage: String?,
     val createdAt: String?,
     val spots: List<ContentSpotData>?,
-    val viewCount: Int?
+    val viewCount: Int?,
+    val badge: String?
 )
 
 @Serializable

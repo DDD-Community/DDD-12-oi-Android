@@ -10,9 +10,14 @@ fun NavController.navigateToRecommendedDetail(contentId: Long) {
     navigate(Route.RecommendedDetail(contentId))
 }
 
-fun NavGraphBuilder.recommendedDetailNavGraph() {
+fun NavGraphBuilder.recommendedDetailNavGraph(
+    navigateBack: () -> Unit
+) {
     composable<Route.RecommendedDetail> { backStackEntry ->
         val route = backStackEntry.toRoute<Route.RecommendedDetail>()
-        RecommendedDetailScreen(contentId = route.contentId)
+        RecommendedDetailScreen(
+            contentId = route.contentId,
+            onNavigateBack = navigateBack
+        )
     }
 }

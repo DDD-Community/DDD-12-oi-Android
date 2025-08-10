@@ -70,9 +70,12 @@ fun OiNavHost(
         )
 
         recommendedListNavGraph(
-            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
+            navigateBack = { navigator.popBackStack() }
         )
 
-        recommendedDetailNavGraph()
+        recommendedDetailNavGraph(
+            navigateBack = { navigator.popBackStack() }
+        )
     }
 }

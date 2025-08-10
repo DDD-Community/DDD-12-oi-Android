@@ -14,5 +14,6 @@ data class Content(
     val recommendationScore: Double = 0.0,
     val viewCount: Int = 0,
     val createdAt: String = "",
-    val spots: List<Spot> = emptyList()
+    val spots: List<Spot> = emptyList(),
+    val badge: String = ""
 )

@@ -395,7 +395,7 @@ private fun RecommendedCourseContent(
             items(contentsList) { content ->
                 RecommendedCourseItem(
                     onClick = { onNavigateToRecommendedDetail(content.id) },
-                    tag = "인기",
+                    tag = getTagString(content.badge),
                     title = content.title,
                     description = content.displayDescription,
                     imageUrl = content.imageUrl
@@ -403,6 +403,14 @@ private fun RecommendedCourseContent(
             }
         }
     }
+}
+
+enum class Badge(val tag: String){
+    POPULAR("인기"), LATEST("최신")
+}
+
+private fun getTagString(badge: String): String {
+    return runCatching { Badge.valueOf(badge).tag }.getOrNull()?:""
 }
 
 @Composable
