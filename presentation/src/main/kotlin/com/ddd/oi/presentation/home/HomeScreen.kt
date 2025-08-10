@@ -54,6 +54,7 @@ import com.ddd.oi.presentation.core.designsystem.component.mapper.toUi
 import com.ddd.oi.presentation.core.designsystem.component.oicalendar.OiWeeklyCalendar
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
+import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
@@ -73,15 +74,17 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val throttledNavigation = rememberThrottledNavigation()
+    
     LaunchedEffect(Unit) {
         viewModel.getContents()
     }
     HomeContent(
         modifier = modifier,
-        onNavigateToRecommendedList = onNavigateToRecommendedList,
-        onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
-        onNavigateToScheduleCreate = onNavigateToScheduleCreate,
-        onNavigateToScheduleTab = onNavigateToScheduleTab,
+        onNavigateToRecommendedList = { throttledNavigation(onNavigateToRecommendedList) },
+        onNavigateToRecommendedDetail = { contentId -> throttledNavigation { onNavigateToRecommendedDetail(contentId) } },
+        onNavigateToScheduleCreate = { throttledNavigation(onNavigateToScheduleCreate) },
+        onNavigateToScheduleTab = { throttledNavigation(onNavigateToScheduleTab) },
         contentsList = uiState.filteredContents,
         selectedCategory = uiState.selectedCategory,
         weeklySchedules = uiState.weeklySchedules,

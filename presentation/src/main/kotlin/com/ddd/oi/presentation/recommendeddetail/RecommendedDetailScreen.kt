@@ -56,6 +56,7 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSpotCard
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
+import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
 import androidx.core.net.toUri
 
 @Composable
@@ -66,6 +67,7 @@ fun RecommendedDetailScreen(
     viewModel: RecommendedDetailViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val throttledNavigation = rememberThrottledNavigation()
 
     LaunchedEffect(contentId) {
         viewModel.getContentById(contentId)
@@ -75,7 +77,7 @@ fun RecommendedDetailScreen(
             .fillMaxSize(),
     ) {
         OiHeader(
-            onLeftClick = onNavigateBack,
+            onLeftClick = { throttledNavigation(onNavigateBack) },
             title = uiState.content.title,
         )
 

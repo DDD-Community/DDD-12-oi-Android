@@ -47,6 +47,7 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiCardDimens
+import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
 import com.ddd.oi.presentation.home.Badge
 import com.ddd.oi.presentation.home.RecommendedCategory
 
@@ -58,6 +59,7 @@ fun RecommendedListScreen(
     viewModel: RecommendedListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val throttledNavigation = rememberThrottledNavigation()
 
     LaunchedEffect(Unit) {
         viewModel.getContents()
@@ -67,7 +69,7 @@ fun RecommendedListScreen(
             .fillMaxSize(),
     ) {
         OiHeader(
-            onLeftClick = onNavigateBack,
+            onLeftClick = { throttledNavigation(onNavigateBack) },
             title = "추천 코스 모아보기",
         )
 
@@ -81,7 +83,7 @@ fun RecommendedListScreen(
             RecommendedCourseContent(
                 currentCategory = uiState.selectedCategory,
                 onCategoryClick = viewModel::selectCategory,
-                onNavigateToRecommendedDetail = onNavigateToDetail,
+                onNavigateToRecommendedDetail = { contentId -> throttledNavigation { onNavigateToDetail(contentId) } },
                 contentsList = uiState.filteredContents
             )
         }
