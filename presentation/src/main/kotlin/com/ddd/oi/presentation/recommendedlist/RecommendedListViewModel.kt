@@ -58,10 +58,20 @@ class RecommendedListViewModel @Inject constructor(
     
     fun selectSortOption(sortOption: SortOption) {
         _uiState.value = _uiState.value.copy(
+            contents = _uiState.value.contents.sortedList(sortOption),
+            filteredContents = _uiState.value.filteredContents.sortedList(sortOption),
             selectedSortOption = sortOption
         )
         // 실제 정렬은 여기서 구현할 수 있지만, 
         // 현재는 UI 상태만 변경
+    }
+
+    fun List<Content>.sortedList(sortOption: SortOption): List<Content> {
+        return when(sortOption) {
+            SortOption.POPULAR -> this
+            SortOption.LATEST -> this.sortedBy { it.createdAt }
+            SortOption.RECOMMENDED -> this.sortedByDescending { it.recommendationScore }
+        }
     }
 }
 
