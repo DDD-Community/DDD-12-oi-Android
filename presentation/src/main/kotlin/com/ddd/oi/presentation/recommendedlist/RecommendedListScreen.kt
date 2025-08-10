@@ -29,11 +29,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ddd.oi.domain.model.Content
+import com.ddd.oi.presentation.R
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
@@ -63,9 +68,9 @@ fun RecommendedListScreen(
         )
 
         if (uiState.isLoading) {
-            // Loading state - you can add a loading indicator here
+            RecommendedLoadingScreen()
         } else if (uiState.error != null) {
-            // Error state - you can add error UI here
+            RecommendedErrorScreen()
         } else {
             RecommendedCourseContent(
                 currentCategory = uiState.selectedCategory,
@@ -209,6 +214,63 @@ private fun RecommendedCourseItem(
             text = description,
             style = OiTheme.typography.bodySmallRegular,
             color = OiTheme.colors.textTertiary
+        )
+    }
+}
+
+@Composable
+private fun RecommendedErrorScreen(
+    modifier: Modifier = Modifier,
+    onRefreshClick: () -> Unit = {},
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            text = "연결상태가 불안정해요\n다시 시도 해주세요",
+            textAlign = TextAlign.Center,
+            style = OiTheme.typography.headlineSmallBold,
+            color =  OiTheme.colors.textPrimary,
+        )
+
+        Icon(
+            modifier = Modifier.padding(top = 18.dp),
+            painter = painterResource(R.drawable.ic_error),
+            contentDescription = "",
+            tint = Color.Unspecified,
+        )
+
+        OiButton(
+            modifier = Modifier.padding(top = 32.dp),
+            style = OiButtonStyle.Medium40Rect,
+            title = "다시 시도",
+            leftIconDrawableRes = R.drawable.ic_refresh,
+            onClick = onRefreshClick
+        )
+    }
+}
+
+@Composable
+private fun RecommendedLoadingScreen(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_loading_1),
+            contentDescription = "",
+            tint = Color.Unspecified,
+        )
+
+        Text(
+            text = "화면을 불러오고 있어요",
+            style = OiTheme.typography.headlineSmallBold,
+            color = OiTheme.colors.textPrimary,
         )
     }
 }

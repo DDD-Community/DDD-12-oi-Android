@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -44,6 +45,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ddd.oi.domain.model.Content
 import com.ddd.oi.presentation.R
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSpotCard
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
@@ -70,9 +73,9 @@ fun RecommendedDetailScreen(
         )
 
         if (uiState.isLoading) {
-            // Loading state - you can add a loading indicator here
+            RecommendedLoadingScreen()
         } else if (uiState.error != null) {
-            // Error state - you can add error UI here
+            RecommendedErrorScreen()
         } else {
             RecommendedDetailContent(content = uiState.content)
             RecommendedDetailPlaceContent(content = uiState.content)
@@ -81,7 +84,9 @@ fun RecommendedDetailScreen(
 }
 
 @Composable
-private fun RecommendedDetailContent(content: Content) {
+private fun RecommendedDetailContent(
+    content: Content
+) {
     Column {
         AsyncImage(
             modifier = Modifier
@@ -190,7 +195,9 @@ private fun RecommendedDetailContentTag(
 }
 
 @Composable
-private fun RecommendedDetailPlaceContent(content: Content? = null) {
+private fun RecommendedDetailPlaceContent(
+    content: Content? = null
+) {
     val spots = content?.spots ?: emptyList()
 
     LazyColumn(
@@ -289,6 +296,63 @@ private fun RecommendedDetailPlaceContent(content: Content? = null) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun RecommendedErrorScreen(
+    modifier: Modifier = Modifier,
+    onRefreshClick: () -> Unit = {},
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            text = "연결상태가 불안정해요\n다시 시도 해주세요",
+            textAlign = TextAlign.Center,
+            style = OiTheme.typography.headlineSmallBold,
+            color =  OiTheme.colors.textPrimary,
+        )
+
+        Icon(
+            modifier = Modifier.padding(top = 18.dp),
+            painter = painterResource(R.drawable.ic_error),
+            contentDescription = "",
+            tint = Color.Unspecified,
+        )
+
+        OiButton(
+            modifier = Modifier.padding(top = 32.dp),
+            style = OiButtonStyle.Medium40Rect,
+            title = "다시 시도",
+            leftIconDrawableRes = R.drawable.ic_refresh,
+            onClick = onRefreshClick
+        )
+    }
+}
+
+@Composable
+private fun RecommendedLoadingScreen(
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.ic_loading_1),
+            contentDescription = "",
+            tint = Color.Unspecified,
+        )
+
+        Text(
+            text = "화면을 불러오고 있어요",
+            style = OiTheme.typography.headlineSmallBold,
+            color = OiTheme.colors.textPrimary,
+        )
     }
 }
 
