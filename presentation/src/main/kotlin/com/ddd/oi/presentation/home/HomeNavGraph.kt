@@ -12,12 +12,14 @@ fun NavController.navigateToHome(navOptions: NavOptions) {
 
 fun NavGraphBuilder.homeNavGraph(
     navigateToRecommendedList: () -> Unit,
-    navigateToRecommendedDetail: (Long) -> Unit
+    navigateToRecommendedDetail: (Long) -> Unit,
+    navigateToScheduleCreate: () -> Unit
 ) {
     composable<MainTabRoute.Home> {
         HomeScreen(
             onNavigateToRecommendedList = navigateToRecommendedList,
-            onNavigateToRecommendedDetail = navigateToRecommendedDetail
+            onNavigateToRecommendedDetail = navigateToRecommendedDetail,
+            onNavigateToScheduleCreate = navigateToScheduleCreate
         )
     }
 }

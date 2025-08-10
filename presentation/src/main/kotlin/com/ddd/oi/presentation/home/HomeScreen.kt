@@ -43,6 +43,8 @@ import coil.request.ImageRequest
 import com.ddd.oi.domain.model.Content
 import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.presentation.R
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
+import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiDotList
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRoundRectChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiScheduleCard
@@ -66,6 +68,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     onNavigateToRecommendedList: () -> Unit = {},
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
+    onNavigateToScheduleCreate: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -76,6 +79,7 @@ fun HomeScreen(
         modifier = modifier,
         onNavigateToRecommendedList = onNavigateToRecommendedList,
         onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
+        onNavigateToScheduleCreate = onNavigateToScheduleCreate,
         contentsList = uiState.filteredContents,
         selectedCategory = uiState.selectedCategory,
         weeklySchedules = uiState.weeklySchedules,
@@ -91,6 +95,7 @@ private fun HomeContent(
     modifier: Modifier = Modifier,
     onNavigateToRecommendedList: () -> Unit = {},
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
+    onNavigateToScheduleCreate: () -> Unit = {},
     contentsList: List<Content> = emptyList(),
     selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
     weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
@@ -111,7 +116,8 @@ private fun HomeContent(
             weeklySchedules = weeklySchedules,
             selectedDate = selectedDate,
             selectedDateSchedules = selectedDateSchedules,
-            onDateSelected = onDateSelected
+            onDateSelected = onDateSelected,
+            onNavigateToScheduleCreate = onNavigateToScheduleCreate
         )
 
         HomeRecommendedCourse(
@@ -169,7 +175,8 @@ private fun HomeWeeklySchedule(
     weeklySchedules: Map<LocalDate, List<Schedule>>,
     selectedDate: LocalDate,
     selectedDateSchedules: List<Schedule>,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    onNavigateToScheduleCreate: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -190,7 +197,8 @@ private fun HomeWeeklySchedule(
             weeklySchedules = weeklySchedules,
             selectedDate = selectedDate,
             selectedDateSchedules = selectedDateSchedules,
-            onDateSelected = onDateSelected
+            onDateSelected = onDateSelected,
+            onNavigateToScheduleCreate = onNavigateToScheduleCreate
         )
     }
 }
@@ -235,7 +243,8 @@ private fun WeeklyScheduleContent(
     weeklySchedules: Map<LocalDate, List<Schedule>>,
     selectedDate: LocalDate,
     selectedDateSchedules: List<Schedule>,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    onNavigateToScheduleCreate: () -> Unit = {}
 ) {
     val currentDate: LocalDate = Clock.System.now()
         .toLocalDateTime(TimeZone.currentSystemDefault())
@@ -294,9 +303,21 @@ private fun WeeklyScheduleContent(
                     .fillMaxWidth()
                     .padding(top = 20.dp)
                     .height(125.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // todo empty schedules ui
+                Text(
+                    text = "등록된 일정이 없어요",
+                    style = OiTheme.typography.bodyLargeSemibold,
+                    color = OiTheme.colors.textDisabled,
+                )
+
+                OiButton(
+                    style = OiButtonStyle.Medium40Rect,
+                    leftIconDrawableRes = R.drawable.ic_add_plus,
+                    title = "일정 추가",
+                    onClick = onNavigateToScheduleCreate
+                )
             }
         }
     }
@@ -405,12 +426,12 @@ private fun RecommendedCourseContent(
     }
 }
 
-enum class Badge(val tag: String){
+enum class Badge(val tag: String) {
     POPULAR("인기"), LATEST("최신")
 }
 
 private fun getTagString(badge: String): String {
-    return runCatching { Badge.valueOf(badge).tag }.getOrNull()?:""
+    return runCatching { Badge.valueOf(badge).tag }.getOrNull() ?: ""
 }
 
 @Composable
