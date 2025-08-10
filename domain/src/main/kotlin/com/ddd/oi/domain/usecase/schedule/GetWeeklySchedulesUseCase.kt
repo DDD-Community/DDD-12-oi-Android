@@ -6,6 +6,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import javax.inject.Inject
 
 class GetWeeklySchedulesUseCase @Inject constructor(
@@ -37,7 +38,8 @@ class GetWeeklySchedulesUseCase @Inject constructor(
     }
     
     private fun getStartOfWeek(date: LocalDate): LocalDate {
-        val dayOfWeek = date.dayOfWeek.ordinal // 월요일부터 0
-        return date.minus(dayOfWeek, DateTimeUnit.DAY)
+        // 일요일부터 시작하는 주 계산
+        val sundayOffset = if (date.dayOfWeek == DayOfWeek.SUNDAY) 0 else 7 - date.dayOfWeek.ordinal
+        return date.minus(sundayOffset, DateTimeUnit.DAY)
     }
 }
