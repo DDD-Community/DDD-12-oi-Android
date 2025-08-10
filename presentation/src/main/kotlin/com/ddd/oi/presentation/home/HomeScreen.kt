@@ -86,7 +86,8 @@ fun HomeScreen(
         selectedDate = uiState.selectedDate,
         selectedDateSchedules = uiState.selectedDateSchedules,
         onDateSelected = viewModel::selectDate,
-        onCategorySelected = viewModel::selectCategory
+        onCategorySelected = viewModel::selectCategory,
+        hasError = uiState.error != null
     )
 }
 
@@ -104,6 +105,7 @@ private fun HomeContent(
     selectedDateSchedules: List<Schedule> = emptyList(),
     onDateSelected: (LocalDate) -> Unit = {},
     onCategorySelected: (RecommendedCategory) -> Unit = {},
+    hasError: Boolean = false,
 ) {
     Column(
         modifier = modifier,
@@ -125,7 +127,8 @@ private fun HomeContent(
             onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
             contentsList = contentsList,
             selectedCategory = selectedCategory,
-            onCategorySelected = onCategorySelected
+            onCategorySelected = onCategorySelected,
+            hasError = hasError
         )
 
         Spacer(
@@ -337,6 +340,7 @@ private fun HomeRecommendedCourse(
     contentsList: List<Content>,
     selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
     onCategorySelected: (RecommendedCategory) -> Unit = {},
+    hasError: Boolean = false,
 ) {
     Column(
         modifier = modifier
@@ -354,7 +358,8 @@ private fun HomeRecommendedCourse(
             currentCategory = selectedCategory,
             onCategoryClick = onCategorySelected,
             onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
-            contentsList = contentsList
+            contentsList = contentsList,
+            hasError = hasError
         )
     }
 }
@@ -388,6 +393,7 @@ private fun RecommendedCourseContent(
     currentCategory: RecommendedCategory,
     onCategoryClick: (RecommendedCategory) -> Unit,
     onNavigateToRecommendedDetail: (Long) -> Unit,
+    hasError: Boolean = false,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -406,21 +412,41 @@ private fun RecommendedCourseContent(
             }
         }
 
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(contentsList) { content ->
-                RecommendedCourseItem(
-                    onClick = { onNavigateToRecommendedDetail(content.id) },
-                    tag = getTagString(content.badge),
-                    title = content.title,
-                    description = content.displayDescription,
-                    imageUrl = content.imageUrl
+        if (contentsList.isEmpty() && hasError) {
+            Column(
+                modifier = modifier.padding(vertical = 24.dp).fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "데이터를 불러올 수 없습니다.",
+                    style = OiTheme.typography.bodyLargeSemibold,
+                    color = OiTheme.colors.textTertiary,
                 )
+
+                Icon(
+                    painter = painterResource(R.drawable.ic_content_empty),
+                    contentDescription = "",
+                    tint = Color.Unspecified
+                )
+            }
+        } else if (contentsList.isNotEmpty()) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(contentsList) { content ->
+                    RecommendedCourseItem(
+                        onClick = { onNavigateToRecommendedDetail(content.id) },
+                        tag = getTagString(content.badge),
+                        title = content.title,
+                        description = content.displayDescription,
+                        imageUrl = content.imageUrl
+                    )
+                }
             }
         }
     }
