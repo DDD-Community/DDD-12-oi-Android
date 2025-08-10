@@ -69,6 +69,7 @@ fun HomeScreen(
     onNavigateToRecommendedList: () -> Unit = {},
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
     onNavigateToScheduleCreate: () -> Unit = {},
+    onNavigateToScheduleTab: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -80,6 +81,7 @@ fun HomeScreen(
         onNavigateToRecommendedList = onNavigateToRecommendedList,
         onNavigateToRecommendedDetail = onNavigateToRecommendedDetail,
         onNavigateToScheduleCreate = onNavigateToScheduleCreate,
+        onNavigateToScheduleTab = onNavigateToScheduleTab,
         contentsList = uiState.filteredContents,
         selectedCategory = uiState.selectedCategory,
         weeklySchedules = uiState.weeklySchedules,
@@ -97,6 +99,7 @@ private fun HomeContent(
     onNavigateToRecommendedList: () -> Unit = {},
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
     onNavigateToScheduleCreate: () -> Unit = {},
+    onNavigateToScheduleTab: () -> Unit = {},
     contentsList: List<Content> = emptyList(),
     selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
     weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
@@ -119,7 +122,8 @@ private fun HomeContent(
             selectedDate = selectedDate,
             selectedDateSchedules = selectedDateSchedules,
             onDateSelected = onDateSelected,
-            onNavigateToScheduleCreate = onNavigateToScheduleCreate
+            onNavigateToScheduleCreate = onNavigateToScheduleCreate,
+            onNavigateToScheduleTab = onNavigateToScheduleTab
         )
 
         HomeRecommendedCourse(
@@ -179,7 +183,8 @@ private fun HomeWeeklySchedule(
     selectedDate: LocalDate,
     selectedDateSchedules: List<Schedule>,
     onDateSelected: (LocalDate) -> Unit,
-    onNavigateToScheduleCreate: () -> Unit = {}
+    onNavigateToScheduleCreate: () -> Unit = {},
+    onNavigateToScheduleTab: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -192,7 +197,7 @@ private fun HomeWeeklySchedule(
         WeeklyScheduleTitle(
             modifier = Modifier.padding(horizontal = 16.dp),
             scheduleCount = totalScheduleCount,
-            onRightArrowClick = {}
+            onRightArrowClick = onNavigateToScheduleTab
         )
 
         WeeklyScheduleContent(

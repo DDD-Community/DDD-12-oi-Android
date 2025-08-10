@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.navigation.MainTab
 import com.ddd.oi.presentation.core.navigation.OiNavigator
 import com.ddd.oi.presentation.core.navigation.Route
 import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
@@ -32,7 +33,8 @@ fun OiNavHost(
         homeNavGraph(
             navigateToRecommendedList = navigator::navigateToRecommendedList,
             navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
-            navigateToScheduleCreate = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule()) }
+            navigateToScheduleCreate = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule()) },
+            navigateToScheduleTab = { navigator.navigate(MainTab.SCHEDULE) }
         )
 
         scheduleNavGraph(
