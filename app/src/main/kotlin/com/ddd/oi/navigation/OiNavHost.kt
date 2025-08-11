@@ -7,6 +7,7 @@ import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarDa
 import com.ddd.oi.presentation.core.navigation.OiNavigator
 import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
 import com.ddd.oi.presentation.home.homeNavGraph
+import com.ddd.oi.presentation.login.loginNavGraph
 import com.ddd.oi.presentation.schedule.scheduleNavGraph
 import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
@@ -26,6 +27,10 @@ fun OiNavHost(
         startDestination = navigator.startDestination,
         modifier = modifier
     ) {
+        loginNavGraph(
+            navigateToHome = {}
+        )
+
         homeNavGraph()
 
         scheduleNavGraph(
