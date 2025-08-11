@@ -107,7 +107,7 @@ fun ScheduleScreen(
             showBottomSheet = true
         },
         navigateToCreateSchedule = {
-            val scheduleCopy = Route.UpsertSchedule(mode = UpsertMode.COPY)
+            val scheduleCopy = Route.UpsertSchedule(mode = UpsertMode.CREATE)
             navigateToCreateSchedule(
                 ScheduleNavDataFactory.createLocalDateCreate(uiState.selectedDate),
                 scheduleCopy
