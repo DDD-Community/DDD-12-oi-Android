@@ -10,6 +10,10 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 sealed interface Route {
+
+    @Serializable
+    data object Login: Route
+
     @Serializable
     data class UpsertSchedule(val mode: UpsertMode = UpsertMode.CREATE) : Route
 
