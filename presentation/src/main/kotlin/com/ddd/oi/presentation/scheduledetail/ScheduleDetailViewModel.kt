@@ -44,6 +44,7 @@ class ScheduleDetailViewModel @Inject constructor(
             }
             .onFailure {
                 Log.d("places fail", it.toString())
+                postSideEffect(ScheduleDetailSideEffect.ErrorToast("세부 일정을 가져오는데 실패했습니다."))
                 reduce { state.copy(placeUiState = PlaceUiState.Error()) }
             }
     }
@@ -60,7 +61,7 @@ class ScheduleDetailViewModel @Inject constructor(
                 Log.d("updateSchedulePlaceTime Success", place.toString())
             }
             .onFailure {
-                Log.d("updateSchedulePlaceTime Fail", it.toString())
+                postSideEffect(ScheduleDetailSideEffect.ErrorToast("시간 재설정에 실패했습니다."))
             }
     }
 
@@ -76,6 +77,7 @@ class ScheduleDetailViewModel @Inject constructor(
                 Log.d("updateSchedulePlaceMemo Success", place.toString())
             }
             .onFailure {
+                postSideEffect(ScheduleDetailSideEffect.ErrorToast("메모 수정에 실패했습니다."))
                 Log.d("updateSchedulePlaceMemo Fail", it.toString())
             }
     }
@@ -90,7 +92,7 @@ class ScheduleDetailViewModel @Inject constructor(
             }
             .onFailure {
                 Log.d("deleteScheduleDetail Fail", it.toString())
-                //TODO: 삭제 실패 토스트 처리
+                postSideEffect(ScheduleDetailSideEffect.ErrorToast("메모 삭제에 실패했습니다. 다시 시도해 주세요."))
             }
     }
 }
