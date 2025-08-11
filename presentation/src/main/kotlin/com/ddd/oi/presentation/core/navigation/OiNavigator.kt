@@ -52,7 +52,7 @@ class OiNavigator(
         }
 
     val mainTabList: PersistentList<MainTab> = MainTab.entries.toPersistentList()
-    val startDestination: Route = MainTabRoute.Home
+    val startDestination: Route = Route.Login
 
     val currentRoute: Route?
         @Composable get() = when {
