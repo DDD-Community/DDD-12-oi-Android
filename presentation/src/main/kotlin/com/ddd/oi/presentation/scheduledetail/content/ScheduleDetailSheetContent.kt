@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
@@ -136,7 +137,7 @@ internal fun ScheduleDetailSheetContent(
                         visible = activeDate != date,
                     ) {
                         Text(
-                            modifier = Modifier.padding(start = 16.dp),
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp),
                             text = "Day${item.day} (${
                                 formatToScheduleDetailActiveDate(
                                     item.date
@@ -191,7 +192,7 @@ fun PlaceCard(
     modifier: Modifier = Modifier,
     place: SchedulePlace,
     order: Int,
-    isVisibleTitle: Boolean = false,
+    isVisibleTitle: Boolean = true,
     isSelected: Boolean,
     onClick: () -> Unit,
     editTimeClick: () -> Unit,
@@ -240,7 +241,19 @@ fun PlaceCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = place.startTime ?: "-- : --",
+                        buildAnnotatedString {
+                            withStyle(style = SpanStyle(color = OiTheme.colors.textDisabled)) {
+                                append(
+                                    "--"
+                                )
+                            }
+                            withStyle(style = SpanStyle(color = Color.Black)) { append(" : ") }
+                            withStyle(style = SpanStyle(color = OiTheme.colors.textDisabled)) {
+                                append(
+                                    "--"
+                                )
+                            }
+                        },
                         style = OiTheme.typography.bodyMediumSemibold
                     )
                     Box(
@@ -385,7 +398,7 @@ private fun PlaceCardPreview() {
     OiTheme {
         val place1 = SchedulePlace(
             id = 0,
-            spotName = "부산",
+            spotName = "부산 해운대",
             memo = "오후 4시부터 체크인",
             startTime = "15:00",
             targetDate = "2025-07-20",
@@ -408,6 +421,7 @@ private fun PlaceCardPreview() {
                 place = place1,
                 order = 1,
                 isSelected = true,
+                isVisibleTitle = true,
                 onClick = {},
                 editTimeClick = {}
             )

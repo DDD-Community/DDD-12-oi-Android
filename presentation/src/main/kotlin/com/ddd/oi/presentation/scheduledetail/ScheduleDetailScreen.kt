@@ -16,12 +16,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +47,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,11 +62,17 @@ import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToSchedu
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getPlaceCategoryColor
 import com.ddd.oi.presentation.core.designsystem.component.oibottomsheetscaffold.OiBottomSheetScaffold
 import com.ddd.oi.presentation.core.designsystem.component.oitimepicker.OiTimePicker
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbar
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarHost
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarController
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailContent
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailDragHandle
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailSheetContent
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailTopBar
+import com.ddd.oi.presentation.scheduledetail.contract.ScheduleDetailSideEffect
 import com.ddd.oi.presentation.util.createBitmapFromComposable
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
@@ -83,6 +92,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.daysUntil
 import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
+import kotlin.collections.forEachIndexed
 import kotlin.math.roundToInt
 
 @Composable
@@ -92,7 +103,6 @@ fun ScheduleDetailScreen(
     navigateToSearchPlace: (Long, String) -> Unit,
     onBackClick: () -> Unit,
     navigateToEditPlace: (Long, SchedulePlace) -> Unit,
-    isRefresh: Boolean = true
 ) {
     val uiState by viewModel.collectAsState()
     var isMapVisible by remember { mutableStateOf(true) }
@@ -106,6 +116,9 @@ fun ScheduleDetailScreen(
     var isPlaceMemoVisible by remember { mutableStateOf(false) }
     var swipeSelectedPlace by remember { mutableStateOf<SchedulePlace?>(null) }
 
+    val snackBarHostState = remember { SnackbarHostState() }
+    val snackbarController = rememberSnackbarController(snackBarHostState)
+
     BackHandler {
         scope.launch {
             isMapVisible = false
@@ -118,8 +131,31 @@ fun ScheduleDetailScreen(
         viewModel.getSchedulePlaces()
     }
 
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is ScheduleDetailSideEffect.ErrorToast -> {
+                snackbarController.showSnackbar(
+                    OiSnackbarData(
+                        message = sideEffect.message,
+                        type = SnackbarType.WARNING
+                    )
+                )
+            }
+        }
+    }
+
     OiBottomSheetScaffold(
         modifier = modifier,
+        snackbarHost = {
+            OiSnackbarHost(
+                modifier = Modifier.offset {
+                    val offsetY = 16.dp.roundToPx()
+                    IntOffset(0, -offsetY)
+                },
+                hostState = snackBarHostState,
+                controller = snackbarController
+            )
+        },
         sheetDragHandle = {
             ScheduleDetailDragHandle(
                 navigateToSearchPlace = {
@@ -374,9 +410,6 @@ private fun MapContent(
     val compositionContext = rememberCompositionContext()
     val density = LocalDensity.current // 현재 화면 밀도(Density) 가져오기
 
-    val markerWidthPx = with(density) { 40.dp.toPx().roundToInt() }
-    val markerHeightPx = with(density) { 40.dp.toPx().roundToInt() }
-
     var markerOverlays by remember { mutableStateOf<List<OverlayImage>>(emptyList()) }
 
     val latLngList = placesList.map { LatLng(it.latitude, it.longitude) }
@@ -384,8 +417,8 @@ private fun MapContent(
     val mapUiSetting = MapUiSettings(
         isZoomControlEnabled = false,
         logoGravity = Gravity.TOP
-
     )
+
     LaunchedEffect(placesList, density) {
         val markerWidthPx = with(density) { 40.dp.toPx().roundToInt() }
         val markerHeightPx = with(density) { 40.dp.toPx().roundToInt() }
