@@ -47,7 +47,7 @@ fun OiBottomSheetScaffold(
     titleContent: @Composable () -> Unit,
     mapContent: @Composable () -> Unit,
     sheetContent: @Composable () -> Unit,
-    snackbarHost: @Composable (SnackbarHostState) -> Unit = { SnackbarHost(it) },
+    snackbarHost: @Composable () -> Unit = { },
     containerColor: Color = white,
     contentColor: Color = contentColorFor(containerColor)
 ) {
@@ -67,7 +67,7 @@ fun OiBottomSheetScaffold(
             )
         },
         sheetOffset = { scaffoldState.bottomSheetState.requireOffset() },
-        snackbarHost = { snackbarHost(scaffoldState.snackbarHostState) },
+        snackbarHost = { snackbarHost() },
         sheetState = scaffoldState.bottomSheetState
     )
 }
@@ -75,18 +75,15 @@ fun OiBottomSheetScaffold(
 @Stable
 class OiBottomSheetScaffoldState(
     val bottomSheetState: OiSheetState,
-    val snackbarHostState: SnackbarHostState
 )
 
 @Composable
 fun rememberOiBottomSheetScaffoldState(
     bottomSheetState: OiSheetState = rememberOiStandardBottomSheetState(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() }
 ): OiBottomSheetScaffoldState {
-    return remember(bottomSheetState, snackbarHostState) {
+    return remember(bottomSheetState) {
         OiBottomSheetScaffoldState(
             bottomSheetState = bottomSheetState,
-            snackbarHostState = snackbarHostState
         )
     }
 }
@@ -297,7 +294,7 @@ internal fun OiBottomSheetScaffoldLayout(
             val snackbarWidth = snackbarPlaceable.fastMaxOfOrNull { it.width } ?: 0
             val snackbarHeight = snackbarPlaceable.fastMaxOfOrNull { it.height } ?: 0
             val snackbarOffsetX = (layoutWidth - snackbarWidth) / 2
-            val snackbarOffsetY = currentOffset.roundToInt() - snackbarHeight
+            val snackbarOffsetY = layoutHeight - snackbarHeight
             snackbarPlaceable.fastForEach {
                 it.placeRelative(snackbarOffsetX, snackbarOffsetY)
             }
