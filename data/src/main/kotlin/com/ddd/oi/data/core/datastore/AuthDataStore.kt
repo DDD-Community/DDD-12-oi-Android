@@ -48,7 +48,7 @@ class AuthDataStore @Inject constructor(
 
     fun getCurrentLoginType(): Flow<String?> {
         return context.dataStore.data.map { prefs ->
-            prefs[Keys.CURRENT_SOCIAL].toString()
+            prefs[Keys.CURRENT_SOCIAL]
         }
     }
 
