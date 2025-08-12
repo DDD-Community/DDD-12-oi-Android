@@ -12,6 +12,9 @@ import kotlinx.serialization.json.Json
 sealed interface Route {
 
     @Serializable
+    data object Splash: Route
+
+    @Serializable
     data object Login: Route
 
     @Serializable
