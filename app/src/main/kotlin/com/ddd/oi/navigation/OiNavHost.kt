@@ -3,6 +3,7 @@ package com.ddd.oi.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
 import com.ddd.oi.presentation.core.navigation.OiNavigator
 import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
@@ -11,6 +12,7 @@ import com.ddd.oi.presentation.login.loginNavGraph
 import com.ddd.oi.presentation.schedule.scheduleNavGraph
 import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
+import com.ddd.oi.presentation.splash.splashNavGraph
 import com.ddd.oi.presentation.upsertplace.upsertPlaceNavGraph
 
 @Composable
@@ -27,8 +29,23 @@ fun OiNavHost(
         startDestination = navigator.startDestination,
         modifier = modifier
     ) {
+
+        splashNavGraph(
+            navigateToLogin = { navigator.navigateToLogin() },
+            navigateToHome = {
+                val navOptions = navOptions {
+                    popUpTo(navigator.navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+                navigator.navigateToHome(navOptions)
+            },
+            onShowSnackbar = onShowSnackbar
+        )
+
         loginNavGraph(
-            navigateToHome = {}
+            navigateToHome = {},
+            onShowSnackbar = onShowSnackbar
         )
 
         homeNavGraph()
