@@ -1,12 +1,5 @@
 package com.ddd.oi.presentation.login.contract
 
 data class LoginState(
-    val currentSocialLogin: SocialType? = null
+    val isLoading: Boolean = false
 )
-
-
-enum class SocialType {
-    NAVER,
-    KAKAO,
-    GOOGLE;
-}
