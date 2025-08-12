@@ -8,6 +8,8 @@ import com.ddd.oi.data.auth.repository.AuthRepositoryImpl
 import com.ddd.oi.domain.repository.AuthRepository
 import com.ddd.oi.domain.usecase.auth.GetCurrentSocialTypeUseCase
 import com.ddd.oi.domain.usecase.auth.GetCurrentSocialTypeUseCaseImpl
+import com.ddd.oi.domain.usecase.auth.GetUserIdUseCase
+import com.ddd.oi.domain.usecase.auth.GetUserIdUseCaseImpl
 import com.ddd.oi.domain.usecase.auth.LoginUseCase
 import com.ddd.oi.domain.usecase.auth.LoginUseCaseImpl
 import dagger.Binds
@@ -39,5 +41,9 @@ abstract class AuthModule {
     @Binds
     @Singleton
     abstract fun bindGetCurrentSocialTypeUseCase(getCurrentSocialTypeUseCaseImpl: GetCurrentSocialTypeUseCaseImpl): GetCurrentSocialTypeUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindGetUserIdUseCase(getUserIdUseCaseImpl: GetUserIdUseCaseImpl): GetUserIdUseCase
 }
 
