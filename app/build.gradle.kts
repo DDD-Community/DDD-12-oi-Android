@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +20,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        resValue("string","KAKAO_OAUTH_HOST",getApiKey("KAKAO_OAUTH_HOST"))
     }
 
     buildTypes {
@@ -41,6 +44,10 @@ android {
     }
 }
 
+fun getApiKey(propertyKey:String):String{
+    return gradleLocalProperties(rootDir, providers).getProperty(propertyKey)
+}
+
 dependencies {
     implementation(project(":data"))
     implementation(project(":domain"))
@@ -58,6 +65,13 @@ dependencies {
 
     //naverMap
     implementation(libs.map.sdk)
+
+    //kakaosdk
+    implementation(libs.kakao.user) // 카카오 로그인 API 모듈
+
+    //naversdk
+    implementation(libs.naver.oauth)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
