@@ -2,6 +2,7 @@ package com.ddd.oi.data.auth
 
 import com.ddd.oi.data.auth.model.LoginRequestDto
 import com.ddd.oi.data.auth.model.LoginResponseDto
+import com.ddd.oi.data.auth.model.ReissueResponseDto
 import com.ddd.oi.data.core.model.BaseResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -13,4 +14,7 @@ interface AuthService {
         @Path("provider") provider: String,
         @Body request: LoginRequestDto
     ): BaseResponse<LoginResponseDto>
+
+    @POST("api/v1/auth/reissue")
+    suspend fun reissue(): BaseResponse<ReissueResponseDto>
 }
