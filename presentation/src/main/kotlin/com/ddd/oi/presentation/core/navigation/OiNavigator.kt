@@ -9,12 +9,13 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.ddd.oi.domain.model.schedule.Schedule
-import com.ddd.oi.domain.model.schedule.ScheduleDetail
 import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
 import com.ddd.oi.presentation.home.navigateToHome
+import com.ddd.oi.presentation.login.navigateToLogin
 import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.schedule.navigateToSchedule
 import com.ddd.oi.presentation.scheduledetail.navigateToScheduleDetail
@@ -52,12 +53,13 @@ class OiNavigator(
         }
 
     val mainTabList: PersistentList<MainTab> = MainTab.entries.toPersistentList()
-    val startDestination: Route = Route.Login
+    val startDestination: Route = Route.Splash
 
     val currentRoute: Route?
         @Composable get() = when {
             currentDestination?.hasRoute(Route.UpsertSchedule::class) == true -> Route.UpsertSchedule()
             currentDestination?.hasRoute(MainTabRoute.Schedule::class) == true -> MainTabRoute.Schedule
+            currentDestination?.hasRoute(Route.Splash::class) == true -> Route.Splash
             else -> null
         }
 
@@ -91,6 +93,10 @@ class OiNavigator(
 
 
     fun navigateToSchedulePlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
+
+    fun navigateToLogin() = navController.navigateToLogin()
+
+    fun navigateToHome(navOptions: NavOptions) = navController.navigateToHome(navOptions)
 
     fun navigateToScheduleDetail(scheduleId: Schedule) = navController.navigateToScheduleDetail(scheduleId)
 
