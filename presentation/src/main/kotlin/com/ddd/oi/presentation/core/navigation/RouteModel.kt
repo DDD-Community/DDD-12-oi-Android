@@ -31,6 +31,12 @@ sealed interface Route {
         val scheduleId: Long,
         val placeName: String,
     ): Route
+
+    @Serializable
+    data class WebView(
+        val url: String,
+        val title: String
+    ): Route
 }
 
 sealed interface MainTabRoute : Route {
