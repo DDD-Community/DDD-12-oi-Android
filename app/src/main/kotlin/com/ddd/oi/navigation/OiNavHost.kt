@@ -14,6 +14,7 @@ import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
 import com.ddd.oi.presentation.splash.splashNavGraph
 import com.ddd.oi.presentation.upsertplace.upsertPlaceNavGraph
+import com.ddd.oi.presentation.webview.webViewNavGraph
 
 @Composable
 fun OiNavHost(
@@ -45,7 +46,8 @@ fun OiNavHost(
 
         loginNavGraph(
             navigateToHome = {},
-            onShowSnackbar = onShowSnackbar
+            onShowSnackbar = onShowSnackbar,
+            onNavigateToWebView = navigator::navigateToWebView
         )
 
         homeNavGraph()
@@ -84,6 +86,10 @@ fun OiNavHost(
                 navigator.popBackStack()
             },
             onShowSnackBar = onShowSnackbar
+        )
+
+        webViewNavGraph(
+            onBackClick = { navigator.popBackStack() }
         )
     }
 }
