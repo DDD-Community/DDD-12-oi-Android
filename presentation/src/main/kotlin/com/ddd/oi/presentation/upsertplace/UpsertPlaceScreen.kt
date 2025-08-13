@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
@@ -42,7 +40,6 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiPlaceCard
 import com.ddd.oi.presentation.core.designsystem.component.common.OiRecentSearchChip
-import com.ddd.oi.presentation.core.designsystem.component.common.OiSearchChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSearchField
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
@@ -128,10 +125,9 @@ private fun UpsertPlaceScreen(
         containerColor = white,
         topBar = {
             OiHeader(
-                leftButtonDrawableRes = R.drawable.ic_arrow_left,
-                titleStringRes = R.string.upsert_place,
-                isDividerVisible = false,
-                onLeftClick = onLeftClick
+                onLeftClick = onLeftClick,
+                title = stringResource(R.string.upsert_place),
+                isDividerVisible = false
             )
         },
         bottomBar = {

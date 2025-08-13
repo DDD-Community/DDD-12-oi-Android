@@ -1,9 +1,11 @@
 package com.ddd.oi.data.core.retrofit.di
 
 import com.ddd.oi.data.BuildConfig
+import com.ddd.oi.data.content.remote.ContentApi
 import com.ddd.oi.data.core.retrofit.api.ScheduleApiService
 import com.ddd.oi.data.place.remote.PlaceApi
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailApi
+import com.ddd.oi.data.spot.remote.SpotApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -75,6 +77,22 @@ object NetworkModule {
         @OiApiRetrofit retrofit: Retrofit
     ): ScheduleDetailApi {
         return retrofit.create(ScheduleDetailApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSpotApi(
+        @OiApiRetrofit retrofit: Retrofit
+    ): SpotApi {
+        return retrofit.create(SpotApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideContentApi(
+        @OiApiRetrofit retrofit: Retrofit
+    ): ContentApi {
+        return retrofit.create(ContentApi::class.java)
     }
 }
 

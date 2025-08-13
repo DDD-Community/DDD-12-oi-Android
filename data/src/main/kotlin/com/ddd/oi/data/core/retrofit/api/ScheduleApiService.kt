@@ -27,7 +27,11 @@ interface ScheduleApiService {
         @Path("scheduleId") scheduleId: Long,
     ): BaseResponse<Boolean>
 
-
+    @GET("api/v1/schedules/{target-day}")
+    suspend fun getSchedulesByTargetDay(
+        @Header("user-no") userId: Long = 1L,
+        @Path("target-day") targetDay: String,
+    ): BaseResponse<List<ScheduleDto>>
 
     @POST("api/v1/schedules")
     suspend fun createSchedule(

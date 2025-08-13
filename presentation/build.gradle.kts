@@ -68,6 +68,8 @@ dependencies {
     //naverMap
     implementation(libs.naver.map.compose)
 
+    //coil
+    implementation(libs.coil)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

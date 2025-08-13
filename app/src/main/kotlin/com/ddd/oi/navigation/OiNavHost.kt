@@ -4,13 +4,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.navigation.MainTab
 import com.ddd.oi.presentation.core.navigation.OiNavigator
+import com.ddd.oi.presentation.core.navigation.Route
 import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
 import com.ddd.oi.presentation.home.homeNavGraph
 import com.ddd.oi.presentation.schedule.scheduleNavGraph
 import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
 import com.ddd.oi.presentation.upsertplace.upsertPlaceNavGraph
+import com.ddd.oi.presentation.recommendedlist.recommendedListNavGraph
+import com.ddd.oi.presentation.recommendeddetail.recommendedDetailNavGraph
 
 @Composable
 fun OiNavHost(
@@ -26,7 +30,12 @@ fun OiNavHost(
         startDestination = navigator.startDestination,
         modifier = modifier
     ) {
-        homeNavGraph()
+        homeNavGraph(
+            navigateToRecommendedList = navigator::navigateToRecommendedList,
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
+            navigateToScheduleCreate = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule()) },
+            navigateToScheduleTab = { navigator.navigate(MainTab.SCHEDULE) }
+        )
 
         scheduleNavGraph(
             navigateToScheduleDetail = navigator::navigateToScheduleDetail,
@@ -62,6 +71,15 @@ fun OiNavHost(
                 navigator.popBackStack()
             },
             onShowSnackBar = onShowSnackbar
+        )
+
+        recommendedListNavGraph(
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
+            navigateBack = { navigator.popBackStack() }
+        )
+
+        recommendedDetailNavGraph(
+            navigateBack = { navigator.popBackStack() }
         )
     }
 }

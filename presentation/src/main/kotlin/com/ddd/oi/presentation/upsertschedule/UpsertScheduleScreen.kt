@@ -104,12 +104,11 @@ fun UpsertScheduleScreen(
         topBar = {
             OiHeader(
                 onLeftClick = { navigatePopBack(false) },
-                titleStringRes = when (viewModel.upsertMode) {
+                title = stringResource(when (viewModel.upsertMode) {
                     UpsertMode.CREATE -> R.string.create_schedule
                     UpsertMode.EDIT -> R.string.edit_schedule
                     UpsertMode.COPY -> R.string.copy_schedule
-                },
-                leftButtonDrawableRes = R.drawable.ic_arrow_left
+                })
             )
         },
         bottomBar = {
