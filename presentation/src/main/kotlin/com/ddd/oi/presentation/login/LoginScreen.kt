@@ -17,8 +17,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,7 +41,6 @@ import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarDa
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.login.contract.LoginSideEffect
-import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import androidx.core.net.toUri
 
@@ -47,9 +49,9 @@ fun LoginScreen(
     modifier: Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
     onShowSnackbar: (OiSnackbarData) -> Unit = {},
+    onNavigateToWebView: (String, String) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
-    val uiState by viewModel.collectAsState()
     val currentSocialType by viewModel.currentSocialType.collectAsStateWithLifecycle()
 
     viewModel.collectSideEffect { sideEffect ->
@@ -67,6 +69,23 @@ fun LoginScreen(
         }
     }
 
+    LoginScreen(
+        modifier = modifier.fillMaxSize(),
+        currentSocialType = currentSocialType,
+        onLoginClick = { viewModel.onLoginClicked(it, context) },
+        onContactClick = { contactToOi(context) },
+        onNavigateToWebView = onNavigateToWebView
+    )
+}
+
+@Composable
+private fun LoginScreen(
+    modifier: Modifier = Modifier,
+    currentSocialType: SocialType?,
+    onLoginClick: (SocialType) -> Unit,
+    onContactClick: () -> Unit,
+    onNavigateToWebView: (String, String) -> Unit = { _, _ -> }
+) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -93,11 +112,13 @@ fun LoginScreen(
             SocialLoginButton(
                 socialType = social,
                 currentSocialType = currentSocialType,
-                onLoginClick = { viewModel.onLoginClicked(social, context) }
+                onLoginClick = { onLoginClick(social) }
             )
         }
         Row(
-            modifier = Modifier.padding(top = 12.dp).clickable{ contactToOi(context) },
+            modifier = Modifier
+                .padding(top = 12.dp)
+                .clickable { onContactClick() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
@@ -111,15 +132,67 @@ fun LoginScreen(
                 tint = OiTheme.colors.iconTertiary
             )
         }
+        PolicyAndTermsText(
+            modifier = Modifier.padding(top = 16.dp),
+            onPrivacyPolicyClick = {
+                onNavigateToWebView(
+                    "https://steel-eocursor-051.notion.site/1feb2308626180588f3ce2f1d0a294c2?source=copy_link",
+                    "개인정보 처리방침"
+                )
+            },
+            onTermsOfServiceClick = {
+                onNavigateToWebView(
+                    "https://steel-eocursor-051.notion.site/1feb2308626180f28734ea42a9284029?source=copy_link",
+                    "이용약관"
+                )
+            }
+        )
     }
 }
 
-private fun contactToOi(context: Context) {
-    val intent = Intent(Intent.ACTION_SENDTO).apply {
-        data = "mailto:".toUri()
-        putExtra(Intent.EXTRA_EMAIL, arrayOf("testest@gmail.com"))
+@Composable
+fun PolicyAndTermsText(
+    modifier: Modifier = Modifier,
+    onPrivacyPolicyClick: () -> Unit,
+    onTermsOfServiceClick: () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalTextStyle provides OiTheme.typography.bodyXSmallRegular.copy(
+            color = OiTheme.colors.textTertiary
+        )
+    ) {
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("회원가입 시 오이(Oi)의 ")
+
+            Text(
+                text = "개인정보 처리방침",
+                modifier = Modifier.clickable(
+                    onClick = onPrivacyPolicyClick
+                ),
+                style = OiTheme.typography.bodyXSmallRegular.copy(
+                    textDecoration = TextDecoration.Underline,
+                    color = OiTheme.colors.textPrimary
+                )
+            )
+
+            Text(" 및 ")
+
+            Text(
+                text = "이용약관",
+                modifier = Modifier.clickable(
+                    onClick = onTermsOfServiceClick
+                ),
+                style = OiTheme.typography.bodyXSmallRegular.copy(
+                    textDecoration = TextDecoration.Underline,
+                    color = OiTheme.colors.textPrimary
+                )
+            )
+            Text("에 동의합니다.")
+        }
     }
-    context.startActivity(intent)
 }
 
 @Composable
@@ -153,6 +226,14 @@ private fun SocialLoginButton(
     }
 }
 
+private fun contactToOi(context: Context) {
+    val intent = Intent(Intent.ACTION_SENDTO).apply {
+        data = "mailto:".toUri()
+        putExtra(Intent.EXTRA_EMAIL, arrayOf("oneuluiidong@gmail.com"))
+    }
+    context.startActivity(intent)
+}
+
 private fun getSocialImage(socialType: SocialType): Int {
     return when (socialType) {
         SocialType.NAVER -> R.drawable.ic_login_naver
@@ -165,6 +246,11 @@ private fun getSocialImage(socialType: SocialType): Int {
 @Preview(showBackground = true)
 private fun LoginScreenPreview() {
     OiTheme {
-        LoginScreen(modifier = Modifier.fillMaxSize())
+        LoginScreen(
+            modifier = Modifier.fillMaxSize(),
+            currentSocialType = SocialType.KAKAO,
+            onLoginClick = {},
+            onContactClick = {}
+        )
     }
 }
