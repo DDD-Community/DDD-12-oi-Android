@@ -16,6 +16,8 @@ import com.ddd.oi.domain.model.schedule.Schedule
 import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
 import com.ddd.oi.presentation.home.navigateToHome
 import com.ddd.oi.presentation.login.navigateToLogin
+import com.ddd.oi.presentation.recommendeddetail.navigateToRecommendedDetail
+import com.ddd.oi.presentation.recommendedlist.navigateToRecommendedList
 import com.ddd.oi.presentation.schedule.model.ScheduleNavData
 import com.ddd.oi.presentation.schedule.navigateToSchedule
 import com.ddd.oi.presentation.scheduledetail.navigateToScheduleDetail
@@ -106,6 +108,10 @@ class OiNavigator(
     fun navigateToUpsertPlace(scheduleId: Long, placeName: String) = navController.navigateToUpsertPlace(scheduleId, placeName)
 
     fun navigateToWebView(url: String, title: String) = navController.navigateToWebView(url, title)
+
+    fun navigateToRecommendedList() = navController.navigateToRecommendedList()
+
+    fun navigateToRecommendedDetail(contentId: Long) = navController.navigateToRecommendedDetail(contentId)
 
     fun popBackStack() {
         navController.popBackStack()

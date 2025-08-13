@@ -5,7 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.navigation.MainTab
 import com.ddd.oi.presentation.core.navigation.OiNavigator
+import com.ddd.oi.presentation.core.navigation.Route
 import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
 import com.ddd.oi.presentation.home.homeNavGraph
 import com.ddd.oi.presentation.login.loginNavGraph
@@ -15,6 +17,8 @@ import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
 import com.ddd.oi.presentation.splash.splashNavGraph
 import com.ddd.oi.presentation.upsertplace.upsertPlaceNavGraph
 import com.ddd.oi.presentation.webview.webViewNavGraph
+import com.ddd.oi.presentation.recommendedlist.recommendedListNavGraph
+import com.ddd.oi.presentation.recommendeddetail.recommendedDetailNavGraph
 
 @Composable
 fun OiNavHost(
@@ -50,7 +54,13 @@ fun OiNavHost(
             onNavigateToWebView = navigator::navigateToWebView
         )
 
-        homeNavGraph()
+
+        homeNavGraph(
+            navigateToRecommendedList = navigator::navigateToRecommendedList,
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
+            navigateToScheduleCreate = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule()) },
+            navigateToScheduleTab = { navigator.navigate(MainTab.SCHEDULE) }
+        )
 
         scheduleNavGraph(
             navigateToScheduleDetail = navigator::navigateToScheduleDetail,
@@ -90,6 +100,14 @@ fun OiNavHost(
 
         webViewNavGraph(
             onBackClick = { navigator.popBackStack() }
+        )
+        recommendedListNavGraph(
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
+            navigateBack = { navigator.popBackStack() }
+        )
+
+        recommendedDetailNavGraph(
+            navigateBack = { navigator.popBackStack() }
         )
     }
 }

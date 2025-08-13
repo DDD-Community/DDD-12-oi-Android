@@ -50,7 +50,7 @@ fun OiRoundRectChip(
     tag: String = "",
     isSelected: Boolean = false,
     oiChipIcon: OiChipIcon = OiChipIcon.None,
-    @StringRes textStringRes: Int,
+    text: String,
     onItemClick: (String) -> Unit = {},
 ) {
     Row(
@@ -75,7 +75,7 @@ fun OiRoundRectChip(
             )
         }
         Text(
-            text = stringResource(textStringRes),
+            text = text,
             style = getRoundRectTextStyle(isSelected),
             color = getChipTextColor(isSelected)
         )
@@ -400,38 +400,38 @@ private fun OiRoundRectChipPreview() {
         ) {
             OiRoundRectChip(
                 isSelected = false,
-                textStringRes = R.string.whole,
+                text = stringResource(R.string.whole),
                 oiChipIcon = OiChipIcon.None
             )
 
             OiRoundRectChip(
                 isSelected = false,
-                textStringRes = R.string.travel,
+                text = stringResource(R.string.travel) ,
                 oiChipIcon = OiChipIcon.Travel
             )
 
             OiRoundRectChip(
                 isSelected = false,
-                textStringRes = R.string.date,
+                text = stringResource(R.string.date) ,
                 oiChipIcon = OiChipIcon.Date
             )
 
             OiRoundRectChip(
                 isSelected = false,
-                textStringRes = R.string.daily,
+                text = stringResource(R.string.daily),
                 oiChipIcon = OiChipIcon.Daily
             )
 
 
             OiRoundRectChip(
                 isSelected = false,
-                textStringRes = R.string.business,
+                text = stringResource(R.string.business),
                 oiChipIcon = OiChipIcon.Business
             )
 
             OiRoundRectChip(
                 isSelected = false,
-                textStringRes = R.string.etc,
+                text = stringResource(R.string.etc),
                 oiChipIcon = OiChipIcon.Etc
             )
         }
@@ -440,37 +440,37 @@ private fun OiRoundRectChipPreview() {
         ) {
             OiRoundRectChip(
                 isSelected = true,
-                textStringRes = R.string.whole,
+                text = stringResource(R.string.whole),
                 oiChipIcon = OiChipIcon.None
             )
 
             OiRoundRectChip(
                 isSelected = true,
-                textStringRes = R.string.travel,
+                text = stringResource(R.string.travel),
                 oiChipIcon = OiChipIcon.Travel
             )
 
             OiRoundRectChip(
                 isSelected = true,
-                textStringRes = R.string.date,
+                text = stringResource(R.string.date),
                 oiChipIcon = OiChipIcon.Date
             )
 
             OiRoundRectChip(
                 isSelected = true,
-                textStringRes = R.string.daily,
+                text = stringResource(R.string.daily),
                 oiChipIcon = OiChipIcon.Daily
             )
 
             OiRoundRectChip(
                 isSelected = true,
-                textStringRes = R.string.business,
+                text = stringResource(R.string.business),
                 oiChipIcon = OiChipIcon.Business
             )
 
             OiRoundRectChip(
                 isSelected = true,
-                textStringRes = R.string.etc,
+                text = stringResource(R.string.etc),
                 oiChipIcon = OiChipIcon.Etc
             )
         }

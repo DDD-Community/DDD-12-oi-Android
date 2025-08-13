@@ -15,6 +15,12 @@ class ScheduleRemoteDataSourceImpl @Inject constructor(
         }
     }
 
+    override suspend fun getSchedulesByTargetDay(targetDay: String): Result<List<ScheduleDto>> {
+        return safeApiCall {
+            scheduleApiService.getSchedulesByTargetDay(targetDay = targetDay)
+        }
+    }
+
     override suspend fun createSchedule(schedule: ScheduleRequest): Result<ScheduleDto> {
         return safeApiCall {
             scheduleApiService.createSchedule(request = schedule)

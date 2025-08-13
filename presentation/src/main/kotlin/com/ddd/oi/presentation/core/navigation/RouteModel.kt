@@ -37,6 +37,12 @@ sealed interface Route {
         val url: String,
         val title: String
     ): Route
+
+    @Serializable
+    data object RecommendedList : Route
+
+    @Serializable
+    data class RecommendedDetail(val contentId: Long) : Route
 }
 
 sealed interface MainTabRoute : Route {
