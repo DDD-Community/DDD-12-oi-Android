@@ -22,12 +22,14 @@ fun NavController.navigateToLogin() {
 
 fun NavGraphBuilder.loginNavGraph(
     navigateToHome: () -> Unit,
-    onShowSnackbar: (OiSnackbarData) -> Unit
+    onShowSnackbar: (OiSnackbarData) -> Unit,
+    onNavigateToWebView: (String, String) -> Unit
 ) {
     composable<Route.Login> { backStackEntry ->
         LoginScreen(
             modifier = Modifier.fillMaxSize(),
-            onShowSnackbar = onShowSnackbar
+            onShowSnackbar = onShowSnackbar,
+            onNavigateToWebView = onNavigateToWebView
         )
     }
 }
