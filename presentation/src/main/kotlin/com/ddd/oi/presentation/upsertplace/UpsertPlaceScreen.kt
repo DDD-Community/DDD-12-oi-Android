@@ -84,7 +84,7 @@ fun UpsertPlaceScreen(
         searchPlace = searchPlace,
         clearSearchPlace = { viewModel.clearSearchPlace() },
         removeSelectedPlace = { viewModel.removePlace(it) },
-        onRecentSearchItemClick = { viewModel.searchImmediate(it) },
+        onRecentSearchItemClick = { viewModel.search(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
         onUpdate = {
             viewModel.updatePlace()

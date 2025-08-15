@@ -101,44 +101,6 @@ class SearchPlaceViewModel @Inject constructor(
     }
 
     fun search(query: String) {
-        queryPlaceUseCase(query)
-            .map { placeList ->
-                query to placeList
-            }.onEach { (query, placeList) ->
-                val result: SearchPlaceUiState = SearchPlaceUiState.Typing(
-                    query = query,
-                    placeList = placeList.ifEmpty { throw IllegalArgumentException("List is empty") },
-                    selectedPlaceList = selectedPlace
-                )
-
-                placeRepository.addRecentSearchPlace(query)
-
-                _uiState.update {
-                    when (it) {
-                        is SearchPlaceUiState.QueryEmpty -> it
-                        is SearchPlaceUiState.ResultEmpty -> it
-                        is SearchPlaceUiState.Typing -> result
-                    }
-                }
-            }.catch { exception ->
-                if (exception is IllegalArgumentException && exception.message == "List is empty") {
-                    _uiState.update {
-                        SearchPlaceUiState.ResultEmpty(
-                            selectedPlaceList = selectedPlace
-                        )
-                    }
-                }
-                if (exception is IllegalArgumentException && exception.message == "Query is empty") {
-                    _uiState.update {
-                        SearchPlaceUiState.QueryEmpty(
-                            selectedPlaceList = selectedPlace
-                        )
-                    }
-                }
-            }.launchIn(viewModelScope)
-    }
-
-    fun searchImmediate(query: String) {
         _query.update { query }
 
         queryPlaceUseCase(query)
