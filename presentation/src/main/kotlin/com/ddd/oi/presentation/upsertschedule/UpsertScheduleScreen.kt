@@ -409,7 +409,7 @@ private fun UpsertScreenBottom(
                 .padding(top = 12.dp, bottom = 8.dp),
             onClick = onButtonClick,
             style = OiButtonStyle.Large48Oval,
-            textStringRes = R.string.next,
+            textStringRes = R.string.upsert,
             enabled = isButtonEnabled
         )
     }
