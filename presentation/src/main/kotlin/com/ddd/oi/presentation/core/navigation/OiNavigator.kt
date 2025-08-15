@@ -59,6 +59,7 @@ class OiNavigator(
         @Composable get() = when {
             currentDestination?.hasRoute(Route.UpsertSchedule::class) == true -> Route.UpsertSchedule()
             currentDestination?.hasRoute(MainTabRoute.Schedule::class) == true -> MainTabRoute.Schedule
+            currentDestination?.hasRoute(Route.UpsertPlace::class) == true -> Route.UpsertPlace(0L, "")
             else -> null
         }
 
@@ -90,8 +91,6 @@ class OiNavigator(
         navController.navigateToInsertSchedule(scheduleCopyState)
     }
 
-
-    fun navigateToSchedulePlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
 
     fun navigateToScheduleDetail(scheduleId: Schedule) = navController.navigateToScheduleDetail(scheduleId)
 
