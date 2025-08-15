@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -225,7 +226,6 @@ private fun UpsertScreenContent(
             modifier = Modifier.fillMaxWidth(),
             titleResId = R.string.schedule_category
         ) { modifier ->
-
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -261,7 +261,7 @@ private fun UpsertScreenContent(
             modifier = Modifier.fillMaxWidth(),
             titleResId = R.string.transportation
         ) { modifier ->
-            Row(
+            FlowRow(
                 modifier = modifier,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -287,7 +287,7 @@ private fun UpsertScreenContent(
                 modifier = modifier,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Party.entries.take(4).forEach {
@@ -302,7 +302,7 @@ private fun UpsertScreenContent(
                     }
                 }
 
-                Row(
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Party.entries.drop(4).forEach {
