@@ -59,6 +59,7 @@ fun OiApp(
                 val offsetY = when (currentRoute) {
                     MainTabRoute.Schedule -> 0
                     is Route.UpsertSchedule -> -(Dimens.paddingMedium + Dimens.paddingSmall + OiButtonDimens.largeHeight).roundToPx()
+                    is Route.UpsertPlace -> -(8.dp + OiButtonDimens.largeHeight + 10.dp).roundToPx()
                     else -> -Dimens.paddingMedium.roundToPx()
                 }
                 IntOffset(0, offsetY)
