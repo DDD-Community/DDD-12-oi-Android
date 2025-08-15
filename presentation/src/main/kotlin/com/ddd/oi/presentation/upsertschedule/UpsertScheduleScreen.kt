@@ -205,7 +205,7 @@ private fun UpsertScreenContent(
     Column(
         modifier = modifier
             .padding(horizontal = 16.dp)
-            .padding(bottom = 52.dp)
+            .padding(bottom = 20.dp)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
