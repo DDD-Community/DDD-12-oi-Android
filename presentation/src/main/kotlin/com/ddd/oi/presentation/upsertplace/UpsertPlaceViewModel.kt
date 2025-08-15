@@ -47,6 +47,7 @@ class UpsertPlaceViewModel @Inject constructor(
     private var selectedPlace: Place? = null
 
     val searchPlace = placeRepository.getRecentSearchPlace()
+        .map { it.reversed() }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)

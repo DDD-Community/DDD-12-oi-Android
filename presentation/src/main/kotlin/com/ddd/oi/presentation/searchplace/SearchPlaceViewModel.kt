@@ -43,6 +43,7 @@ class SearchPlaceViewModel @Inject constructor(
     private val selectedPlace: MutableList<Place> = mutableStateListOf()
 
     val searchPlace = placeRepository.getRecentSearchPlace()
+        .map { it.reversed() }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
