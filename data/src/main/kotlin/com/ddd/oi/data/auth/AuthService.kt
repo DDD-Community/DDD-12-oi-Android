@@ -15,6 +15,7 @@ interface AuthService {
         @Body request: LoginRequestDto
     ): BaseResponse<LoginResponseDto>
 
+    // 예원님한테 reissue BodyRequest 물어보기 (스웨거에 없음)
     @POST("api/v1/auth/reissue")
     suspend fun reissue(): BaseResponse<ReissueResponseDto>
 }
