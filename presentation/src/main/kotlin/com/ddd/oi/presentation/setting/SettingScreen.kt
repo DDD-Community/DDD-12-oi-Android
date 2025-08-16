@@ -1,6 +1,5 @@
 package com.ddd.oi.presentation.setting
 
-import android.graphics.drawable.shapes.OvalShape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,8 +28,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ddd.oi.presentation.R
-import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
+import com.ddd.oi.presentation.core.designsystem.component.common.OiSecondaryButton
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
@@ -158,7 +156,7 @@ private fun SettingProfileContent(
             )
         }
 
-        OiButton(
+        OiSecondaryButton(
             modifier = Modifier.padding(top = 20.dp, bottom = 32.dp),
             onClick = onNavigateToProfile,
             style = OiButtonStyle.Medium40Rect,
