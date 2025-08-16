@@ -104,67 +104,65 @@ private fun ContactUsContent(
             )
         }
     ) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(padding),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 24.dp),
-                text = "자주하는 질문",
-                style = OiTheme.typography.headlineSmallBold,
-                color = OiTheme.colors.textPrimary
-            )
-
-            LazyColumn(
-                modifier = Modifier
-                    .padding(top = 20.dp, bottom = 24.dp)
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-            ) {
-                items(faqItems) { faqItem ->
-                    FaqItemView(faqItem = faqItem)
-                }
+            item {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp, bottom = 20.dp),
+                    text = "자주하는 질문",
+                    style = OiTheme.typography.headlineSmallBold,
+                    color = OiTheme.colors.textPrimary
+                )
+            }
+            
+            items(faqItems) { faqItem ->
+                FaqItemView(
+                    faqItem = faqItem
+                )
             }
 
-            // 메일 문의하기 버튼
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 56.dp)
-                    .padding(16.dp),
-                onClick = {
-                    val intent = Intent(Intent.ACTION_SENDTO).apply {
-                        data = Uri.parse("mailto:oneuluiidong@gmail.com")
-                        putExtra(Intent.EXTRA_SUBJECT, "[OI 앱] 문의사항")
-                        putExtra(Intent.EXTRA_TEXT, "문의 내용을 입력해주세요.")
-                    }
-                    context.startActivity(intent)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = OiTheme.colors.backgroundSecondary
-                ),
-                shape = RoundedCornerShape(50),
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+            item {
+                // 메일 문의하기 버튼
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = (56 + 16).dp, bottom = 16.dp),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_SENDTO).apply {
+                            data = Uri.parse("mailto:oneuluiidong@gmail.com")
+                            putExtra(Intent.EXTRA_SUBJECT, "[OI 앱] 문의사항")
+                            putExtra(Intent.EXTRA_TEXT, "문의 내용을 입력해주세요.")
+                        }
+                        context.startActivity(intent)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = OiTheme.colors.backgroundSecondary
+                    ),
+                    shape = RoundedCornerShape(50),
+                    contentPadding = PaddingValues(16.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_mail),
-                        contentDescription = "메일",
-                        tint = OiTheme.colors.iconBrand,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Text(
-                        text = "메일 문의하기",
-                        style = OiTheme.typography.bodyMediumSemibold,
-                        color = OiTheme.colors.textBrand
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_mail),
+                            contentDescription = "메일",
+                            tint = OiTheme.colors.iconBrand,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Text(
+                            text = "메일 문의하기",
+                            style = OiTheme.typography.bodyMediumSemibold,
+                            color = OiTheme.colors.textBrand
+                        )
+                    }
                 }
             }
         }
