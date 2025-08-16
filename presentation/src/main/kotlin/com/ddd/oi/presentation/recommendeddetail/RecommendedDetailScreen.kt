@@ -325,7 +325,7 @@ private fun RecommendedDetailPlaceContent(
 
                         OiSpotCard(
                             placeName = spot.name,
-                            category = "관광지",
+                            category = spot.category,
                             address = spot.address,
                             imageUrl = spot.imageUrl ?: "https://picsum.photos/64/64"
                         )

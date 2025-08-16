@@ -103,7 +103,8 @@ data class ContentSpotData(
     val spotDescription: String?,
     val spotImage: String?,
     val latitude: Double?,
-    val longitude: Double?
+    val longitude: Double?,
+    val category: String
 )
 
 @Serializable

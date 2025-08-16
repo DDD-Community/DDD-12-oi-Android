@@ -7,5 +7,6 @@ data class Spot(
     val description: String?,
     val imageUrl: String?,
     val latitude: Double?,
-    val longitude: Double?
+    val longitude: Double?,
+    val category: String
 )

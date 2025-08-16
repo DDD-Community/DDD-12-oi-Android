@@ -26,14 +26,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -43,6 +50,7 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
+import com.ddd.oi.domain.model.Faq
 
 data class FaqItem(
     val question: String,
@@ -55,41 +63,32 @@ fun ContactUsScreen(
     viewModel: ContactUsViewModel = hiltViewModel()
 ) {
     val throttledNavigation = rememberThrottledNavigation()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val faqs by viewModel.faqs.collectAsStateWithLifecycle()
 
-    ContactUsContent(
-        onBack = { throttledNavigation(onBack) }
-    )
+    if (uiState.isLoading && faqs.isEmpty()) {
+        ContactUsLoadingScreen(onBack = { throttledNavigation(onBack) })
+    } else {
+        ContactUsContent(
+            onBack = { throttledNavigation(onBack) },
+            uiState = uiState,
+            faqs = faqs,
+            onLoadMore = viewModel::loadMoreFaqs,
+            onRefresh = viewModel::refresh
+        )
+    }
 }
 
 @Composable
 private fun ContactUsContent(
     modifier: Modifier = Modifier,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    uiState: ContactUsUiState = ContactUsUiState(),
+    faqs: List<Faq> = emptyList(),
+    onLoadMore: () -> Unit = {},
+    onRefresh: () -> Unit = {}
 ) {
     val context = LocalContext.current
-
-    val faqItems = listOf(
-        FaqItem(
-            question = "회원가입은 어떻게 하나요?",
-            answer = "카카오 계정으로 간편하게 회원가입할 수 있습니다. 앱 첫 화면에서 '카카오로 시작하기' 버튼을 눌러주세요."
-        ),
-        FaqItem(
-            question = "일정을 어떻게 등록하나요?",
-            answer = "홈 화면의 '+' 버튼을 눌러 새 일정을 등록할 수 있습니다. 날짜, 시간, 장소를 설정하여 일정을 만들어보세요."
-        ),
-        FaqItem(
-            question = "추천 장소는 어떻게 확인하나요?",
-            answer = "홈 화면 하단의 '추천 장소' 섹션에서 다양한 관광지를 확인할 수 있습니다. 각 장소를 탭하면 상세 정보를 볼 수 있어요."
-        ),
-        FaqItem(
-            question = "계정을 삭제하고 싶어요",
-            answer = "설정 > 프로필 관리에서 계정 삭제를 진행할 수 있습니다. 삭제된 데이터는 복구되지 않으니 신중히 결정해주세요."
-        ),
-        FaqItem(
-            question = "앱이 느려지거나 오류가 발생해요",
-            answer = "앱을 완전히 종료 후 재시작해보세요. 문제가 지속되면 아래 메일 문의하기를 통해 문의해주시기 바랍니다."
-        )
-    )
 
     Scaffold(
         modifier = modifier
@@ -121,10 +120,29 @@ private fun ContactUsContent(
                 )
             }
             
-            items(faqItems) { faqItem ->
+            items(faqs.size) { index ->
+                val faq = faqs[index]
+                
+                // 페이지네이션: 마지막 아이템 근처에서 추가 데이터 로드
+                if (index >= faqs.size - 3 && uiState.hasMorePages && !uiState.isLoading) {
+                    LaunchedEffect(Unit) {
+                        onLoadMore()
+                    }
+                }
+                
                 FaqItemView(
-                    faqItem = faqItem
+                    faqItem = FaqItem(
+                        question = faq.question,
+                        answer = faq.answer
+                    )
                 )
+            }
+            
+            // 로딩 인디케이터
+            if (uiState.isLoading && faqs.isNotEmpty()) {
+                item {
+                    ContactUsLoadingIndicator()
+                }
             }
 
             item {
@@ -224,6 +242,113 @@ private fun FaqItemView(
                 color = OiTheme.colors.textSecondary
             )
         }
+    }
+}
+
+@Composable
+private fun ContactUsLoadingScreen(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {}
+) {
+    var currentFrame by remember { mutableIntStateOf(1) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(100)
+            currentFrame = if (currentFrame == 8) 1 else currentFrame + 1
+        }
+    }
+
+    val loadingIcons = listOf(
+        R.drawable.ic_loading_1,
+        R.drawable.ic_loading_2,
+        R.drawable.ic_loading_3,
+        R.drawable.ic_loading_4,
+        R.drawable.ic_loading_5,
+        R.drawable.ic_loading_6,
+        R.drawable.ic_loading_7,
+        R.drawable.ic_loading_8
+    )
+
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .background(white),
+        containerColor = white,
+        topBar = {
+            OiHeader(
+                onLeftClick = onBack,
+                title = "문의하기",
+                isDividerVisible = true
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
+        ) {
+            Icon(
+                painter = painterResource(loadingIcons[currentFrame - 1]),
+                contentDescription = "",
+                tint = Color.Unspecified,
+            )
+
+            Text(
+                text = "화면을 불러오고 있어요",
+                style = OiTheme.typography.headlineSmallBold,
+                color = OiTheme.colors.textPrimary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ContactUsLoadingIndicator(
+    modifier: Modifier = Modifier
+) {
+    var currentFrame by remember { mutableIntStateOf(1) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(100)
+            currentFrame = if (currentFrame == 8) 1 else currentFrame + 1
+        }
+    }
+
+    val loadingIcons = listOf(
+        R.drawable.ic_loading_1,
+        R.drawable.ic_loading_2,
+        R.drawable.ic_loading_3,
+        R.drawable.ic_loading_4,
+        R.drawable.ic_loading_5,
+        R.drawable.ic_loading_6,
+        R.drawable.ic_loading_7,
+        R.drawable.ic_loading_8
+    )
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(loadingIcons[currentFrame - 1]),
+            contentDescription = "",
+            tint = Color.Unspecified,
+        )
+        
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = "로딩 중...",
+            style = OiTheme.typography.bodyMediumRegular,
+            color = OiTheme.colors.textSecondary
+        )
     }
 }
 

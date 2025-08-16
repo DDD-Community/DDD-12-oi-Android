@@ -12,7 +12,8 @@ fun SpotData.toDomain(): Spot {
         description = spotDescription,
         imageUrl = spotImage,
         latitude = latitude,
-        longitude = longitude
+        longitude = longitude,
+        category = category,
     )
 }
 
