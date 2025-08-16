@@ -9,6 +9,6 @@ import dagger.hilt.android.HiltAndroidApp
 class OiApplication: Application() {
     override fun onCreate() {
         super.onCreate()
-        NaverMapSdk.getInstance(this).client = NaverMapSdk.NcpKeyClient(BuildConfig.NAIVER_CLIENT_ID)
+        NaverMapSdk.getInstance(this).client = NaverMapSdk.NcpKeyClient(BuildConfig.NAVER_CLIENT_ID)
     }
 }

@@ -242,16 +242,22 @@ fun PlaceCard(
                 ) {
                     Text(
                         buildAnnotatedString {
-                            withStyle(style = SpanStyle(color = OiTheme.colors.textDisabled)) {
-                                append(
-                                    "--"
-                                )
-                            }
-                            withStyle(style = SpanStyle(color = Color.Black)) { append(" : ") }
-                            withStyle(style = SpanStyle(color = OiTheme.colors.textDisabled)) {
-                                append(
-                                    "--"
-                                )
+                            if (!place.startTime.isNullOrBlank()) {
+                                withStyle(style = SpanStyle(color = Color.Black)) {
+                                    append(place.startTime)
+                                }
+                            } else {
+                                withStyle(style = SpanStyle(color = OiTheme.colors.textDisabled)) {
+                                    append(
+                                        "--"
+                                    )
+                                }
+                                withStyle(style = SpanStyle(color = Color.Black)) { append(" : ") }
+                                withStyle(style = SpanStyle(color = OiTheme.colors.textDisabled)) {
+                                    append(
+                                        "--"
+                                    )
+                                }
                             }
                         },
                         style = OiTheme.typography.bodyMediumSemibold
