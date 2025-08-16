@@ -54,7 +54,7 @@ data class ScheduleDetailState(
                             )
                         }
                     } else {
-                        add(SheetListItem.EmptyPlace(day.date))
+                        add(SheetListItem.Footer(day.date))
                     }
                 }
             }.toPersistentList()
@@ -103,5 +103,5 @@ sealed interface SheetListItem {
     data class PlaceItem(val place: SchedulePlace, override val date: LocalDate, val index: Int) :
         SheetListItem
 
-    data class EmptyPlace(override val date: LocalDate) : SheetListItem
+    data class Footer(override val date: LocalDate) : SheetListItem
 }

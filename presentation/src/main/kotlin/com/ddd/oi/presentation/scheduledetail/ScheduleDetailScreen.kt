@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
@@ -30,15 +29,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCompositionContext
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
@@ -62,7 +60,6 @@ import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToSchedu
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getPlaceCategoryColor
 import com.ddd.oi.presentation.core.designsystem.component.oibottomsheetscaffold.OiBottomSheetScaffold
 import com.ddd.oi.presentation.core.designsystem.component.oitimepicker.OiTimePicker
-import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbar
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarHost
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
@@ -73,10 +70,12 @@ import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailDragHandle
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailSheetContent
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailTopBar
 import com.ddd.oi.presentation.scheduledetail.contract.ScheduleDetailSideEffect
-import com.ddd.oi.presentation.util.createBitmapFromComposable
+import com.ddd.oi.presentation.util.circleMarkerBitmap
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.geometry.LatLngBounds
+import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.CameraUpdate
+import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.Marker
@@ -94,7 +93,6 @@ import kotlinx.datetime.daysUntil
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import kotlin.collections.forEachIndexed
-import kotlin.math.roundToInt
 
 @Composable
 fun ScheduleDetailScreen(
@@ -194,7 +192,8 @@ fun ScheduleDetailScreen(
         mapContent = {
             if (isMapVisible) {
                 MapContent(
-                    placesList = uiState.placesForDate(date = activeLocalDate)
+                    placesList = uiState.placesForDate(date = activeLocalDate),
+                    selectedPlace = selectedPlace
                 )
             }
         },
@@ -404,13 +403,10 @@ private fun EditMemoDialog(
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 private fun MapContent(
-    placesList: ImmutableList<SchedulePlace>
+    placesList: ImmutableList<SchedulePlace>,
+    selectedPlace: SchedulePlace? = null
 ) {
-    val context = LocalContext.current
-    val compositionContext = rememberCompositionContext()
-    val density = LocalDensity.current // 현재 화면 밀도(Density) 가져오기
-
-    var markerOverlays by remember { mutableStateOf<List<OverlayImage>>(emptyList()) }
+    val density = LocalDensity.current
 
     val latLngList = placesList.map { LatLng(it.latitude, it.longitude) }
     val cameraPositionState = rememberCameraPositionState()
@@ -419,26 +415,13 @@ private fun MapContent(
         logoGravity = Gravity.TOP
     )
 
-    LaunchedEffect(placesList, density) {
-        val markerWidthPx = with(density) { 40.dp.toPx().roundToInt() }
-        val markerHeightPx = with(density) { 40.dp.toPx().roundToInt() }
-
-        val overlays = placesList.mapIndexed { index, place ->
-            val bitmap = createBitmapFromComposable(
-                context,
-                compositionContext,
-                markerWidthPx,
-                markerHeightPx
-            ) {
-                NumberedMarker(
-                    number = index + 1,
-                    color = getPlaceCategoryColor(place.category)
-                )
-            }
-            OverlayImage.fromBitmap(bitmap)
-        }
-        markerOverlays = overlays
-    }
+//    LaunchedEffect(selectedPlace) {
+//        selectedPlace?.let { place ->
+//            cameraPositionState.move(
+//                CameraUpdate.scrollTo(LatLng(place.latitude, place.longitude))
+//            )
+//        }
+//    }
 
     LaunchedEffect(latLngList) {
         if (latLngList.isNotEmpty()) {
@@ -456,12 +439,21 @@ private fun MapContent(
         uiSettings = mapUiSetting,
         cameraPositionState = cameraPositionState
     ) {
-        markerOverlays.forEachIndexed { index, overlay ->
-            // placesList는 항상 최신 상태이므로 안전하게 위치를 가져올 수 있습니다.
-            val item = placesList.getOrNull(index) ?: return@forEachIndexed
+        placesList.forEachIndexed { index, place ->
+            Log.d("ScheduleDetailScreen", place.toString())
+            val markerSizePx = with(density) { 30.dp.toPx() }.toInt()
+            val markerBitmap = remember(place) {
+                circleMarkerBitmap(
+                    sizePx = markerSizePx,
+                    number = index + 1,
+                    backgroundColor = getPlaceCategoryColor(place.category)
+                )
+            }
+
             Marker(
-                state = rememberMarkerState(position = LatLng(item.latitude, item.longitude)),
-                icon = overlay,
+                state = rememberMarkerState(position = LatLng(place.latitude, place.longitude)),
+                icon = OverlayImage.fromBitmap(markerBitmap),
+                anchor = Offset(0.5f, 0.5f)
             )
         }
         if (placesList.size >= 2) {
@@ -474,27 +466,5 @@ private fun MapContent(
                 outlineColor = Color.Transparent
             )
         }
-    }
-}
-
-@Composable
-fun NumberedMarker(number: Int, color: Color) {
-    // 마커의 배경 (원형)
-    Box(
-        modifier = Modifier
-            .clip(CircleShape) // 원 모양으로 자르기
-            .background(color) // 카테고리별 색상 적용
-            .border(1.dp, color = Color.White, shape = CircleShape)
-            .size(40.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        // 순서 텍스트
-        Text(
-            modifier = Modifier.padding(horizontal = 6.dp),
-            text = number.toString(),
-            color = Color.White,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
-        )
     }
 }

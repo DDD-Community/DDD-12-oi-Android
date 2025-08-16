@@ -1,11 +1,11 @@
 package com.ddd.oi.presentation.scheduledetail.content
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitVerticalDragOrCancellation
 import androidx.compose.foundation.layout.Arrangement
@@ -36,9 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
@@ -46,7 +44,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ddd.oi.domain.model.schedule.SchedulePlace
 import com.ddd.oi.presentation.R
-import com.ddd.oi.presentation.core.designsystem.component.common.rippleOrFallbackImplementation
 import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToScheduleDetailActiveDate
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getPlaceCategoryColor
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
@@ -117,14 +114,14 @@ internal fun ScheduleDetailSheetContent(
                 when (val item = flatListItems[index]) {
                     is SheetListItem.Header -> "header_${item.date}"
                     is SheetListItem.PlaceItem -> "place_${item.place.id}"
-                    is SheetListItem.EmptyPlace -> "empty_${item.date}"
+                    is SheetListItem.Footer -> "footer_${item.date}"
                 }
             },
             contentType = { index ->
                 when (flatListItems[index]) {
                     is SheetListItem.Header -> "HEADER"
                     is SheetListItem.PlaceItem -> "PLACE"
-                    is SheetListItem.EmptyPlace -> "EMPTY"
+                    is SheetListItem.Footer -> "Footer"
                 }
             }
         ) { index ->
@@ -175,8 +172,11 @@ internal fun ScheduleDetailSheetContent(
                     }
                 }
 
-                is SheetListItem.EmptyPlace -> {
-                    EmptyPlace()
+                is SheetListItem.Footer -> {
+                    AddPlaceButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = {}
+                    )
                 }
             }
         }
@@ -306,68 +306,22 @@ fun PlaceCard(
 }
 
 @Composable
-private fun EmptyPlace(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
+private fun AddPlaceButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .border(1.dp, OiTheme.colors.borderPrimary),
+        contentAlignment = Alignment.Center
     ) {
-        Surface(
-            modifier = Modifier
-                .padding(start = 32.dp, end = 24.dp)
-                .size(16.dp),
-            shape = CircleShape,
-            color = OiTheme.colors.backgroundDisabled
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Text(
-                    text = "1",
-                    style = OiTheme.typography.bodyXSmallSemibold,
-                    color = white
-                )
-            }
-        }
-        Surface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 16.dp, top = 8.dp, bottom = 8.dp),
-            shape = RoundedCornerShape(16.dp),
-            color = white,
-        ) {
-            Row(
-                modifier = Modifier.height(70.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier.padding(start = 16.dp),
-                    text = buildAnnotatedString {
-                        append("- -")
-                        withStyle(style = SpanStyle(color = OiTheme.colors.textPrimary)) {
-                            append(" : ")
-                        }
-                        append("- -")
-                    },
-                    style = OiTheme.typography.bodyMediumSemibold,
-                    color = OiTheme.colors.textDisabled
-                )
-                Box {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_calendar_dropdown),
-                        contentDescription = null,
-                        tint = OiTheme.colors.iconTertiary
-                    )
-                }
-                VerticalDivider(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp)
-                        .height(16.dp),
-                    color = Color(0xFFF6F6F6)
-                )
-                Text(
-                    text = "장소를 추가해주세요",
-                    style = OiTheme.typography.bodyMediumSemibold,
-                    color = OiTheme.colors.textDisabled
-                )
-            }
+            Text(text = "장소 추가", style = OiTheme.typography.bodySmallSemibold)
         }
     }
 }
