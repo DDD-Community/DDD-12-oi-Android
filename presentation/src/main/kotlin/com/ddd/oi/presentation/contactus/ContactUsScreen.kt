@@ -122,7 +122,6 @@ private fun ContactUsContent(
             LazyColumn(
                 modifier = Modifier
                     .padding(top = 20.dp, bottom = 24.dp)
-                    .weight(1f)
                     .fillMaxWidth(),
                 contentPadding = PaddingValues(horizontal = 16.dp),
             ) {
@@ -135,6 +134,7 @@ private fun ContactUsContent(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(top = 56.dp)
                     .padding(16.dp),
                 onClick = {
                     val intent = Intent(Intent.ACTION_SENDTO).apply {
