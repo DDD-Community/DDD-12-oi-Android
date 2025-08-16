@@ -14,14 +14,16 @@ fun NavGraphBuilder.homeNavGraph(
     navigateToRecommendedList: () -> Unit,
     navigateToRecommendedDetail: (Long) -> Unit,
     navigateToScheduleCreate: () -> Unit,
-    navigateToScheduleTab: () -> Unit
+    navigateToScheduleTab: () -> Unit,
+    navigateToSetting: () -> Unit
 ) {
     composable<MainTabRoute.Home> {
         HomeScreen(
             onNavigateToRecommendedList = navigateToRecommendedList,
             onNavigateToRecommendedDetail = navigateToRecommendedDetail,
             onNavigateToScheduleCreate = navigateToScheduleCreate,
-            onNavigateToScheduleTab = navigateToScheduleTab
+            onNavigateToScheduleTab = navigateToScheduleTab,
+            onNavigateToSetting = navigateToSetting
         )
     }
 }

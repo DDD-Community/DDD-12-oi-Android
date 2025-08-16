@@ -21,6 +21,10 @@ import com.ddd.oi.presentation.scheduledetail.navigateToScheduleDetail
 import com.ddd.oi.presentation.searchplace.navigateToSearchPlace
 import com.ddd.oi.presentation.upsertplace.navigateToUpsertPlace
 import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
+import com.ddd.oi.presentation.setting.navigateToSetting
+import com.ddd.oi.presentation.profile.navigateToProfile
+import com.ddd.oi.presentation.announcement.navigateToAnnouncement
+import com.ddd.oi.presentation.contactus.navigateToContactUs
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -60,6 +64,10 @@ class OiNavigator(
             currentDestination?.hasRoute(Route.UpsertSchedule::class) == true -> Route.UpsertSchedule()
             currentDestination?.hasRoute(MainTabRoute.Schedule::class) == true -> MainTabRoute.Schedule
             currentDestination?.hasRoute(Route.UpsertPlace::class) == true -> Route.UpsertPlace(0L, "")
+            currentDestination?.hasRoute(Route.Setting::class) == true -> Route.Setting
+            currentDestination?.hasRoute(Route.Profile::class) == true -> Route.Profile
+            currentDestination?.hasRoute(Route.Announcement::class) == true -> Route.Announcement
+            currentDestination?.hasRoute(Route.ContactUs::class) == true -> Route.ContactUs
             else -> null
         }
 
@@ -101,6 +109,14 @@ class OiNavigator(
     fun navigateToRecommendedList() = navController.navigateToRecommendedList()
 
     fun navigateToRecommendedDetail(contentId: Long) = navController.navigateToRecommendedDetail(contentId)
+
+    fun navigateToSetting() = navController.navigateToSetting()
+
+    fun navigateToProfile() = navController.navigateToProfile()
+
+    fun navigateToAnnouncement() = navController.navigateToAnnouncement()
+
+    fun navigateToContactUs() = navController.navigateToContactUs()
 
     fun popBackStack() {
         navController.popBackStack()

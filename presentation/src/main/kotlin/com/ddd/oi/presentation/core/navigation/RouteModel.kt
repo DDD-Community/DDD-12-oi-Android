@@ -30,6 +30,18 @@ sealed interface Route {
 
     @Serializable
     data class RecommendedDetail(val contentId: Long) : Route
+    
+    @Serializable
+    data object Setting : Route
+    
+    @Serializable
+    data object Profile : Route
+    
+    @Serializable
+    data object Announcement : Route
+    
+    @Serializable
+    data object ContactUs : Route
 }
 
 sealed interface MainTabRoute : Route {

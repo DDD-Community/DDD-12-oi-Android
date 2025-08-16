@@ -15,6 +15,10 @@ import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
 import com.ddd.oi.presentation.upsertplace.upsertPlaceNavGraph
 import com.ddd.oi.presentation.recommendedlist.recommendedListNavGraph
 import com.ddd.oi.presentation.recommendeddetail.recommendedDetailNavGraph
+import com.ddd.oi.presentation.setting.settingNavGraph
+import com.ddd.oi.presentation.profile.profileNavGraph
+import com.ddd.oi.presentation.announcement.announcementNavGraph
+import com.ddd.oi.presentation.contactus.contactUsNavGraph
 
 @Composable
 fun OiNavHost(
@@ -34,7 +38,8 @@ fun OiNavHost(
             navigateToRecommendedList = navigator::navigateToRecommendedList,
             navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
             navigateToScheduleCreate = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule()) },
-            navigateToScheduleTab = { navigator.navigate(MainTab.SCHEDULE) }
+            navigateToScheduleTab = { navigator.navigate(MainTab.SCHEDULE) },
+            navigateToSetting = { navigator.navigateToSetting() }
         )
 
         scheduleNavGraph(
@@ -80,6 +85,25 @@ fun OiNavHost(
 
         recommendedDetailNavGraph(
             navigateBack = { navigator.popBackStack() }
+        )
+
+        settingNavGraph(
+            navigatePopBack = { navigator.popBackStack() },
+            onNavigateToProfile = { navigator.navigateToProfile() },
+            onNavigateToAnnouncement = { navigator.navigateToAnnouncement() },
+            onNavigateToContactUs = { navigator.navigateToContactUs() }
+        )
+
+        profileNavGraph(
+            navigatePopBack = { navigator.popBackStack() }
+        )
+
+        announcementNavGraph(
+            navigatePopBack = { navigator.popBackStack() }
+        )
+
+        contactUsNavGraph(
+            navigatePopBack = { navigator.popBackStack() }
         )
     }
 }

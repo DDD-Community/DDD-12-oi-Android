@@ -71,6 +71,7 @@ fun HomeScreen(
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
     onNavigateToScheduleCreate: () -> Unit = {},
     onNavigateToScheduleTab: () -> Unit = {},
+    onNavigateToSetting: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -85,6 +86,7 @@ fun HomeScreen(
         onNavigateToRecommendedDetail = { contentId -> throttledNavigation { onNavigateToRecommendedDetail(contentId) } },
         onNavigateToScheduleCreate = { throttledNavigation(onNavigateToScheduleCreate) },
         onNavigateToScheduleTab = { throttledNavigation(onNavigateToScheduleTab) },
+        onNavigateToSetting = { throttledNavigation(onNavigateToSetting) },
         contentsList = uiState.filteredContents,
         selectedCategory = uiState.selectedCategory,
         weeklySchedules = uiState.weeklySchedules,
@@ -103,6 +105,7 @@ private fun HomeContent(
     onNavigateToRecommendedDetail: (Long) -> Unit = {},
     onNavigateToScheduleCreate: () -> Unit = {},
     onNavigateToScheduleTab: () -> Unit = {},
+    onNavigateToSetting: () -> Unit = {},
     contentsList: List<Content> = emptyList(),
     selectedCategory: RecommendedCategory = RecommendedCategory.ALL,
     weeklySchedules: Map<LocalDate, List<Schedule>> = emptyMap(),
@@ -118,7 +121,9 @@ private fun HomeContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        HomeHeader()
+        HomeHeader(
+            onSettingClick = onNavigateToSetting
+        )
 
         HomeWeeklySchedule(
             weeklySchedules = weeklySchedules,
