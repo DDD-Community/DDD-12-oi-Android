@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -24,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -35,6 +33,19 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
+
+sealed class SettingMenuItem(
+    val title: String,
+    val hasNewBadge: Boolean = false,
+    val rightText: String? = null,
+    val onClick: () -> Unit
+) {
+    class Announcement(onClick: () -> Unit) : SettingMenuItem("공지사항", true, null, onClick)
+    class ContactUs(onClick: () -> Unit) : SettingMenuItem("문의하기", false, null, onClick)
+    class TermsOfService(onClick: () -> Unit) : SettingMenuItem("서비스 이용약관", false, null, onClick)
+    class PrivacyPolicy(onClick: () -> Unit) : SettingMenuItem("개인정보 처리 방침", false, null, onClick)
+    class AppVersion(onClick: () -> Unit) : SettingMenuItem("앱 버전", false, "1.0.0", onClick)
+}
 
 @Composable
 fun SettingScreen(
@@ -97,18 +108,17 @@ private fun SettingContent(
                 modifier = Modifier
                     .fillMaxWidth(),
             ) {
-                itemsIndexed(
+                items(
                     listOf(
-                        "공지사항",
-                        "문의하기",
-                        "서비스 이용약관",
-                        "개인정보 처리 방침",
-                        "앱 버전"
+                        SettingMenuItem.Announcement(onClick = onNavigateToAnnouncement),
+                        SettingMenuItem.ContactUs(onClick = onNavigateToContactUs),
+                        SettingMenuItem.TermsOfService(onClick = { }),
+                        SettingMenuItem.PrivacyPolicy(onClick = { }),
+                        SettingMenuItem.AppVersion(onClick = { })
                     )
-                ) { index, item ->
-                    SettingMenuItem(
-                        title = item,
-                        onClick = onNavigateToAnnouncement
+                ) { item ->
+                    SettingMenuItemView(
+                        menuItem = item
                     )
                 }
             }
@@ -117,33 +127,54 @@ private fun SettingContent(
 }
 
 @Composable
-private fun SettingMenuItem(
+private fun SettingMenuItemView(
     modifier: Modifier = Modifier,
-    title: String,
-    onClick: () -> Unit = {}
+    menuItem: SettingMenuItem
 ) {
     Box {
         Row(
             modifier = modifier
                 .fillMaxWidth()
                 .height(56.dp)
-                .clickable { onClick() }
+                .clickable { menuItem.onClick() }
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = title,
-                style = OiTheme.typography.bodyLargeMedium,
-                color = OiTheme.colors.textPrimary
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = menuItem.title,
+                    style = OiTheme.typography.bodyLargeMedium,
+                    color = OiTheme.colors.textPrimary
+                )
 
-            Icon(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(R.drawable.ic_chevron_right),
-                contentDescription = null,
-                tint = Color.Unspecified
-            )
+                if (menuItem.hasNewBadge) {
+                    Icon(
+                        modifier = Modifier.size(16.dp),
+                        painter = painterResource(R.drawable.ic_n_badge),
+                        contentDescription = "새 알림",
+                        tint = Color.Unspecified
+                    )
+                }
+            }
+
+            if (menuItem.rightText != null) {
+                Text(
+                    text = menuItem.rightText,
+                    style = OiTheme.typography.bodyLargeMedium,
+                    color = OiTheme.colors.textSecondary
+                )
+            } else {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(R.drawable.ic_chevron_right),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+                )
+            }
         }
 
         HorizontalDivider(
