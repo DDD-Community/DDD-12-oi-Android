@@ -22,6 +22,7 @@ import com.ddd.oi.presentation.searchplace.navigateToSearchPlace
 import com.ddd.oi.presentation.upsertplace.navigateToUpsertPlace
 import com.ddd.oi.presentation.upsertschedule.navigateToInsertSchedule
 import com.ddd.oi.presentation.setting.navigateToSetting
+import com.ddd.oi.presentation.setting.navigateToWebView
 import com.ddd.oi.presentation.profile.navigateToProfile
 import com.ddd.oi.presentation.announcement.navigateToAnnouncement
 import com.ddd.oi.presentation.contactus.navigateToContactUs
@@ -68,6 +69,7 @@ class OiNavigator(
             currentDestination?.hasRoute(Route.Profile::class) == true -> Route.Profile
             currentDestination?.hasRoute(Route.Announcement::class) == true -> Route.Announcement
             currentDestination?.hasRoute(Route.ContactUs::class) == true -> Route.ContactUs
+            currentDestination?.hasRoute(Route.WebView::class) == true -> Route.WebView("", "")
             else -> null
         }
 
@@ -117,6 +119,8 @@ class OiNavigator(
     fun navigateToAnnouncement() = navController.navigateToAnnouncement()
 
     fun navigateToContactUs() = navController.navigateToContactUs()
+
+    fun navigateToWebView(title: String, url: String = "https://www.naver.com") = navController.navigateToWebView(title, url)
 
     fun popBackStack() {
         navController.popBackStack()

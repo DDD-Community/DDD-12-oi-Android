@@ -54,6 +54,7 @@ fun SettingScreen(
     onNavigateToProfile: () -> Unit = {},
     onNavigateToAnnouncement: () -> Unit = {},
     onNavigateToContactUs: () -> Unit = {},
+    onNavigateToWebView: (String, String) -> Unit = { _, _ -> },
     viewModel: SettingViewModel = hiltViewModel()
 ) {
     val throttledNavigation = rememberThrottledNavigation()
@@ -62,7 +63,8 @@ fun SettingScreen(
         onBack = { throttledNavigation(onBack) },
         onNavigateToProfile = { throttledNavigation(onNavigateToProfile) },
         onNavigateToAnnouncement = { throttledNavigation(onNavigateToAnnouncement) },
-        onNavigateToContactUs = { throttledNavigation(onNavigateToContactUs) }
+        onNavigateToContactUs = { throttledNavigation(onNavigateToContactUs) },
+        onNavigateToWebView = { title, url -> throttledNavigation { onNavigateToWebView(title, url) } }
     )
 }
 
@@ -72,7 +74,8 @@ private fun SettingContent(
     onBack: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
     onNavigateToAnnouncement: () -> Unit = {},
-    onNavigateToContactUs: () -> Unit = {}
+    onNavigateToContactUs: () -> Unit = {},
+    onNavigateToWebView: (String, String) -> Unit = { _, _ -> }
 ) {
     Scaffold(
         modifier = modifier
@@ -97,6 +100,7 @@ private fun SettingContent(
             SettingListContent(
                 onNavigateToAnnouncement = onNavigateToAnnouncement,
                 onNavigateToContactUs = onNavigateToContactUs,
+                onNavigateToWebView = onNavigateToWebView
             )
         }
     }
@@ -169,7 +173,8 @@ private fun SettingProfileContent(
 private fun SettingListContent(
     modifier: Modifier = Modifier,
     onNavigateToAnnouncement: () -> Unit = {},
-    onNavigateToContactUs: () -> Unit = {}
+    onNavigateToContactUs: () -> Unit = {},
+    onNavigateToWebView: (String, String) -> Unit = { _, _ -> }
 ) {
     LazyColumn(
         modifier = modifier
@@ -179,8 +184,8 @@ private fun SettingListContent(
             listOf(
                 SettingMenuItem.Announcement(onClick = onNavigateToAnnouncement),
                 SettingMenuItem.ContactUs(onClick = onNavigateToContactUs),
-                SettingMenuItem.TermsOfService(onClick = { }),
-                SettingMenuItem.PrivacyPolicy(onClick = { }),
+                SettingMenuItem.TermsOfService(onClick = { onNavigateToWebView("서비스 이용약관", "https://steel-eocursor-051.notion.site/1feb2308626180f28734ea42a9284029") }),
+                SettingMenuItem.PrivacyPolicy(onClick = { onNavigateToWebView("개인정보 처리 방침", "https://steel-eocursor-051.notion.site/1feb2308626180588f3ce2f1d0a294c2") }),
                 SettingMenuItem.AppVersion(onClick = { })
             )
         ) { item ->

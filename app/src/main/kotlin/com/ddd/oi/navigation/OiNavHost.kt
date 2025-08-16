@@ -91,7 +91,8 @@ fun OiNavHost(
             navigatePopBack = { navigator.popBackStack() },
             onNavigateToProfile = { navigator.navigateToProfile() },
             onNavigateToAnnouncement = { navigator.navigateToAnnouncement() },
-            onNavigateToContactUs = { navigator.navigateToContactUs() }
+            onNavigateToContactUs = { navigator.navigateToContactUs() },
+            onNavigateToWebView = { title, url -> navigator.navigateToWebView(title, url) }
         )
 
         profileNavGraph(
