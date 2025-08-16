@@ -1,6 +1,8 @@
 package com.ddd.oi.presentation.setting
 
+import android.graphics.drawable.shapes.OvalShape
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -89,39 +92,103 @@ private fun SettingContent(
         Column(
             modifier = Modifier.padding(padding)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                OiButton(
-                    modifier = Modifier,
-                    onClick = onNavigateToProfile,
-                    style = OiButtonStyle.Medium40Rect,
-                    title = "프로필 관리"
-                )
-            }
+            SettingProfileContent(
+                onNavigateToProfile = onNavigateToProfile
+            )
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth(),
-            ) {
-                items(
-                    listOf(
-                        SettingMenuItem.Announcement(onClick = onNavigateToAnnouncement),
-                        SettingMenuItem.ContactUs(onClick = onNavigateToContactUs),
-                        SettingMenuItem.TermsOfService(onClick = { }),
-                        SettingMenuItem.PrivacyPolicy(onClick = { }),
-                        SettingMenuItem.AppVersion(onClick = { })
-                    )
-                ) { item ->
-                    SettingMenuItemView(
-                        menuItem = item
-                    )
-                }
-            }
+            SettingListContent(
+                onNavigateToAnnouncement = onNavigateToAnnouncement,
+                onNavigateToContactUs = onNavigateToContactUs,
+            )
+        }
+    }
+}
+
+@Composable
+private fun SettingProfileContent(
+    modifier: Modifier = Modifier,
+    onNavigateToProfile: () -> Unit = {},
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            modifier = Modifier
+                .padding(top = 32.dp)
+                .size(80.dp)
+                .background(
+                    shape = CircleShape,
+                    color = OiTheme.colors.backgroundContents
+                )
+                .border(
+                    width = 1.dp,
+                    color = OiTheme.colors.borderPrimary,
+                    shape = CircleShape
+                ),
+            painter = painterResource(R.drawable.ic_oi_default_profile),
+            contentDescription = "",
+            tint = Color.Unspecified,
+        )
+
+        Text(
+            modifier = Modifier.padding(top = 8.dp),
+            text = "오늘의이동오늘의이동오늘의이동",
+            style = OiTheme.typography.headlineMediumBold,
+            color = Color(0xFF000000),
+        )
+
+        Row(
+            modifier = Modifier.padding(top = 4.dp)
+        ) {
+            Icon(
+                modifier = Modifier.size(16.dp),
+                painter = painterResource(R.drawable.ic_kakao_small),
+                contentDescription = "",
+                tint = Color.Unspecified
+            )
+
+            Text(
+                modifier = Modifier.padding(start = 4.dp),
+                text = "Avocado@kakao.com",
+                style = OiTheme.typography.bodyMediumRegular,
+                color = OiTheme.colors.textTertiary,
+            )
+        }
+
+        OiButton(
+            modifier = Modifier.padding(top = 20.dp, bottom = 32.dp),
+            onClick = onNavigateToProfile,
+            style = OiButtonStyle.Medium40Rect,
+            title = "프로필 관리"
+        )
+    }
+}
+
+@Composable
+private fun SettingListContent(
+    modifier: Modifier = Modifier,
+    onNavigateToAnnouncement: () -> Unit = {},
+    onNavigateToContactUs: () -> Unit = {}
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxWidth(),
+    ) {
+        items(
+            listOf(
+                SettingMenuItem.Announcement(onClick = onNavigateToAnnouncement),
+                SettingMenuItem.ContactUs(onClick = onNavigateToContactUs),
+                SettingMenuItem.TermsOfService(onClick = { }),
+                SettingMenuItem.PrivacyPolicy(onClick = { }),
+                SettingMenuItem.AppVersion(onClick = { })
+            )
+        ) { item ->
+            SettingMenuItemView(
+                menuItem = item
+            )
         }
     }
 }
