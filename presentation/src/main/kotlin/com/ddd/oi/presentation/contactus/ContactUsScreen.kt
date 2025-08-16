@@ -123,12 +123,12 @@ private fun ContactUsContent(
             items(faqs.size) { index ->
                 val faq = faqs[index]
                 
-                // 페이지네이션: 마지막 아이템 근처에서 추가 데이터 로드
-                if (index >= faqs.size - 3 && uiState.hasMorePages && !uiState.isLoading) {
-                    LaunchedEffect(Unit) {
-                        onLoadMore()
-                    }
-                }
+                // Todo Pagination
+//                if (index >= faqs.size - 3 && uiState.hasMorePages && !uiState.isLoading) {
+//                    LaunchedEffect(Unit) {
+//                        onLoadMore()
+//                    }
+//                }
                 
                 FaqItemView(
                     faqItem = FaqItem(
