@@ -40,13 +40,42 @@ class WithdrawViewModel @Inject constructor(
     fun setAgreement(isAgreed: Boolean) {
         _uiState.value = _uiState.value.copy(isAgreed = isAgreed)
     }
+    
+    fun withdrawUser() {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null, successMessage = null)
+                userRepository.withdrawUser()
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    successMessage = "회원탈퇴가 완료되었습니다."
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "회원탈퇴에 실패했습니다. 다시 시도해주세요."
+                )
+            }
+        }
+    }
+    
+    fun clearError() {
+        _uiState.value = _uiState.value.copy(error = null)
+    }
+    
+    fun clearSuccessMessage() {
+        _uiState.value = _uiState.value.copy(successMessage = null)
+    }
 }
 
 data class WithdrawUiState(
     val nickname: String = "오늘의이동",
     val selectedReason: String = "",
-    val isAgreed: Boolean = false
+    val isAgreed: Boolean = false,
+    val isLoading: Boolean = false,
+    val error: String? = null,
+    val successMessage: String? = null
 ) {
     val canWithdraw: Boolean
-        get() = selectedReason.isNotEmpty() && isAgreed
+        get() = selectedReason.isNotEmpty() && isAgreed && !isLoading
 }

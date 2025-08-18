@@ -2,6 +2,7 @@ package com.ddd.oi.data.core.retrofit.api
 
 import com.ddd.oi.data.core.model.BaseResponse
 import com.ddd.oi.data.user.model.UserResponseDto
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -19,4 +20,9 @@ interface UserApiService {
         @Header("user-no") userId: Long = 1L,
         @Query("nickname") nickname: String
     ): BaseResponse<UserResponseDto>
+    
+    @DELETE("api/v1/user")
+    suspend fun withdrawUser(
+        @Header("Oauth-Authorization") oauthToken: String
+    ): BaseResponse<Unit>
 }

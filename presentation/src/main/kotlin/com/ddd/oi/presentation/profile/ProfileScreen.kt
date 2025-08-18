@@ -91,8 +91,14 @@ fun ProfileScreen(
     val snackbarController = rememberSnackbarController(snackbarHostState)
     val coroutineScope = rememberCoroutineScope()
     
-    // 성공 메시지 표시
+    // 로그아웃 성공 시 첫화면으로 이동
     LaunchedEffect(uiState.successMessage) {
+        if (uiState.successMessage?.contains("로그아웃") == true) {
+            onLogout() // 첫화면으로 네비게이션
+            viewModel.clearSuccessMessage()
+            return@LaunchedEffect
+        }
+        
         uiState.successMessage?.let { message ->
             coroutineScope.launch {
                 snackbarController.showSnackbar(
@@ -124,7 +130,7 @@ fun ProfileScreen(
     ProfileContent(
         uiState = uiState,
         onBack = { throttledNavigation(onBack) },
-        onLogout = { throttledNavigation(onLogout) },
+        onLogout = { viewModel.logout() },
         onWithdrawAccount = { throttledNavigation(onWithdrawAccount) },
         onUpdateNickname = { nickname -> viewModel.updateNickname(nickname) },
         snackbarHostState = snackbarHostState,

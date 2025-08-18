@@ -157,6 +157,8 @@ private fun SettingProfileContent(
             modifier = Modifier.padding(top = 4.dp)
         ) {
             val providerIcon = when (userInfo?.providerInfo) {
+                "NAVER" -> R.drawable.ic_naver_small
+                "GOOGLE" -> R.drawable.ic_google_small
                 "KAKAO" -> R.drawable.ic_kakao_small
                 else -> R.drawable.ic_kakao_small
             }

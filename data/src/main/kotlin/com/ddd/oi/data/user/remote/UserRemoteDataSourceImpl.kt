@@ -16,4 +16,10 @@ class UserRemoteDataSourceImpl @Inject constructor(
     override suspend fun updateNickname(nickname: String): UserResponseDto {
         return safeApiCall { userApiService.updateNickname(nickname = nickname) }.getOrThrow()
     }
+    
+    override suspend fun withdrawUser(): Unit {
+        // TODO: OAuth 토큰을 적절한 방법으로 가져와서 전달해야 함
+        val oauthToken = "Bearer token_here" // 임시로 하드코딩, 실제로는 토큰 저장소에서 가져와야 함
+        return safeApiCall { userApiService.withdrawUser(oauthToken) }.getOrThrow()
+    }
 }

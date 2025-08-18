@@ -67,6 +67,24 @@ class ProfileViewModel @Inject constructor(
     fun clearSuccessMessage() {
         _uiState.value = _uiState.value.copy(successMessage = null)
     }
+    
+    fun logout() {
+        viewModelScope.launch {
+            try {
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null, successMessage = null)
+                userRepository.logout()
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    successMessage = "로그아웃되었습니다."
+                )
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "로그아웃에 실패했습니다. 다시 시도해주세요."
+                )
+            }
+        }
+    }
 }
 
 data class ProfileUiState(

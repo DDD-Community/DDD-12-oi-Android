@@ -53,4 +53,20 @@ class UserRepositoryImpl @Inject constructor(
         cachedSystemInfo = response.systemInfo
         return response.user
     }
+    
+    override suspend fun withdrawUser(): Unit {
+        userRemoteDataSource.withdrawUser()
+        // 캐시 클리어
+        cachedUserInfo = null
+        cachedSystemInfo = null
+    }
+    
+    override suspend fun logout(): Unit {
+        // TODO: 로그아웃 처리 로직 구현 필요
+        // - 토큰 삭제
+        // - 로컬 데이터 클리어
+        // - 캐시 클리어
+        cachedUserInfo = null
+        cachedSystemInfo = null
+    }
 }

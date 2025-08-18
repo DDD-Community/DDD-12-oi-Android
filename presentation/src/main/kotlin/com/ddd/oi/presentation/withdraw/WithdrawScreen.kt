@@ -21,12 +21,15 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,9 +49,14 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonColorT
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.dialog.OiDialog
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarHost
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarController
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
+import kotlinx.coroutines.launch
 
 @Composable
 fun WithdrawScreen(
@@ -58,13 +66,41 @@ fun WithdrawScreen(
 ) {
     val throttledNavigation = rememberThrottledNavigation()
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarController = rememberSnackbarController(snackbarHostState)
+    val coroutineScope = rememberCoroutineScope()
+
+    // 회원탈퇴 성공 시 첫화면으로 이동
+    LaunchedEffect(uiState.successMessage) {
+        if (uiState.successMessage?.contains("회원탈퇴") == true) {
+            onWithdraw() // 첫화면으로 네비게이션
+            return@LaunchedEffect
+        }
+    }
+    
+    // 에러 메시지 표시
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { error ->
+            coroutineScope.launch {
+                snackbarController.showSnackbar(
+                    OiSnackbarData(
+                        message = error,
+                        type = SnackbarType.WARNING
+                    )
+                )
+            }
+            viewModel.clearError()
+        }
+    }
 
     WithdrawContent(
         uiState = uiState,
         onBack = { throttledNavigation(onBack) },
-        onWithdraw = { throttledNavigation(onWithdraw) },
+        onWithdraw = { viewModel.withdrawUser() },
         onReasonSelected = { viewModel.selectReason(it) },
-        onAgreementChanged = { viewModel.setAgreement(it) }
+        onAgreementChanged = { viewModel.setAgreement(it) },
+        snackbarHostState = snackbarHostState,
+        snackbarController = snackbarController
     )
 }
 
@@ -75,7 +111,9 @@ private fun WithdrawContent(
     onBack: () -> Unit = {},
     onWithdraw: () -> Unit = {},
     onReasonSelected: (String) -> Unit = {},
-    onAgreementChanged: (Boolean) -> Unit = {}
+    onAgreementChanged: (Boolean) -> Unit = {},
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    snackbarController: com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarController = rememberSnackbarController(snackbarHostState)
 ) {
     Scaffold(
         modifier = modifier
@@ -87,6 +125,13 @@ private fun WithdrawContent(
                 onLeftClick = onBack,
                 title = "회원탈퇴",
                 isDividerVisible = true
+            )
+        },
+        snackbarHost = {
+            OiSnackbarHost(
+                hostState = snackbarHostState,
+                controller = snackbarController,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
     ) { padding ->
