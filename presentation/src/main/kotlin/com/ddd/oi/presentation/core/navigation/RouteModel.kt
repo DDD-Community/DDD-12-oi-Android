@@ -44,6 +44,9 @@ sealed interface Route {
     data object ContactUs : Route
     
     @Serializable
+    data object Withdraw : Route
+    
+    @Serializable
     data class WebView(val title: String, val url: String = "https://www.naver.com") : Route
 }
 

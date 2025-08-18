@@ -19,6 +19,7 @@ import com.ddd.oi.presentation.setting.settingNavGraph
 import com.ddd.oi.presentation.profile.profileNavGraph
 import com.ddd.oi.presentation.announcement.announcementNavGraph
 import com.ddd.oi.presentation.contactus.contactUsNavGraph
+import com.ddd.oi.presentation.withdraw.withdrawNavGraph
 
 @Composable
 fun OiNavHost(
@@ -97,9 +98,9 @@ fun OiNavHost(
 
         profileNavGraph(
             navigatePopBack = { navigator.popBackStack() },
-            onChangeNickname = { /* TODO: 닉네임 변경 화면으로 이동 */ },
+            onChangeNickname = { /* TODO: 닉네임 변경 API 호출 */ },
             onLogout = { /* TODO: 로그아웃 처리 */ },
-            onWithdrawAccount = { /* TODO: 회원탈퇴 처리 */ }
+            onWithdrawAccount = { navigator.navigateToWithdraw() }
         )
 
         announcementNavGraph(
@@ -108,6 +109,11 @@ fun OiNavHost(
 
         contactUsNavGraph(
             navigatePopBack = { navigator.popBackStack() }
+        )
+
+        withdrawNavGraph(
+            navigatePopBack = { navigator.popBackStack() },
+            onWithdraw = { /* TODO: 회원탈퇴 API 호출 및 로그인 화면으로 이동 */ }
         )
     }
 }

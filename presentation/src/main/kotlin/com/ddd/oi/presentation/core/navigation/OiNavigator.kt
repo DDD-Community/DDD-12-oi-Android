@@ -26,6 +26,7 @@ import com.ddd.oi.presentation.setting.navigateToWebView
 import com.ddd.oi.presentation.profile.navigateToProfile
 import com.ddd.oi.presentation.announcement.navigateToAnnouncement
 import com.ddd.oi.presentation.contactus.navigateToContactUs
+import com.ddd.oi.presentation.withdraw.navigateToWithdraw
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 
@@ -119,6 +120,8 @@ class OiNavigator(
     fun navigateToAnnouncement() = navController.navigateToAnnouncement()
 
     fun navigateToContactUs() = navController.navigateToContactUs()
+
+    fun navigateToWithdraw() = navController.navigateToWithdraw()
 
     fun navigateToWebView(title: String, url: String = "https://www.naver.com") = navController.navigateToWebView(title, url)
 
