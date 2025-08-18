@@ -16,26 +16,37 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.ddd.oi.domain.model.Announcement
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
+import kotlinx.coroutines.delay
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 data class AnnouncementItem(
     val id: Long,
@@ -44,55 +55,60 @@ data class AnnouncementItem(
     val content: String
 )
 
+private fun formatDate(dateString: String): String {
+    return try {
+        val isoDateTime = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        isoDateTime.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"))
+    } catch (e: Exception) {
+        dateString // 파싱 실패 시 원본 반환
+    }
+}
+
 @Composable
 fun AnnouncementScreen(
     onBack: () -> Unit = {},
     viewModel: AnnouncementViewModel = hiltViewModel()
 ) {
     val throttledNavigation = rememberThrottledNavigation()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val announcements by viewModel.announcements.collectAsStateWithLifecycle()
 
-    AnnouncementContent(
-        onBack = { throttledNavigation(onBack) }
-    )
+    if (uiState.isLoading && announcements.isEmpty()) {
+        AnnouncementLoadingScreen(onBack = { throttledNavigation(onBack) })
+    } else {
+        AnnouncementContent(
+            onBack = { throttledNavigation(onBack) },
+            uiState = uiState,
+            announcements = announcements,
+            onRefresh = viewModel::refresh,
+            onLoadMore = viewModel::loadMoreAnnouncements
+        )
+    }
 }
 
 @Composable
 private fun AnnouncementContent(
     modifier: Modifier = Modifier,
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    uiState: AnnouncementUiState = AnnouncementUiState(),
+    announcements: List<Announcement> = emptyList(),
+    onRefresh: () -> Unit = {},
+    onLoadMore: () -> Unit = {}
 ) {
-    val announcements = listOf(
-        AnnouncementItem(
-            1L,
-            "서비스 업데이트 안내",
-            "2024.01.15",
-            "안녕하세요. OI 앱의 새로운 업데이트가 출시되었습니다. 이번 업데이트에서는 사용자 편의성 개선과 버그 수정이 포함되어 있습니다."
-        ),
-        AnnouncementItem(
-            2L,
-            "개인정보 처리방침 개정 안내",
-            "2024.01.10",
-            "개인정보 처리방침이 일부 개정되었습니다. 변경된 내용을 확인하시고 동의해 주시기 바랍니다."
-        ),
-        AnnouncementItem(
-            3L,
-            "신규 기능 출시 알림",
-            "2024.01.05",
-            "새로운 일정 관리 기능이 추가되었습니다. 더욱 편리한 일정 관리를 경험해보세요."
-        ),
-        AnnouncementItem(
-            4L,
-            "시스템 점검 안내",
-            "2024.01.01",
-            "서비스 안정성 향상을 위한 시스템 점검이 예정되어 있습니다. 점검 시간 동안 일시적으로 서비스 이용이 제한될 수 있습니다."
-        ),
-        AnnouncementItem(
-            5L,
-            "앱 버전 업데이트 안내",
-            "2023.12.28",
-            "최신 버전의 앱으로 업데이트하시면 더 나은 성능과 새로운 기능을 이용하실 수 있습니다."
-        )
-    )
+    val listState = rememberLazyListState()
+    
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleIndex >= announcements.size - 3 && uiState.hasMorePages && !uiState.isLoading
+        }
+    }
+    
+    LaunchedEffect(shouldLoadMore) {
+        if (shouldLoadMore) {
+            onLoadMore()
+        }
+    }
 
     Scaffold(
         modifier = modifier
@@ -111,6 +127,7 @@ private fun AnnouncementContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
+            state = listState,
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             item {
@@ -118,14 +135,28 @@ private fun AnnouncementContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp, bottom = 16.dp),
-                    text = "총 ${announcements.size}건",
+                    text = "총 ${uiState.totalCount}건",
                     style = OiTheme.typography.bodyMediumMedium,
                     color = OiTheme.colors.textBrand
                 )
             }
 
-            items(announcements) { announcement ->
-                AnnouncementItemView(announcement = announcement)
+            items(announcements.size) { index ->
+                val announcement = announcements[index]
+                AnnouncementItemView(
+                    announcement = AnnouncementItem(
+                        id = announcement.id,
+                        title = announcement.title,
+                        date = formatDate(announcement.createdAt),
+                        content = announcement.content
+                    )
+                )
+            }
+            
+            if (uiState.isLoading && announcements.isNotEmpty()) {
+                item {
+                    AnnouncementLoadingIndicator()
+                }
             }
         }
     }
@@ -194,6 +225,113 @@ private fun AnnouncementItemView(
                 color = OiTheme.colors.textSecondary
             )
         }
+    }
+}
+
+@Composable
+private fun AnnouncementLoadingScreen(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {}
+) {
+    var currentFrame by remember { mutableIntStateOf(1) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(100)
+            currentFrame = if (currentFrame == 8) 1 else currentFrame + 1
+        }
+    }
+
+    val loadingIcons = listOf(
+        R.drawable.ic_loading_1,
+        R.drawable.ic_loading_2,
+        R.drawable.ic_loading_3,
+        R.drawable.ic_loading_4,
+        R.drawable.ic_loading_5,
+        R.drawable.ic_loading_6,
+        R.drawable.ic_loading_7,
+        R.drawable.ic_loading_8
+    )
+
+    Scaffold(
+        modifier = modifier
+            .fillMaxSize()
+            .background(white),
+        containerColor = white,
+        topBar = {
+            OiHeader(
+                onLeftClick = onBack,
+                title = "공지사항",
+                isDividerVisible = true
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
+        ) {
+            Icon(
+                painter = painterResource(loadingIcons[currentFrame - 1]),
+                contentDescription = "",
+                tint = Color.Unspecified,
+            )
+
+            Text(
+                text = "화면을 불러오고 있어요",
+                style = OiTheme.typography.headlineSmallBold,
+                color = OiTheme.colors.textPrimary,
+            )
+        }
+    }
+}
+
+@Composable
+private fun AnnouncementLoadingIndicator(
+    modifier: Modifier = Modifier
+) {
+    var currentFrame by remember { mutableIntStateOf(1) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(100)
+            currentFrame = if (currentFrame == 8) 1 else currentFrame + 1
+        }
+    }
+
+    val loadingIcons = listOf(
+        R.drawable.ic_loading_1,
+        R.drawable.ic_loading_2,
+        R.drawable.ic_loading_3,
+        R.drawable.ic_loading_4,
+        R.drawable.ic_loading_5,
+        R.drawable.ic_loading_6,
+        R.drawable.ic_loading_7,
+        R.drawable.ic_loading_8
+    )
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier.size(24.dp),
+            painter = painterResource(loadingIcons[currentFrame - 1]),
+            contentDescription = "",
+            tint = Color.Unspecified,
+        )
+        
+        Text(
+            modifier = Modifier.padding(start = 8.dp),
+            text = "로딩 중...",
+            style = OiTheme.typography.bodyMediumRegular,
+            color = OiTheme.colors.textSecondary
+        )
     }
 }
 
