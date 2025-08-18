@@ -73,7 +73,6 @@ fun ContactUsScreen(
             onBack = { throttledNavigation(onBack) },
             uiState = uiState,
             faqs = faqs,
-            onLoadMore = viewModel::loadMoreFaqs,
             onRefresh = viewModel::refresh
         )
     }
@@ -85,7 +84,6 @@ private fun ContactUsContent(
     onBack: () -> Unit = {},
     uiState: ContactUsUiState = ContactUsUiState(),
     faqs: List<Faq> = emptyList(),
-    onLoadMore: () -> Unit = {},
     onRefresh: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -122,13 +120,6 @@ private fun ContactUsContent(
             
             items(faqs.size) { index ->
                 val faq = faqs[index]
-                
-                // Todo Pagination
-//                if (index >= faqs.size - 3 && uiState.hasMorePages && !uiState.isLoading) {
-//                    LaunchedEffect(Unit) {
-//                        onLoadMore()
-//                    }
-//                }
                 
                 FaqItemView(
                     faqItem = FaqItem(

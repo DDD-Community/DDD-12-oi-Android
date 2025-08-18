@@ -23,14 +23,14 @@ class ContactUsViewModel @Inject constructor(
     val faqs: StateFlow<List<Faq>> = _faqs.asStateFlow()
     
     private var currentPage = 0
-    private val pageSize = 10
+    private val pageSize = 100
     private var hasMorePages = true
     
     init {
         loadFaqs()
     }
     
-    fun loadFaqs() {
+    private fun loadFaqs() {
         if (_uiState.value.isLoading || !hasMorePages) return
         
         viewModelScope.launch {
@@ -67,11 +67,7 @@ class ContactUsViewModel @Inject constructor(
                 }
         }
     }
-    
-    fun loadMoreFaqs() {
-        loadFaqs()
-    }
-    
+
     fun refresh() {
         currentPage = 0
         hasMorePages = true
