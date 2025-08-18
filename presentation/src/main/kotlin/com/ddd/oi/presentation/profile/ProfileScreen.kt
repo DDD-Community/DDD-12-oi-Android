@@ -60,7 +60,7 @@ fun ProfileScreen(
 @Composable
 private fun ProfileContent(
     modifier: Modifier = Modifier,
-    nickname: String = "사용자",
+    nickname: String = "오늘의이동",
     onBack: () -> Unit = {},
     onChangeNickname: () -> Unit = {},
     onLogout: () -> Unit = {},
