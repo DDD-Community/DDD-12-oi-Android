@@ -96,7 +96,10 @@ fun OiNavHost(
         )
 
         profileNavGraph(
-            navigatePopBack = { navigator.popBackStack() }
+            navigatePopBack = { navigator.popBackStack() },
+            onChangeNickname = { /* TODO: 닉네임 변경 화면으로 이동 */ },
+            onLogout = { /* TODO: 로그아웃 처리 */ },
+            onWithdrawAccount = { /* TODO: 회원탈퇴 처리 */ }
         )
 
         announcementNavGraph(
