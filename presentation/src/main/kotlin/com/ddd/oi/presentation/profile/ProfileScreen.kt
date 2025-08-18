@@ -31,11 +31,12 @@ import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigatio
 
 sealed class ProfileMenuItem(
     val title: String,
+    val rightText: String? = null,
     val onClick: () -> Unit
 ) {
-    class ChangeNickname(onClick: () -> Unit) : ProfileMenuItem("닉네임 변경", onClick)
-    class Logout(onClick: () -> Unit) : ProfileMenuItem("로그아웃", onClick)
-    class WithdrawAccount(onClick: () -> Unit) : ProfileMenuItem("회원탈퇴", onClick)
+    class ChangeNickname(nickname: String, onClick: () -> Unit) : ProfileMenuItem("닉네임 변경", nickname, onClick)
+    class Logout(onClick: () -> Unit) : ProfileMenuItem("로그아웃", null, onClick)
+    class WithdrawAccount(onClick: () -> Unit) : ProfileMenuItem("회원탈퇴", null, onClick)
 }
 
 @Composable
@@ -59,6 +60,7 @@ fun ProfileScreen(
 @Composable
 private fun ProfileContent(
     modifier: Modifier = Modifier,
+    nickname: String = "사용자",
     onBack: () -> Unit = {},
     onChangeNickname: () -> Unit = {},
     onLogout: () -> Unit = {},
@@ -81,6 +83,7 @@ private fun ProfileContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding),
+            nickname = nickname,
             onChangeNickname = onChangeNickname,
             onLogout = onLogout,
             onWithdrawAccount = onWithdrawAccount
@@ -91,6 +94,7 @@ private fun ProfileContent(
 @Composable
 private fun ProfileMenuList(
     modifier: Modifier = Modifier,
+    nickname: String = "오늘의이동",
     onChangeNickname: () -> Unit = {},
     onLogout: () -> Unit = {},
     onWithdrawAccount: () -> Unit = {}
@@ -101,7 +105,7 @@ private fun ProfileMenuList(
     ) {
         items(
             listOf(
-                ProfileMenuItem.ChangeNickname(onClick = onChangeNickname),
+                ProfileMenuItem.ChangeNickname(nickname = nickname, onClick = onChangeNickname),
                 ProfileMenuItem.Logout(onClick = onLogout),
                 ProfileMenuItem.WithdrawAccount(onClick = onWithdrawAccount)
             )
@@ -133,12 +137,25 @@ private fun ProfileMenuItemView(
             color = OiTheme.colors.textPrimary
         )
 
-        Icon(
-            modifier = Modifier.size(20.dp),
-            painter = painterResource(R.drawable.ic_chevron_right),
-            contentDescription = "이동",
-            tint = OiTheme.colors.iconSecondary
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            menuItem.rightText?.let { rightText ->
+                Text(
+                    text = rightText,
+                    style = OiTheme.typography.bodyLargeSemibold,
+                    color = OiTheme.colors.textBrand
+                )
+            }
+            
+            Icon(
+                modifier = Modifier.size(20.dp),
+                painter = painterResource(R.drawable.ic_chevron_right),
+                contentDescription = "이동",
+                tint = OiTheme.colors.iconSecondary
+            )
+        }
     }
 }
 
