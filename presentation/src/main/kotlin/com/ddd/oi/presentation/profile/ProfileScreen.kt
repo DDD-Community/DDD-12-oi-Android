@@ -68,6 +68,11 @@ import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
 import kotlinx.coroutines.launch
 
+/**
+ * TODO
+ * - 로그아웃 시 첫화면으로 이동
+ * - 회원탈퇴 시 첫 화면으로 이동
+ */
 sealed class ProfileMenuItem(
     val title: String,
     val rightText: String? = null,
