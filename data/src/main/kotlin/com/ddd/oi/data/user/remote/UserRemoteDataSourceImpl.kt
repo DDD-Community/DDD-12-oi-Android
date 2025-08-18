@@ -12,4 +12,8 @@ class UserRemoteDataSourceImpl @Inject constructor(
     override suspend fun getUserInfo(): UserResponseDto {
         return safeApiCall { userApiService.getUserInfo() }.getOrThrow()
     }
+    
+    override suspend fun updateNickname(nickname: String): UserResponseDto {
+        return safeApiCall { userApiService.updateNickname(nickname = nickname) }.getOrThrow()
+    }
 }

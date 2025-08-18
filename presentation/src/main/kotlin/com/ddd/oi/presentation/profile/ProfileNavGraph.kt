@@ -11,14 +11,12 @@ fun NavController.navigateToProfile() {
 
 fun NavGraphBuilder.profileNavGraph(
     navigatePopBack: () -> Unit,
-    onChangeNickname: () -> Unit = {},
     onLogout: () -> Unit = {},
     onWithdrawAccount: () -> Unit = {}
 ) {
     composable<Route.Profile> {
         ProfileScreen(
             onBack = navigatePopBack,
-            onChangeNickname = onChangeNickname,
             onLogout = onLogout,
             onWithdrawAccount = onWithdrawAccount
         )

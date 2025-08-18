@@ -10,4 +10,5 @@ interface UserRepository {
     suspend fun deleteUser(user: User)
     suspend fun getUserInfo(): User
     suspend fun getSystemInfo(): SystemInfo
+    suspend fun updateNickname(nickname: String): User
 }

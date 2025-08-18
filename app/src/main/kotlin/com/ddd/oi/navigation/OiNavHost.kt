@@ -98,7 +98,6 @@ fun OiNavHost(
 
         profileNavGraph(
             navigatePopBack = { navigator.popBackStack() },
-            onChangeNickname = { /* TODO: 닉네임 변경 API 호출 */ },
             onLogout = { /* TODO: 로그아웃 처리 */ },
             onWithdrawAccount = { navigator.navigateToWithdraw() }
         )

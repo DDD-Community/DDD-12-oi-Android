@@ -46,4 +46,11 @@ class UserRepositoryImpl @Inject constructor(
         }
         return cachedSystemInfo!!
     }
+    
+    override suspend fun updateNickname(nickname: String): User {
+        val response = userRemoteDataSource.updateNickname(nickname).toDomain()
+        cachedUserInfo = response.user
+        cachedSystemInfo = response.systemInfo
+        return response.user
+    }
 }

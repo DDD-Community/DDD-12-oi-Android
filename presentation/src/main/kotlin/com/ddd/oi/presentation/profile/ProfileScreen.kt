@@ -26,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -72,33 +73,35 @@ sealed class ProfileMenuItem(
 @Composable
 fun ProfileScreen(
     onBack: () -> Unit = {},
-    onChangeNickname: () -> Unit = {},
     onLogout: () -> Unit = {},
     onWithdrawAccount: () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val throttledNavigation = rememberThrottledNavigation()
+    val uiState by viewModel.uiState.collectAsState()
     
     ProfileContent(
+        uiState = uiState,
         onBack = { throttledNavigation(onBack) },
-        onChangeNickname = { throttledNavigation(onChangeNickname) },
         onLogout = { throttledNavigation(onLogout) },
-        onWithdrawAccount = { throttledNavigation(onWithdrawAccount) }
+        onWithdrawAccount = { throttledNavigation(onWithdrawAccount) },
+        onUpdateNickname = { nickname -> viewModel.updateNickname(nickname) }
     )
 }
 
 @Composable
 private fun ProfileContent(
     modifier: Modifier = Modifier,
-    nickname: String = "오늘의이동",
+    uiState: ProfileUiState = ProfileUiState(),
     onBack: () -> Unit = {},
-    onChangeNickname: () -> Unit = {},
     onLogout: () -> Unit = {},
-    onWithdrawAccount: () -> Unit = {}
+    onWithdrawAccount: () -> Unit = {},
+    onUpdateNickname: (String) -> Unit = {}
 ) {
     var showChangeNicknameDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
-    var newNickname by remember { mutableStateOf(nickname) }
+    
+    val nickname = uiState.userInfo?.name ?: "오늘의이동"
     
     Scaffold(
         modifier = modifier
@@ -129,7 +132,7 @@ private fun ProfileContent(
                 currentNickname = nickname,
                 onDismiss = { showChangeNicknameDialog = false },
                 onConfirm = { newName ->
-                    onChangeNickname()
+                    onUpdateNickname(newName)
                     showChangeNicknameDialog = false
                 }
             )
@@ -226,7 +229,7 @@ private fun ChangeNicknameDialog(
     
     // 한글, 영어, 숫자만 허용하는 정규식
     val validPattern = Regex("^[가-힣a-zA-Z0-9]*$")
-    val isValidNickname = newNickname.matches(validPattern)
+    val isValidNickname = newNickname.matches(validPattern) && newNickname.isNotBlank()
     
     OiDialog(onDismiss = onDismiss) {
         Column(
@@ -287,8 +290,9 @@ private fun ChangeNicknameDialog(
             OiButton(
                 modifier = Modifier.fillMaxWidth(),
                 style = OiButtonStyle.Large48Oval,
-                colorType = OiButtonColorType.Primary,
+                colorType = if (isValidNickname) OiButtonColorType.Primary else OiButtonColorType.Secondary,
                 title = "변경하기",
+                enabled = isValidNickname,
                 onClick = { onConfirm(newNickname) }
             )
             
