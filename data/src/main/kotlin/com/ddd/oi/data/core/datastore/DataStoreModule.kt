@@ -18,8 +18,17 @@ object DataStoreModule {
     @PlaceDataStore
     fun providesPlaceDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
         context.placePrefDataStore
+        
+    @Provides
+    @SettingDataStoreQualifier
+    fun providesSettingDataStore(@ApplicationContext context: Context): DataStore<Preferences> =
+        context.settingPrefDataStore
 }
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class PlaceDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SettingDataStoreQualifier

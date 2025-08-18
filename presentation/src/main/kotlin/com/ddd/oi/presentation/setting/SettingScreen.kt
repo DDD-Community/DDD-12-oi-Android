@@ -20,6 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,11 +43,11 @@ sealed class SettingMenuItem(
     val rightText: String? = null,
     val onClick: () -> Unit
 ) {
-    class Announcement(onClick: () -> Unit) : SettingMenuItem("공지사항", true, null, onClick)
+    class Announcement(hasNewBadge: Boolean, onClick: () -> Unit) : SettingMenuItem("공지사항", hasNewBadge, null, onClick)
     class ContactUs(onClick: () -> Unit) : SettingMenuItem("문의하기", false, null, onClick)
     class TermsOfService(onClick: () -> Unit) : SettingMenuItem("서비스 이용약관", false, null, onClick)
     class PrivacyPolicy(onClick: () -> Unit) : SettingMenuItem("개인정보 처리 방침", false, null, onClick)
-    class AppVersion(onClick: () -> Unit) : SettingMenuItem("앱 버전", false, "1.0.0", onClick)
+    class AppVersion(version: String, onClick: () -> Unit) : SettingMenuItem("앱 버전", false, version, onClick)
 }
 
 @Composable
@@ -58,11 +60,16 @@ fun SettingScreen(
     viewModel: SettingViewModel = hiltViewModel()
 ) {
     val throttledNavigation = rememberThrottledNavigation()
+    val uiState by viewModel.uiState.collectAsState()
 
     SettingContent(
+        uiState = uiState,
         onBack = { throttledNavigation(onBack) },
         onNavigateToProfile = { throttledNavigation(onNavigateToProfile) },
-        onNavigateToAnnouncement = { throttledNavigation(onNavigateToAnnouncement) },
+        onNavigateToAnnouncement = { 
+            viewModel.markAnnouncementAsRead()
+            throttledNavigation(onNavigateToAnnouncement) 
+        },
         onNavigateToContactUs = { throttledNavigation(onNavigateToContactUs) },
         onNavigateToWebView = { title, url -> throttledNavigation { onNavigateToWebView(title, url) } }
     )
@@ -71,6 +78,7 @@ fun SettingScreen(
 @Composable
 private fun SettingContent(
     modifier: Modifier = Modifier,
+    uiState: SettingUiState = SettingUiState(),
     onBack: () -> Unit = {},
     onNavigateToProfile: () -> Unit = {},
     onNavigateToAnnouncement: () -> Unit = {},
@@ -94,10 +102,12 @@ private fun SettingContent(
             modifier = Modifier.padding(padding)
         ) {
             SettingProfileContent(
+                userInfo = uiState.userInfo,
                 onNavigateToProfile = onNavigateToProfile
             )
 
             SettingListContent(
+                uiState = uiState,
                 onNavigateToAnnouncement = onNavigateToAnnouncement,
                 onNavigateToContactUs = onNavigateToContactUs,
                 onNavigateToWebView = onNavigateToWebView
@@ -109,6 +119,7 @@ private fun SettingContent(
 @Composable
 private fun SettingProfileContent(
     modifier: Modifier = Modifier,
+    userInfo: com.ddd.oi.domain.model.User? = null,
     onNavigateToProfile: () -> Unit = {},
 ) {
     Column(
@@ -137,7 +148,7 @@ private fun SettingProfileContent(
 
         Text(
             modifier = Modifier.padding(top = 8.dp),
-            text = "오늘의이동오늘의이동오늘의이동",
+            text = userInfo?.name ?: "오늘의이동오늘의이동오늘의이동",
             style = OiTheme.typography.headlineMediumBold,
             color = Color(0xFF000000),
         )
@@ -145,16 +156,21 @@ private fun SettingProfileContent(
         Row(
             modifier = Modifier.padding(top = 4.dp)
         ) {
+            val providerIcon = when (userInfo?.providerInfo) {
+                "KAKAO" -> R.drawable.ic_kakao_small
+                else -> R.drawable.ic_kakao_small
+            }
+            
             Icon(
                 modifier = Modifier.size(16.dp),
-                painter = painterResource(R.drawable.ic_kakao_small),
+                painter = painterResource(providerIcon),
                 contentDescription = "",
                 tint = Color.Unspecified
             )
 
             Text(
                 modifier = Modifier.padding(start = 4.dp),
-                text = "Avocado@kakao.com",
+                text = userInfo?.email ?: "Avocado@kakao.com",
                 style = OiTheme.typography.bodyMediumRegular,
                 color = OiTheme.colors.textTertiary,
             )
@@ -172,6 +188,7 @@ private fun SettingProfileContent(
 @Composable
 private fun SettingListContent(
     modifier: Modifier = Modifier,
+    uiState: SettingUiState = SettingUiState(),
     onNavigateToAnnouncement: () -> Unit = {},
     onNavigateToContactUs: () -> Unit = {},
     onNavigateToWebView: (String, String) -> Unit = { _, _ -> }
@@ -182,11 +199,17 @@ private fun SettingListContent(
     ) {
         items(
             listOf(
-                SettingMenuItem.Announcement(onClick = onNavigateToAnnouncement),
+                SettingMenuItem.Announcement(
+                    hasNewBadge = uiState.hasNewAnnouncement,
+                    onClick = onNavigateToAnnouncement
+                ),
                 SettingMenuItem.ContactUs(onClick = onNavigateToContactUs),
                 SettingMenuItem.TermsOfService(onClick = { onNavigateToWebView("서비스 이용약관", "https://steel-eocursor-051.notion.site/1feb2308626180f28734ea42a9284029") }),
                 SettingMenuItem.PrivacyPolicy(onClick = { onNavigateToWebView("개인정보 처리 방침", "https://steel-eocursor-051.notion.site/1feb2308626180588f3ce2f1d0a294c2") }),
-                SettingMenuItem.AppVersion(onClick = { })
+                SettingMenuItem.AppVersion(
+                    version = uiState.systemInfo?.version ?: "1.0.0",
+                    onClick = { }
+                )
             )
         ) { item ->
             SettingMenuItemView(

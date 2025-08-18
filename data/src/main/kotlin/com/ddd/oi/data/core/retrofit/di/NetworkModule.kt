@@ -3,6 +3,7 @@ package com.ddd.oi.data.core.retrofit.di
 import com.ddd.oi.data.BuildConfig
 import com.ddd.oi.data.content.remote.ContentApi
 import com.ddd.oi.data.core.retrofit.api.ScheduleApiService
+import com.ddd.oi.data.core.retrofit.api.UserApiService
 import com.ddd.oi.data.place.remote.PlaceApi
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailApi
 import com.ddd.oi.data.spot.remote.SpotApi
@@ -93,6 +94,14 @@ object NetworkModule {
         @OiApiRetrofit retrofit: Retrofit
     ): ContentApi {
         return retrofit.create(ContentApi::class.java)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideUserApiService(
+        @OiApiRetrofit retrofit: Retrofit
+    ): UserApiService {
+        return retrofit.create(UserApiService::class.java)
     }
 }
 
