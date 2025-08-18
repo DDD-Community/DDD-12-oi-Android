@@ -44,16 +44,17 @@ class ProfileViewModel @Inject constructor(
     fun updateNickname(nickname: String) {
         viewModelScope.launch {
             try {
-                _uiState.value = _uiState.value.copy(isLoading = true)
+                _uiState.value = _uiState.value.copy(isLoading = true, error = null, successMessage = null)
                 val updatedUser = userRepository.updateNickname(nickname)
                 _uiState.value = _uiState.value.copy(
                     userInfo = updatedUser,
-                    isLoading = false
+                    isLoading = false,
+                    successMessage = "닉네임이 변경되었어요!"
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
-                    error = e.message
+                    error = "네트워크가 불안정해요. 잠시 후 다시 시도해주세요!"
                 )
             }
         }
@@ -62,10 +63,15 @@ class ProfileViewModel @Inject constructor(
     fun clearError() {
         _uiState.value = _uiState.value.copy(error = null)
     }
+    
+    fun clearSuccessMessage() {
+        _uiState.value = _uiState.value.copy(successMessage = null)
+    }
 }
 
 data class ProfileUiState(
     val userInfo: User? = null,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val successMessage: String? = null
 )

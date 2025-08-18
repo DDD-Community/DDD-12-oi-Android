@@ -24,12 +24,15 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,11 +57,16 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiButtonStyle
 import com.ddd.oi.presentation.core.designsystem.component.common.OiHeader
 import com.ddd.oi.presentation.core.designsystem.component.common.OiTextField
 import com.ddd.oi.presentation.core.designsystem.component.dialog.OiDialog
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarHost
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarController
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
+import kotlinx.coroutines.launch
 
 sealed class ProfileMenuItem(
     val title: String,
@@ -79,13 +87,48 @@ fun ProfileScreen(
 ) {
     val throttledNavigation = rememberThrottledNavigation()
     val uiState by viewModel.uiState.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarController = rememberSnackbarController(snackbarHostState)
+    val coroutineScope = rememberCoroutineScope()
+    
+    // 성공 메시지 표시
+    LaunchedEffect(uiState.successMessage) {
+        uiState.successMessage?.let { message ->
+            coroutineScope.launch {
+                snackbarController.showSnackbar(
+                    OiSnackbarData(
+                        message = message,
+                        type = SnackbarType.SUCCESS
+                    )
+                )
+            }
+            viewModel.clearSuccessMessage()
+        }
+    }
+    
+    // 에러 메시지 표시
+    LaunchedEffect(uiState.error) {
+        uiState.error?.let { error ->
+            coroutineScope.launch {
+                snackbarController.showSnackbar(
+                    OiSnackbarData(
+                        message = error,
+                        type = SnackbarType.WARNING
+                    )
+                )
+            }
+            viewModel.clearError()
+        }
+    }
     
     ProfileContent(
         uiState = uiState,
         onBack = { throttledNavigation(onBack) },
         onLogout = { throttledNavigation(onLogout) },
         onWithdrawAccount = { throttledNavigation(onWithdrawAccount) },
-        onUpdateNickname = { nickname -> viewModel.updateNickname(nickname) }
+        onUpdateNickname = { nickname -> viewModel.updateNickname(nickname) },
+        snackbarHostState = snackbarHostState,
+        snackbarController = snackbarController
     )
 }
 
@@ -96,7 +139,9 @@ private fun ProfileContent(
     onBack: () -> Unit = {},
     onLogout: () -> Unit = {},
     onWithdrawAccount: () -> Unit = {},
-    onUpdateNickname: (String) -> Unit = {}
+    onUpdateNickname: (String) -> Unit = {},
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    snackbarController: com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarController = rememberSnackbarController(snackbarHostState)
 ) {
     var showChangeNicknameDialog by remember { mutableStateOf(false) }
     var showLogoutDialog by remember { mutableStateOf(false) }
@@ -113,6 +158,13 @@ private fun ProfileContent(
                 onLeftClick = onBack,
                 title = "프로필 관리",
                 isDividerVisible = true
+            )
+        },
+        snackbarHost = {
+            OiSnackbarHost(
+                hostState = snackbarHostState,
+                controller = snackbarController,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
     ) { padding ->
