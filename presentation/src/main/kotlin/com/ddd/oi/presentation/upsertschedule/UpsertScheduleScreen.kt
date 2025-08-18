@@ -206,7 +206,6 @@ private fun UpsertScreenContent(
     Column(
         modifier = modifier
             .padding(horizontal = 16.dp)
-            .padding(bottom = 20.dp)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -279,7 +278,8 @@ private fun UpsertScreenContent(
         }
 
         UpsertScheduleContentItem(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(bottom = 20.dp),
             titleResId = R.string.party,
             tagText = stringResource(R.string.duplicate_available)
         ) { modifier ->
