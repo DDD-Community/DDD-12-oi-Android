@@ -1,18 +1,28 @@
 package com.ddd.oi.presentation.profile
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,8 +32,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,6 +56,7 @@ import com.ddd.oi.presentation.core.designsystem.component.dialog.OiDialog
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.designsystem.util.Dimens
+import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
 
 sealed class ProfileMenuItem(
@@ -204,6 +224,10 @@ private fun ChangeNicknameDialog(
 ) {
     var newNickname by remember { mutableStateOf("") }
     
+    // 한글, 영어, 숫자만 허용하는 정규식
+    val validPattern = Regex("^[가-힣a-zA-Z0-9]*$")
+    val isValidNickname = newNickname.matches(validPattern)
+    
     OiDialog(onDismiss = onDismiss) {
         Column(
             modifier = Modifier.padding(horizontal = Dimens.paddingMedium)
@@ -231,26 +255,33 @@ private fun ChangeNicknameDialog(
                 )
                 
                 Text(
-                    text = "${newNickname.length}/15",
-                    style = OiTheme.typography.bodySmallMedium,
-                    color = OiTheme.colors.textSecondary
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(color = OiTheme.colors.textBrand)) {
+                            append("${newNickname.length}")
+                        }
+                        withStyle(style = SpanStyle(color = OiTheme.colors.textSecondary)) {
+                            append("/15")
+                        }
+                    },
+                    style = OiTheme.typography.bodySmallMedium
                 )
             }
             
-            OiTextField(
+            ErrorSupportTextField(
                 modifier = Modifier.fillMaxWidth(),
                 text = newNickname,
                 onTextChanged = { if (it.length <= 15) newNickname = it },
-                hint = currentNickname
+                hint = currentNickname,
+                isError = !isValidNickname && newNickname.isNotEmpty()
             )
             
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = Dimens.paddingLarge),
+                    .padding(top = 8.dp, bottom = 20.dp),
                 text = "닉네임은 한글, 숫자, 영어만 사용할 수 있어요",
                 style = OiTheme.typography.bodySmallRegular,
-                color = OiTheme.colors.textSecondary
+                color = if (isValidNickname) OiTheme.colors.textSecondary else Color(0xFFFB2C36)
             )
             
             OiButton(
@@ -315,6 +346,83 @@ private fun LogoutDialog(
                 title = "취소",
                 onClick = onDismiss
             )
+        }
+    }
+}
+
+@Composable
+private fun ErrorSupportTextField(
+    modifier: Modifier = Modifier,
+    text: String = "",
+    hint: String = "",
+    onTextChanged: (String) -> Unit = {},
+    isError: Boolean = false
+) {
+    var isFocused by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(OiTextFieldDimens.height)
+            .clip(RoundedCornerShape(OiTextFieldDimens.roundedRectRadius))
+            .border(
+                width = OiTextFieldDimens.stroke,
+                color = when {
+                    isError -> Color(0xFFFB2C36)
+                    isFocused -> OiTheme.colors.borderFocus
+                    else -> OiTheme.colors.textDisabled
+                },
+                shape = RoundedCornerShape(OiTextFieldDimens.roundedRectRadius)
+            )
+            .padding(horizontal = OiTextFieldDimens.horizontalPadding),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier.weight(1F)
+        ) {
+            SelectionContainer {
+                BasicTextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterStart)
+                        .onFocusChanged { focusState ->
+                            isFocused = focusState.isFocused
+                        },
+                    value = text,
+                    textStyle = OiTheme.typography.bodyLargeRegular,
+                    onValueChange = onTextChanged,
+                    maxLines = 1,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                )
+            }
+
+            if (text.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 1.dp)
+                        .align(Alignment.CenterStart),
+                    text = hint,
+                    style = OiTheme.typography.bodyLargeRegular,
+                    color = OiTheme.colors.textDisabled
+                )
+            }
+        }
+
+        if (text.isNotEmpty()) {
+            Spacer(modifier = Modifier.width(OiTextFieldDimens.componentMargin))
+
+            IconButton(
+                modifier = Modifier.size(OiTextFieldDimens.iconSize),
+                onClick = { onTextChanged("") }
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.temp_ic_textfield_close),
+                    contentDescription = "Close button",
+                    tint = Color.Unspecified
+                )
+            }
         }
     }
 }
