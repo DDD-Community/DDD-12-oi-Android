@@ -2,6 +2,7 @@ package com.ddd.oi.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navOptions
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
@@ -26,9 +27,6 @@ fun OiNavHost(
     onShowSnackbar: (OiSnackbarData) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    /**
-     * todo 스낵바 Throwable 타입으로 던지기?
-     */
     NavHost(
         navController = navigator.navController,
         startDestination = navigator.startDestination,
@@ -49,7 +47,16 @@ fun OiNavHost(
         )
 
         loginNavGraph(
-            navigateToHome = {},
+            navigateToHome = {
+                val navOptions = navOptions {
+                    popUpTo(Route.Login) {
+                        inclusive = true  // 로그인 화면도 스택에서 제거
+                        saveState = false // 로그인 화면 상태 저장하지 않음
+                    }
+                    launchSingleTop = true
+                }
+                navigator.navigateToHome(navOptions)
+            },
             onShowSnackbar = onShowSnackbar,
             onNavigateToWebView = navigator::navigateToWebView
         )

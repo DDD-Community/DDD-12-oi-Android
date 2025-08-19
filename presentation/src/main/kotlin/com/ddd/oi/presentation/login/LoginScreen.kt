@@ -43,12 +43,14 @@ import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.login.contract.LoginSideEffect
 import org.orbitmvi.orbit.compose.collectSideEffect
 import androidx.core.net.toUri
+import okio.IOException
 
 @Composable
 fun LoginScreen(
     modifier: Modifier,
     viewModel: LoginViewModel = hiltViewModel(),
     onShowSnackbar: (OiSnackbarData) -> Unit = {},
+    onNavigateToHome: () -> Unit = {},
     onNavigateToWebView: (String, String) -> Unit = { _, _ -> }
 ) {
     val context = LocalContext.current
@@ -57,15 +59,21 @@ fun LoginScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is LoginSideEffect.LoginFailure -> {
+                val message = when (sideEffect.throwable) {
+                    is IOException -> "네트워크가 불안정해요. 잠시 후 다시 시도해주세요!"
+                    else -> "로그인에 실패했어요. 다른 방법으로 시도해주세요."
+                }
                 onShowSnackbar(
                     OiSnackbarData(
-                        message = sideEffect.throwable.message.toString(),
+                        message = message,
                         type = SnackbarType.WARNING
                     )
                 )
             }
 
-            LoginSideEffect.LoginSuccess -> {}
+            LoginSideEffect.LoginSuccess -> {
+                onNavigateToHome()
+            }
         }
     }
 
