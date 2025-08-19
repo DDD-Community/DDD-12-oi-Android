@@ -3,11 +3,13 @@ package com.ddd.oi.presentation.login.social
 import android.content.Context
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import javax.inject.Inject
 
-class KakaoLoginHandler(): LoginHandler {
+class KakaoLoginHandler @Inject constructor(): AuthHandler {
     /**
      * 카카오 로그인 수행 후 accessToken 반환
      */
@@ -25,8 +27,16 @@ class KakaoLoginHandler(): LoginHandler {
         }
     }
 
-    override suspend fun logout() {
-        UserApiClient.instance.logout {  }
+    override suspend fun logout(): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            UserApiClient.instance.logout { error ->
+                if (error != null) {
+                    continuation.resume(false)
+                } else {
+                    continuation.resume(true)
+                }
+            }
+        }
     }
 
     private suspend fun loginWithKakaoTalk(context: Context): OAuthToken =

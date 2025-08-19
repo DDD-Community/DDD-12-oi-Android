@@ -6,21 +6,28 @@ import com.navercorp.nid.oauth.OAuthLoginCallback
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
+import javax.inject.Inject
 
-class NaverLoginHandler() : LoginHandler {
+class NaverLoginHandler @Inject constructor() : AuthHandler {
     override suspend fun loginWithSocial(context: Context): SignInResult {
         try {
-            return SignInResult.Success(loginWithNaver(context))
+            // 강제 재인증을 위해 reagreeAuthenticate 사용
+            return SignInResult.Success(loginWithNaverReauth(context))
         } catch (e: Exception) {
             return SignInResult.Failure(e)
         }
     }
 
-    override suspend fun logout() {
-        NaverIdLoginSDK.logout()
+    override suspend fun logout(): Boolean {
+        return try {
+            NaverIdLoginSDK.logout()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
-    private suspend fun loginWithNaver(context: Context): String = suspendCoroutine { cont ->
+    private suspend fun loginWithNaverReauth(context: Context): String = suspendCoroutine { cont ->
         val oauthLoginCallback: OAuthLoginCallback = object : OAuthLoginCallback {
             override fun onError(errorCode: Int, message: String) {
                 cont.resumeWithException(Exception(message))
@@ -40,6 +47,6 @@ class NaverLoginHandler() : LoginHandler {
             }
 
         }
-        NaverIdLoginSDK.authenticate(context, oauthLoginCallback)
+        NaverIdLoginSDK.reagreeAuthenticate(context, oauthLoginCallback)
     }
 }

@@ -7,8 +7,9 @@ import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import java.security.MessageDigest
 import java.util.UUID
+import javax.inject.Inject
 
-class GoogleLoginHandler() : LoginHandler {
+class GoogleLoginHandler @Inject constructor() : AuthHandler {
 
     override suspend fun loginWithSocial(context: Context): SignInResult {
         try {
@@ -24,8 +25,12 @@ class GoogleLoginHandler() : LoginHandler {
         }
     }
 
-    override suspend fun logout() {
-
+    override suspend fun logout(): Boolean {
+        return try {
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun createNonce(): String {
