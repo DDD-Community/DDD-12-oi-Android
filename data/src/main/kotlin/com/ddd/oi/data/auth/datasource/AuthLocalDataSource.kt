@@ -8,4 +8,5 @@ interface AuthLocalDataSource {
     fun getCurrentSocialType(): Flow<String?>
     fun getUserId(): Flow<Long?>
     suspend fun saveAuthData(accessToken: String, refreshToken: String, userId: Long, socialType: SocialType)
+    suspend fun logout()
 }
