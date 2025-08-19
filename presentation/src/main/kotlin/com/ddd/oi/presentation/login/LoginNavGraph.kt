@@ -29,6 +29,7 @@ fun NavGraphBuilder.loginNavGraph(
         LoginScreen(
             modifier = Modifier.fillMaxSize(),
             onShowSnackbar = onShowSnackbar,
+            onNavigateToHome = navigateToHome,
             onNavigateToWebView = onNavigateToWebView
         )
     }
