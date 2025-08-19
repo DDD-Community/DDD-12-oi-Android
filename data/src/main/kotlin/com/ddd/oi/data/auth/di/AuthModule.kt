@@ -12,6 +12,8 @@ import com.ddd.oi.domain.usecase.auth.GetUserIdUseCase
 import com.ddd.oi.domain.usecase.auth.GetUserIdUseCaseImpl
 import com.ddd.oi.domain.usecase.auth.LoginUseCase
 import com.ddd.oi.domain.usecase.auth.LoginUseCaseImpl
+import com.ddd.oi.domain.usecase.auth.LogoutUseCase
+import com.ddd.oi.domain.usecase.auth.LogoutUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -45,5 +47,9 @@ abstract class AuthModule {
     @Binds
     @Singleton
     abstract fun bindGetUserIdUseCase(getUserIdUseCaseImpl: GetUserIdUseCaseImpl): GetUserIdUseCase
+
+    @Binds
+    @Singleton
+    abstract fun bindLogoutUseCase(logoutUseCaseImpl: LogoutUseCaseImpl): LogoutUseCase
 }
 
