@@ -2,9 +2,9 @@ package com.ddd.oi.presentation.login.social
 
 import android.content.Context
 
-interface LoginHandler {
+interface AuthHandler {
     suspend fun loginWithSocial(context: Context): SignInResult
-    suspend fun logout()
+    suspend fun logout(): Boolean
 }
 
 sealed interface SignInResult {
