@@ -7,6 +7,7 @@ import com.ddd.oi.domain.usecase.auth.GetCurrentSocialTypeUseCase
 import com.ddd.oi.presentation.splash.contract.SplashSideEffect
 import com.ddd.oi.presentation.splash.contract.SplashState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -27,8 +28,12 @@ class SplashViewModel @Inject constructor(
     private fun checkAuthenticationState() = intent {
         viewModelScope.launch {
             try {
-                delay(SPLASH_DELAY_MS)
-                val currentSocialType = getCurrentSocialTypeUseCase.invoke().first()
+                val delayDeferred = async { delay(SPLASH_DELAY_MS) }
+                val authDeferred = async { getCurrentSocialTypeUseCase.invoke().first() }
+                
+                delayDeferred.await()
+                val currentSocialType = authDeferred.await()
+                
                 reduce { state.copy(isLoading = false) }
 
                 if (currentSocialType.isNullOrBlank()) {
