@@ -9,4 +9,5 @@ interface AuthRepository {
     suspend fun login(type: SocialType, accessToken: LoginRequest): Result<LoginResponse>
     fun getCurrentLoginType(): Flow<String?>
     fun getUserId() :Flow<Long?>
+    suspend fun logout()
 }

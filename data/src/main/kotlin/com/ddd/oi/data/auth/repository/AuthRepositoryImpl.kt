@@ -47,4 +47,8 @@ class AuthRepositoryImpl @Inject constructor(
     override fun getUserId(): Flow<Long?> {
         return authLocalDataSource.getUserId()
     }
+
+    override suspend fun logout() {
+        authLocalDataSource.logout()
+    }
 }

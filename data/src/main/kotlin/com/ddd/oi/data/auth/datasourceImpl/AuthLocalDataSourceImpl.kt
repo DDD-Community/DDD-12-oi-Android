@@ -34,4 +34,8 @@ class AuthLocalDataSourceImpl @Inject constructor(
             socialType = socialType
         )
     }
+
+    override suspend fun logout() {
+        authDataStore.clear()
+    }
 }
