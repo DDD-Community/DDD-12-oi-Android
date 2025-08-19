@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.toArgb
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
 import com.ddd.oi.presentation.core.navigation.rememberOiNavigator
-import com.ddd.oi.presentation.scheduledetail.NaverMapTest
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -24,7 +23,6 @@ class MainActivity : ComponentActivity() {
             OiTheme {
                 val navigator = rememberOiNavigator()
                 OiApp(navigator)
-                //NaverMapTest()
             }
         }
     }

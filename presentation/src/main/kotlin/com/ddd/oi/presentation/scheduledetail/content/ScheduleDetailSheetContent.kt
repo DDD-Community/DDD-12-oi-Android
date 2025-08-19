@@ -1,5 +1,6 @@
 package com.ddd.oi.presentation.scheduledetail.content
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -22,6 +23,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,6 +42,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -71,6 +75,16 @@ internal fun ScheduleDetailSheetContent(
     onDelete: (SchedulePlace) -> Unit,
     onEdit: (SchedulePlace) -> Unit,
 ) {
+    // 초기 스크롤 위치 설정
+//    LaunchedEffect(Unit) {
+//        if (flatListItems.isNotEmpty()) {
+//            val firstPlaceItemIndex = flatListItems.indexOfFirst { it is SheetListItem.PlaceItem }
+//            if (firstPlaceItemIndex != -1) {
+//                lazyListState.scrollToItem(firstPlaceItemIndex)
+//            }
+//        }
+//    }
+
     LaunchedEffect(lazyListState, flatListItems) {
         snapshotFlow { lazyListState.firstVisibleItemIndex }
             .mapNotNull { index ->
@@ -289,13 +303,17 @@ fun PlaceCard(
                     ) {
                         Text(
                             text = place.spotName,
-                            style = OiTheme.typography.bodyMediumSemibold
+                            style = OiTheme.typography.bodyMediumSemibold,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1
                         )
                         if (place.memo.isNotEmpty()) {
                             Text(
                                 text = place.memo,
                                 style = OiTheme.typography.bodySmallRegular,
-                                color = OiTheme.colors.textTertiary
+                                color = OiTheme.colors.textTertiary,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
                             )
                         }
                     }
@@ -312,16 +330,23 @@ private fun AddPlaceButton(
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .border(1.dp, OiTheme.colors.borderPrimary),
+            .padding(horizontal = 16.dp)
+            .background(white)
+            .border(1.dp, OiTheme.colors.borderPrimary, RoundedCornerShape(8.dp))
+            .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "장소 추가", style = OiTheme.typography.bodySmallSemibold)
+            Icon(Icons.Default.Add, contentDescription = "add")
+            Text(
+                modifier = Modifier.padding(vertical = 16.dp),
+                text = "장소 추가",
+                style = OiTheme.typography.bodySmallSemibold
+            )
         }
     }
 }
@@ -385,6 +410,20 @@ private fun PlaceCardPreview() {
                 onClick = {},
                 editTimeClick = {}
             )
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun AddPlacePreview() {
+    OiTheme {
+        Column(modifier = Modifier.fillMaxSize()) {
+            AddPlaceButton(modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)) {
+
+            }
         }
     }
 }

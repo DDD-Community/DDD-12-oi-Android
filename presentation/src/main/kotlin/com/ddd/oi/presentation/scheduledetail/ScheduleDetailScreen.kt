@@ -60,10 +60,11 @@ import com.ddd.oi.presentation.core.designsystem.component.mapper.formatToSchedu
 import com.ddd.oi.presentation.core.designsystem.component.mapper.getPlaceCategoryColor
 import com.ddd.oi.presentation.core.designsystem.component.oibottomsheetscaffold.OiBottomSheetScaffold
 import com.ddd.oi.presentation.core.designsystem.component.oitimepicker.OiTimePicker
-import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
-import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarHost
-import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
-import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarController
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.AdvancedSnackbarHost
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.Snackbar
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarAction
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.ActionStyle
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarManager
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailContent
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailDragHandle
@@ -114,8 +115,7 @@ fun ScheduleDetailScreen(
     var isPlaceMemoVisible by remember { mutableStateOf(false) }
     var swipeSelectedPlace by remember { mutableStateOf<SchedulePlace?>(null) }
 
-    val snackBarHostState = remember { SnackbarHostState() }
-    val snackbarController = rememberSnackbarController(snackBarHostState)
+    val snackbarManager = rememberSnackbarManager()
 
     BackHandler {
         scope.launch {
@@ -132,26 +132,33 @@ fun ScheduleDetailScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is ScheduleDetailSideEffect.ErrorToast -> {
-                snackbarController.showSnackbar(
-                    OiSnackbarData(
+                snackbarManager.showSnackbar(
+                    Snackbar.warning(
                         message = sideEffect.message,
-                        type = SnackbarType.WARNING
+                        icon = R.drawable.ic_warning,
+                    )
+                )
+            }
+            is ScheduleDetailSideEffect.RemoveSuccessToast -> {
+                snackbarManager.showSnackbar(
+                    Snackbar.action(
+                        message = "성공적으로 처리되었습니다",
+                        primaryActionLabel = "실행취소",
+                        primaryAction = {}
                     )
                 )
             }
         }
     }
-
     OiBottomSheetScaffold(
         modifier = modifier,
         snackbarHost = {
-            OiSnackbarHost(
+            AdvancedSnackbarHost(
+                manager = snackbarManager,
                 modifier = Modifier.offset {
                     val offsetY = 16.dp.roundToPx()
                     IntOffset(0, -offsetY)
-                },
-                hostState = snackBarHostState,
-                controller = snackbarController
+                }
             )
         },
         sheetDragHandle = {
@@ -440,7 +447,7 @@ private fun MapContent(
         cameraPositionState = cameraPositionState
     ) {
         placesList.forEachIndexed { index, place ->
-            Log.d("ScheduleDetailScreen", place.toString())
+            val isSelected = place.id == selectedPlace?.id
             val markerSizePx = with(density) { 30.dp.toPx() }.toInt()
             val markerBitmap = remember(place) {
                 circleMarkerBitmap(
@@ -453,7 +460,8 @@ private fun MapContent(
             Marker(
                 state = rememberMarkerState(position = LatLng(place.latitude, place.longitude)),
                 icon = OverlayImage.fromBitmap(markerBitmap),
-                anchor = Offset(0.5f, 0.5f)
+                anchor = Offset(0.5f, 0.5f),
+                isHideCollidedMarkers = isSelected
             )
         }
         if (placesList.size >= 2) {

@@ -88,11 +88,10 @@ class ScheduleDetailViewModel @Inject constructor(
         deleteScheduleDetailUseCase(scheduleId = scheduleId, scheduleDetailId = scheduleDetailId)
             .onSuccess {
                 getSchedulePlaces()
-                //TODO: 삭제 토스트 메시지 처리
+                postSideEffect(ScheduleDetailSideEffect.RemoveSuccessToast("선택한 일정이 삭제되었습니다."))
             }
             .onFailure {
-                Log.d("deleteScheduleDetail Fail", it.toString())
-                postSideEffect(ScheduleDetailSideEffect.ErrorToast("메모 삭제에 실패했습니다. 다시 시도해 주세요."))
+                postSideEffect(ScheduleDetailSideEffect.ErrorToast("일정 삭제에 실패했습니다. 다시 시도해 주세요."))
             }
     }
 }
