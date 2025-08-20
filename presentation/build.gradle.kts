@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.dagger.hilt.root)
     alias(libs.plugins.kotlin.serialization)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -67,6 +68,15 @@ dependencies {
 
     //naverMap
     implementation(libs.naver.map.compose)
+    implementation(libs.naver.oauth)
+
+    // 카카오 로그인 API 모듈
+    implementation(libs.kakao.user)
+    
+    //google
+    implementation(libs.googleid)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.service.auth)
 
     //coil
     implementation(libs.coil)

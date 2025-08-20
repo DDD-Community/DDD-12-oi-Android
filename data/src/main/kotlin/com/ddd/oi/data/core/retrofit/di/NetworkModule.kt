@@ -1,6 +1,7 @@
 package com.ddd.oi.data.core.retrofit.di
 
 import com.ddd.oi.data.BuildConfig
+import com.ddd.oi.data.auth.AuthService
 import com.ddd.oi.data.content.remote.ContentApi
 import com.ddd.oi.data.core.retrofit.api.ScheduleApiService
 import com.ddd.oi.data.place.remote.PlaceApi
@@ -18,6 +19,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NonAuthRetrofit
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -43,6 +49,20 @@ object NetworkModule {
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .build()
+
+    @Provides
+    @Singleton
+    @NonAuthRetrofit
+    fun provideNonAuthRetrofit(
+        json: Json,
+        okHttpClient: OkHttpClient
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .client(okHttpClient)
+            .build()
+    }
 
     @Provides
     @Singleton
@@ -81,6 +101,14 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideAuthServiceApi(
+        @NonAuthRetrofit retrofit: Retrofit
+    ): AuthService {
+        return retrofit.create(AuthService::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideSpotApi(
         @OiApiRetrofit retrofit: Retrofit
     ): SpotApi {
@@ -95,6 +123,7 @@ object NetworkModule {
         return retrofit.create(ContentApi::class.java)
     }
 }
+
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)

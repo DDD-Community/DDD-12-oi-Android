@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
@@ -48,11 +49,23 @@ fun OiApp(
     val snackbarController = rememberSnackbarController(snackBarHostState)
     val currentRoute = navigator.currentRoute
 
+    val shouldApplySystemPadding = when (currentRoute) {
+        is Route.Splash -> false
+        else -> true
+    }
+    
     OiScaffold(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
-            .navigationBarsPadding(),
+            .then(
+                if (shouldApplySystemPadding) {
+                    Modifier
+                        .statusBarsPadding()
+                        .navigationBarsPadding()
+                } else {
+                    Modifier
+                }
+            ),
         containerColor = OiTheme.colors.backgroundContents,
         snackbarHost = {
             OiSnackbarHost(modifier = Modifier.offset {
@@ -65,18 +78,21 @@ fun OiApp(
                 IntOffset(0, offsetY)
             },hostState = snackBarHostState, controller = snackbarController)
         },
+        contentWindowInsets = WindowInsets(0.dp),
         bottomBar = {
+            val shouldShowBottomBar = navigator.shouldShowBottomBar() && shouldApplySystemPadding
             MainBottomBar(
                 modifier = Modifier,
-                visible = navigator.shouldShowBottomBar(),
+                visible = shouldShowBottomBar,
                 tabs = navigator.mainTabList,
                 currentTab = navigator.currentTab,
                 onTabSelected = navigator::navigate
             )
         },
         floatingActionButton = {
+            val shouldShowFab = navigator.shouldShowBottomBar() && shouldApplySystemPadding
             AnimatedVisibility(
-                visible = navigator.shouldShowBottomBar(),
+                visible = shouldShowFab,
                 enter = fadeIn() + slideIn { IntOffset(0, it.height) },
                 exit = fadeOut() + slideOut { IntOffset(0, it.height) }
             ) {
