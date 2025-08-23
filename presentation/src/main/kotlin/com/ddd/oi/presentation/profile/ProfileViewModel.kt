@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.oi.domain.model.User
 import com.ddd.oi.domain.repository.UserRepository
+import com.ddd.oi.presentation.login.social.AuthResult
+import com.ddd.oi.presentation.login.social.SocialAuthManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val socialAuthManager: SocialAuthManager
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -72,11 +75,22 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _uiState.value = _uiState.value.copy(isLoading = true, error = null, successMessage = null)
-                userRepository.logout()
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    successMessage = "로그아웃되었습니다."
-                )
+                
+                // 1. SocialAuthManager를 통한 로그아웃 (소셜 + 서버)
+                when (val result = socialAuthManager.logout()) {
+                    is AuthResult.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            successMessage = "로그아웃되었습니다."
+                        )
+                    }
+                    is AuthResult.Failure -> {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            error = "로그아웃에 실패했습니다. 다시 시도해주세요."
+                        )
+                    }
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,

@@ -68,11 +68,6 @@ import com.ddd.oi.presentation.core.designsystem.util.OiTextFieldDimens
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
 import kotlinx.coroutines.launch
 
-/**
- * TODO
- * - 로그아웃 시 첫화면으로 이동
- * - 회원탈퇴 시 "정말로 탈퇴하시겠습니까?" / "탈퇴하기" / "취소하기" 팝업 노출 후 -> "탈퇴하기" 클릭 시 첫 화면으로 이동
- */
 sealed class ProfileMenuItem(
     val title: String,
     val rightText: String? = null,
@@ -211,6 +206,7 @@ private fun ProfileContent(
                 }
             )
         }
+        
     }
 }
 
@@ -416,6 +412,7 @@ private fun LogoutDialog(
         }
     }
 }
+
 
 @Composable
 private fun ErrorSupportTextField(
