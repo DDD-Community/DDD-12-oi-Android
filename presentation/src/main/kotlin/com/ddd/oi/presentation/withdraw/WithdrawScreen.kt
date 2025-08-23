@@ -55,6 +55,7 @@ import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarType
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarController
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
+import com.ddd.oi.presentation.core.designsystem.util.Dimens
 import com.ddd.oi.presentation.core.designsystem.util.rememberThrottledNavigation
 import kotlinx.coroutines.launch
 
@@ -136,6 +137,7 @@ private fun WithdrawContent(
         }
     ) { padding ->
         var showReasonDialog by remember { mutableStateOf(false) }
+        var showWithdrawConfirmDialog by remember { mutableStateOf(false) }
 
         Column(
             modifier = Modifier
@@ -170,7 +172,7 @@ private fun WithdrawContent(
                 colorType = if (uiState.canWithdraw) OiButtonColorType.Primary else OiButtonColorType.Secondary,
                 title = "탈퇴하기",
                 enabled = uiState.canWithdraw,
-                onClick = onWithdraw
+                onClick = { showWithdrawConfirmDialog = true }
             )
         }
 
@@ -181,6 +183,17 @@ private fun WithdrawContent(
                 onReasonSelected = { reason ->
                     onReasonSelected(reason)
                     showReasonDialog = false
+                }
+            )
+        }
+        
+        // 회원탈퇴 확인 다이얼로그
+        if (showWithdrawConfirmDialog) {
+            WithdrawConfirmDialog(
+                onDismiss = { showWithdrawConfirmDialog = false },
+                onConfirm = {
+                    onWithdraw()
+                    showWithdrawConfirmDialog = false
                 }
             )
         }
@@ -369,6 +382,48 @@ private fun WithdrawReasonDialog(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun WithdrawConfirmDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    OiDialog(onDismiss = onDismiss) {
+        Column(
+            modifier = Modifier.padding(horizontal = Dimens.paddingMedium),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                modifier = Modifier.padding(vertical = Dimens.paddingLarge),
+                text = "정말로 탈퇴하시겠습니까?",
+                style = OiTheme.typography.headlineSmallBold,
+                color = OiTheme.colors.textPrimary,
+                textAlign = TextAlign.Center
+            )
+            
+            OiButton(
+                modifier = Modifier.fillMaxWidth(),
+                style = OiButtonStyle.Large48Oval,
+                colorType = OiButtonColorType.Primary,
+                title = "탈퇴하기",
+                onClick = onConfirm
+            )
+            
+            OiButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = Dimens.paddingMediumSmall,
+                        bottom = Dimens.paddingLarge
+                    ),
+                style = OiButtonStyle.Large48Oval,
+                colorType = OiButtonColorType.Secondary,
+                title = "취소하기",
+                onClick = onDismiss
+            )
         }
     }
 }
