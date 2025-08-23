@@ -10,6 +10,13 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 sealed interface Route {
+
+    @Serializable
+    data object Splash: Route
+
+    @Serializable
+    data object Login: Route
+
     @Serializable
     data class UpsertSchedule(val mode: UpsertMode = UpsertMode.CREATE) : Route
 
@@ -23,6 +30,12 @@ sealed interface Route {
     data class UpsertPlace(
         val scheduleId: Long,
         val placeName: String,
+    ): Route
+
+    @Serializable
+    data class WebView(
+        val url: String,
+        val title: String
     ): Route
 
     @Serializable
