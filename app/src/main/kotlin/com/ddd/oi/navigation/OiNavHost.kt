@@ -55,8 +55,8 @@ fun OiNavHost(
             navigateToHome = {
                 val navOptions = navOptions {
                     popUpTo(Route.Login) {
-                        inclusive = true  // 로그인 화면도 스택에서 제거
-                        saveState = false // 로그인 화면 상태 저장하지 않음
+                        inclusive = true
+                        saveState = false
                     }
                     launchSingleTop = true
                 }
@@ -134,8 +134,8 @@ fun OiNavHost(
 
         profileNavGraph(
             navigatePopBack = { navigator.popBackStack() },
-            onLogout = { /* TODO: 로그아웃 처리 */ },
-            onWithdrawAccount = { navigator.navigateToWithdraw() }
+            onLogout = { navigator.navigateToLogin() },
+            navigateToWithdraw = { navigator.navigateToWithdraw() }
         )
 
         announcementNavGraph(
