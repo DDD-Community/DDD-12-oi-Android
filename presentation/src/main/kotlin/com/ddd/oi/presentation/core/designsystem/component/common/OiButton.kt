@@ -2,6 +2,7 @@ package com.ddd.oi.presentation.core.designsystem.component.common
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +17,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
@@ -29,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.util.OiButtonDimens
@@ -55,6 +58,57 @@ fun OiButton(
         shape = style.shape,
         enabled = enabled,
         colors = getButtonColors(colorType, isPressed),
+        onClick = onClick
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(OiButtonDimens.componentMargin),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            leftIconDrawableRes?.let {
+                Icon(
+                    painter = painterResource(it),
+                    contentDescription = "Left icon"
+                )
+            }
+
+            Text(
+                text = title,
+                style = style.getTextStyle(),
+            )
+
+            rightIconDrawableRes?.let {
+                Icon(
+                    painter = painterResource(it),
+                    contentDescription = "Right icon"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun OiSecondaryButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+    style: OiButtonStyle = OiButtonStyle.Medium40Rect,
+    enabled: Boolean = true,
+    title: String,
+    @DrawableRes leftIconDrawableRes: Int? = null,
+    @DrawableRes rightIconDrawableRes: Int? = null,
+    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
+) {
+    OutlinedButton(
+        modifier = modifier
+            .height(style.height),
+        contentPadding = contentPadding,
+        shape = style.shape,
+        enabled = enabled,
+        border = BorderStroke(1.dp, OiTheme.colors.borderBrand),
+        colors = ButtonDefaults.outlinedButtonColors(
+            contentColor = OiTheme.colors.textBrand,
+            containerColor = androidx.compose.ui.graphics.Color.Transparent
+        ),
         onClick = onClick
     ) {
         Row(

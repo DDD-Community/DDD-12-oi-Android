@@ -83,66 +83,33 @@ fun ActionSnackbarContent(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
         ) {
-            snackbar.icon?.let { icon ->
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = OiTheme.colors.iconBrand,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-            }
 
             Text(
+                modifier = Modifier
+                    .padding(vertical = 15.dp)
+                    .padding(start = 16.dp),
                 text = snackbar.message,
-                style = OiTheme.typography.bodyMediumMedium,
+                style = OiTheme.typography.bodyMediumRegular,
                 maxLines = 1,
                 color = contentColor,
                 overflow = TextOverflow.Ellipsis
             )
+            Spacer(modifier = Modifier.weight(1f))
+            Text(
+                modifier = Modifier.padding(end = 16.dp).clickable{ onDismiss() },
+                text = snackbar.primaryActionLabel,
+                color = OiTheme.colors.textError,
+                style = OiTheme.typography.bodyMediumRegular,
+            )
         }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
-        ) {
-            // 주 액션
-            TextButton(
-                onClick = {
-                    snackbar.primaryAction()
-                    onDismiss()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = backgroundColor,
-                    contentColor = Color.Red
-                ),
-                shape = RoundedCornerShape(8.dp)
-            ) {
-                Text(
-                    text = snackbar.primaryActionLabel,
-                    style = OiTheme.typography.bodyMediumRegular
-                )
-            }
-            snackbar.secondaryActionLabel?.let { label ->
-                TextButton(
-                    onClick = {
-                        snackbar.secondaryAction?.invoke()
-                        onDismiss()
-                    },
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = OiTheme.colors.textSecondary
-                    )
-                ) {
-                    Text(
-                        text = label,
-                        style = OiTheme.typography.bodyMediumRegular
-                    )
-                }
-            }
-        }
+
+        // 주 액션
+
 
     }
 }

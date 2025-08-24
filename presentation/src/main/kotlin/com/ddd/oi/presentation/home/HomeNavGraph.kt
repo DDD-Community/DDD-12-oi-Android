@@ -10,8 +10,20 @@ fun NavController.navigateToHome(navOptions: NavOptions) {
     navigate(MainTabRoute.Home, navOptions)
 }
 
-fun NavGraphBuilder.homeNavGraph() {
+fun NavGraphBuilder.homeNavGraph(
+    navigateToRecommendedList: () -> Unit,
+    navigateToRecommendedDetail: (Long) -> Unit,
+    navigateToScheduleCreate: () -> Unit,
+    navigateToScheduleTab: () -> Unit,
+    navigateToSetting: () -> Unit
+) {
     composable<MainTabRoute.Home> {
-        HomeScreen()
+        HomeScreen(
+            onNavigateToRecommendedList = navigateToRecommendedList,
+            onNavigateToRecommendedDetail = navigateToRecommendedDetail,
+            onNavigateToScheduleCreate = navigateToScheduleCreate,
+            onNavigateToScheduleTab = navigateToScheduleTab,
+            onNavigateToSetting = navigateToSetting
+        )
     }
 }

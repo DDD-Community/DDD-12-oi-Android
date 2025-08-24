@@ -309,7 +309,7 @@ private fun ScheduleCategoryFilter(
                     CategoryFilter.All -> OiRoundRectChip(
                         modifier = Modifier,
                         isSelected = isSelected,
-                        textStringRes = R.string.all,
+                        text = stringResource(R.string.all),
                         onItemClick = { updateSelectedCategory(category) }
                     )
 
@@ -318,7 +318,7 @@ private fun ScheduleCategoryFilter(
                             CategoryUi.Travel -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
-                                textStringRes = category.category.getCategoryName(),
+                                text = stringResource(category.category.getCategoryName()),
                                 oiChipIcon = OiChipIcon.Travel,
                                 onItemClick = { updateSelectedCategory(category) }
                             )
@@ -326,7 +326,7 @@ private fun ScheduleCategoryFilter(
                             CategoryUi.Date -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
-                                textStringRes = category.category.getCategoryName(),
+                                text = stringResource(category.category.getCategoryName()),
                                 oiChipIcon = OiChipIcon.Date,
                                 onItemClick = { updateSelectedCategory(category) }
                             )
@@ -334,7 +334,7 @@ private fun ScheduleCategoryFilter(
                             CategoryUi.Daily -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
-                                textStringRes = category.category.getCategoryName(),
+                                text = stringResource(category.category.getCategoryName()),
                                 oiChipIcon = OiChipIcon.Daily,
                                 onItemClick = { updateSelectedCategory(category) }
                             )
@@ -342,7 +342,7 @@ private fun ScheduleCategoryFilter(
                             CategoryUi.Business -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
-                                textStringRes = category.category.getCategoryName(),
+                                text = stringResource(category.category.getCategoryName()),
                                 oiChipIcon = OiChipIcon.Business,
                                 onItemClick = { updateSelectedCategory(category) }
                             )
@@ -350,7 +350,7 @@ private fun ScheduleCategoryFilter(
                             CategoryUi.Etc -> OiRoundRectChip(
                                 modifier = Modifier,
                                 isSelected = isSelected,
-                                textStringRes = category.category.getCategoryName(),
+                                text = stringResource(category.category.getCategoryName()),
                                 oiChipIcon = OiChipIcon.Etc,
                                 onItemClick = { updateSelectedCategory(category) }
                             )

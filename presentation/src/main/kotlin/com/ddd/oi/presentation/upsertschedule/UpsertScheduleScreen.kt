@@ -6,6 +6,7 @@ import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -104,12 +105,11 @@ fun UpsertScheduleScreen(
         topBar = {
             OiHeader(
                 onLeftClick = { navigatePopBack(false) },
-                titleStringRes = when (viewModel.upsertMode) {
+                title = stringResource(when (viewModel.upsertMode) {
                     UpsertMode.CREATE -> R.string.create_schedule
                     UpsertMode.EDIT -> R.string.edit_schedule
                     UpsertMode.COPY -> R.string.copy_schedule
-                },
-                leftButtonDrawableRes = R.drawable.ic_arrow_left
+                })
             )
         },
         bottomBar = {
@@ -206,7 +206,6 @@ private fun UpsertScreenContent(
     Column(
         modifier = modifier
             .padding(horizontal = 16.dp)
-            .padding(bottom = 52.dp)
             .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -226,7 +225,6 @@ private fun UpsertScreenContent(
             modifier = Modifier.fillMaxWidth(),
             titleResId = R.string.schedule_category
         ) { modifier ->
-
             Row(
                 modifier = modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -262,7 +260,7 @@ private fun UpsertScreenContent(
             modifier = Modifier.fillMaxWidth(),
             titleResId = R.string.transportation
         ) { modifier ->
-            Row(
+            FlowRow(
                 modifier = modifier,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
@@ -280,7 +278,8 @@ private fun UpsertScreenContent(
         }
 
         UpsertScheduleContentItem(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .padding(bottom = 20.dp),
             titleResId = R.string.party,
             tagText = stringResource(R.string.duplicate_available)
         ) { modifier ->
@@ -288,7 +287,7 @@ private fun UpsertScreenContent(
                 modifier = modifier,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Row(
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Party.entries.take(4).forEach {
@@ -303,7 +302,7 @@ private fun UpsertScreenContent(
                     }
                 }
 
-                Row(
+                FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Party.entries.drop(4).forEach {
@@ -410,7 +409,7 @@ private fun UpsertScreenBottom(
                 .padding(top = 12.dp, bottom = 8.dp),
             onClick = onButtonClick,
             style = OiButtonStyle.Large48Oval,
-            textStringRes = R.string.next,
+            textStringRes = R.string.upsert,
             enabled = isButtonEnabled
         )
     }

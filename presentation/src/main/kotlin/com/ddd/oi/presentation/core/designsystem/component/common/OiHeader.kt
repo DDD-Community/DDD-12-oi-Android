@@ -1,7 +1,5 @@
 package com.ddd.oi.presentation.core.designsystem.component.common
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,8 +28,7 @@ import com.ddd.oi.presentation.core.designsystem.util.OiHeaderDimens
 fun OiHeader(
     modifier: Modifier = Modifier,
     onLeftClick: () -> Unit = {},
-    @StringRes titleStringRes: Int,
-    @DrawableRes leftButtonDrawableRes: Int,
+    title: String,
     isDividerVisible: Boolean = true,
 ) {
     Box {
@@ -50,14 +47,14 @@ fun OiHeader(
                 Icon(
                     modifier = Modifier
                         .fillMaxSize(),
-                    imageVector = ImageVector.vectorResource(leftButtonDrawableRes),
+                    imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left),
                     contentDescription = "Left button"
                 )
             }
 
             Text(
                 modifier = Modifier.weight(1F),
-                text = stringResource(titleStringRes),
+                text = title,
                 style = OiTheme.typography.headlineSmallBold,
                 overflow = TextOverflow.Ellipsis
             )
@@ -79,7 +76,6 @@ fun OiHeader(
 @Composable
 private fun OiHeaderPreview() {
     OiHeader(
-        titleStringRes = R.string.create_schedule,
-        leftButtonDrawableRes = R.drawable.ic_arrow_left
+        title = stringResource(R.string.create_schedule)
     )
 }

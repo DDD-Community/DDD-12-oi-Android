@@ -2,7 +2,6 @@ package com.ddd.oi.presentation.searchplace
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -89,7 +87,7 @@ fun SearchPlaceScreen(
         searchPlace = searchPlace,
         clearSearchPlace = { viewModel.clearSearchPlace() },
         removeSelectedPlace = { viewModel.removePlace(it) },
-        onRecentSearchItemClick = { viewModel.searchImmediate(it) },
+        onRecentSearchItemClick = { viewModel.search(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
         onUpdate = {
             viewModel.insertPlace(targetDate)
@@ -127,10 +125,9 @@ private fun SearchPlaceScreen(
         containerColor = white,
         topBar = {
             OiHeader(
-                leftButtonDrawableRes = R.drawable.ic_arrow_left,
-                titleStringRes = R.string.add_place,
-                isDividerVisible = false,
-                onLeftClick = onLeftClick
+                onLeftClick = onLeftClick,
+                title = stringResource(R.string.add_place),
+                isDividerVisible = false
             )
         },
         bottomBar = {

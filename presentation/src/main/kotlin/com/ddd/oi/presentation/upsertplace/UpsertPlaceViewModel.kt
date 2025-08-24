@@ -1,7 +1,6 @@
 package com.ddd.oi.presentation.upsertplace
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -66,6 +65,7 @@ class UpsertPlaceViewModel @Inject constructor(
     private var selectedPlace: Place? = null
 
     val searchPlace = placeRepository.getRecentSearchPlace()
+        .map { it.reversed() }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -118,46 +118,6 @@ class UpsertPlaceViewModel @Inject constructor(
     }
 
     fun search(query: String) {
-        viewModelScope.launch {
-            placeRepository.addRecentSearchPlace(query)
-        }
-
-        queryPlaceUseCase(query)
-            .map { placeList ->
-                query to placeList
-            }.onEach { (query, placeList) ->
-                val result: SearchPlaceUiState = SearchPlaceUiState.Typing(
-                    query = query,
-                    placeList = placeList.ifEmpty { throw IllegalArgumentException("List is empty") },
-                    selectedPlace = selectedPlace
-                )
-
-                _uiState.update {
-                    when (it) {
-                        is SearchPlaceUiState.QueryEmpty -> it
-                        is SearchPlaceUiState.ResultEmpty -> it
-                        is SearchPlaceUiState.Typing -> result
-                    }
-                }
-            }.catch { exception ->
-                if (exception is IllegalArgumentException && exception.message == "List is empty") {
-                    _uiState.update {
-                        SearchPlaceUiState.ResultEmpty(
-                            selectedPlace = selectedPlace
-                        )
-                    }
-                }
-                if (exception is IllegalArgumentException && exception.message == "Query is empty") {
-                    _uiState.update {
-                        SearchPlaceUiState.QueryEmpty(
-                            selectedPlace = selectedPlace
-                        )
-                    }
-                }
-            }.launchIn(viewModelScope)
-    }
-
-    fun searchImmediate(query: String) {
         _query.update { query }
 
         queryPlaceUseCase(query)

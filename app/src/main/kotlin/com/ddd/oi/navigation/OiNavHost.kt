@@ -2,15 +2,29 @@ package com.ddd.oi.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navOptions
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.OiSnackbarData
+import com.ddd.oi.presentation.core.navigation.MainTab
 import com.ddd.oi.presentation.core.navigation.OiNavigator
+import com.ddd.oi.presentation.core.navigation.Route
 import com.ddd.oi.presentation.upsertschedule.upsertScheduleNavGraph
 import com.ddd.oi.presentation.home.homeNavGraph
+import com.ddd.oi.presentation.login.loginNavGraph
 import com.ddd.oi.presentation.schedule.scheduleNavGraph
 import com.ddd.oi.presentation.scheduledetail.scheduleDetailNavGraph
 import com.ddd.oi.presentation.searchplace.searchPlaceNavGraph
+import com.ddd.oi.presentation.splash.splashNavGraph
 import com.ddd.oi.presentation.upsertplace.upsertPlaceNavGraph
+import com.ddd.oi.presentation.webview.webViewNavGraph
+import com.ddd.oi.presentation.recommendedlist.recommendedListNavGraph
+import com.ddd.oi.presentation.recommendeddetail.recommendedDetailNavGraph
+import com.ddd.oi.presentation.setting.settingNavGraph
+import com.ddd.oi.presentation.profile.profileNavGraph
+import com.ddd.oi.presentation.announcement.announcementNavGraph
+import com.ddd.oi.presentation.contactus.contactUsNavGraph
+import com.ddd.oi.presentation.withdraw.withdrawNavGraph
 
 @Composable
 fun OiNavHost(
@@ -18,15 +32,48 @@ fun OiNavHost(
     onShowSnackbar: (OiSnackbarData) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    /**
-     * todo 스낵바 Throwable 타입으로 던지기?
-     */
     NavHost(
         navController = navigator.navController,
         startDestination = navigator.startDestination,
         modifier = modifier
     ) {
-        homeNavGraph()
+
+        splashNavGraph(
+            navigateToLogin = { navigator.navigateToLogin() },
+            navigateToHome = {
+                val navOptions = navOptions {
+                    popUpTo(navigator.navController.graph.id) {
+                        inclusive = true
+                    }
+                }
+                navigator.navigateToHome(navOptions)
+            },
+            onShowSnackbar = onShowSnackbar
+        )
+
+        loginNavGraph(
+            navigateToHome = {
+                val navOptions = navOptions {
+                    popUpTo(Route.Login) {
+                        inclusive = true  // 로그인 화면도 스택에서 제거
+                        saveState = false // 로그인 화면 상태 저장하지 않음
+                    }
+                    launchSingleTop = true
+                }
+                navigator.navigateToHome(navOptions)
+            },
+            onShowSnackbar = onShowSnackbar,
+            onNavigateToWebView = navigator::navigateToWebView
+        )
+
+
+        homeNavGraph(
+            navigateToRecommendedList = navigator::navigateToRecommendedList,
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
+            navigateToScheduleCreate = { navigator.navigateToUpsertSchedule(null, Route.UpsertSchedule()) },
+            navigateToScheduleTab = { navigator.navigate(MainTab.SCHEDULE) },
+            navigateToSetting = { navigator.navigateToSetting() }
+        )
 
         scheduleNavGraph(
             navigateToScheduleDetail = navigator::navigateToScheduleDetail,
@@ -63,6 +110,45 @@ fun OiNavHost(
                 navigator.popBackStack()
             },
             onShowSnackBar = onShowSnackbar
+        )
+
+        webViewNavGraph(
+            onBackClick = { navigator.popBackStack() }
+        )
+        recommendedListNavGraph(
+            navigateToRecommendedDetail = navigator::navigateToRecommendedDetail,
+            navigateBack = { navigator.popBackStack() }
+        )
+
+        recommendedDetailNavGraph(
+            navigateBack = { navigator.popBackStack() }
+        )
+
+        settingNavGraph(
+            navigatePopBack = { navigator.popBackStack() },
+            onNavigateToProfile = { navigator.navigateToProfile() },
+            onNavigateToAnnouncement = { navigator.navigateToAnnouncement() },
+            onNavigateToContactUs = { navigator.navigateToContactUs() },
+            onNavigateToWebView = { title, url -> navigator.navigateToWebView(title, url) }
+        )
+
+        profileNavGraph(
+            navigatePopBack = { navigator.popBackStack() },
+            onLogout = { /* TODO: 로그아웃 처리 */ },
+            onWithdrawAccount = { navigator.navigateToWithdraw() }
+        )
+
+        announcementNavGraph(
+            navigatePopBack = { navigator.popBackStack() }
+        )
+
+        contactUsNavGraph(
+            navigatePopBack = { navigator.popBackStack() }
+        )
+
+        withdrawNavGraph(
+            navigatePopBack = { navigator.popBackStack() },
+            onWithdraw = { /* TODO: 회원탈퇴 API 호출 및 로그인 화면으로 이동 */ }
         )
     }
 }

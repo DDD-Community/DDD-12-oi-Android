@@ -13,6 +13,7 @@ composeBom = "2025.06.00"
 ksp = "2.0.21-1.0.27"
 
 mapSdk = "3.22.0"
+naverOauth = "5.10.0"
 okhttp = "4.12.0"
 logging-interceptor = "4.12.0"
 orbitCompose = "10.0.0"
@@ -27,6 +28,7 @@ hilt-navigation = "1.2.0"
 coil = "2.7.0"
 navigation = "2.9.0"
 
+kakakoUser = "2.21.6"
 viewModel = "2.9.0"
 room = "2.7.1"
 
@@ -43,6 +45,9 @@ appcompat = "1.7.0"
 material = "1.10.0"
 jetbrainsKotlinJvm = "2.0.21"
 datastore = "1.0.0"
+
+googleid = "1.1.1"
+credentialsPlayServiceAuth = "1.5.0-rc01"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -97,6 +102,12 @@ kotlinx-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collectio
 naver-map-compose = { module = "io.github.fornewid:naver-map-compose", version.ref = "naverMapCompose" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 javax-inject = { module = "javax.inject:javax.inject", version = "1" }
+kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakakoUser" }
+naver-oauth = { module = "com.navercorp.nid:oauth", version.ref = "naverOauth" }
+
+androidx-credentials = {module = "androidx.credentials:credentials", version.ref = "credentialsPlayServiceAuth"}
+androidx-credentials-play-service-auth = {module = "androidx.credentials:credentials-play-services-auth", version.ref = "credentialsPlayServiceAuth"}
+googleid = {module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -48,21 +48,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-/**
- * 고급 스낵바 시스템 - 현업에서 사용하는 패턴
- * 
- * 특징:
- * 1. Sealed Interface로 타입 안전성 보장
- * 2. Builder Pattern으로 유연한 생성
- * 3. Queue 시스템으로 다중 스낵바 관리
- * 4. Composition으로 재사용성 극대화
- * 5. State Management 분리
- */
-
-/**
- * 스낵바 변형들을 정의하는 Sealed Interface
- * 각 변형은 고유한 UI와 동작을 가짐
- */
 sealed interface SnackbarVariant {
     val id: String
     val message: String
@@ -85,7 +70,7 @@ sealed interface SnackbarVariant {
     data class ActionSnackbar(
         override val id: String = UUID.randomUUID().toString(),
         override val message: String,
-        override val duration: SnackbarDuration = SnackbarDuration.Indefinite,
+        override val duration: SnackbarDuration = SnackbarDuration.Short,
         val primaryActionLabel: String,
         val primaryAction: () -> Unit,
         val secondaryActionLabel: String? = null,
@@ -94,9 +79,7 @@ sealed interface SnackbarVariant {
     ) : SnackbarVariant
 }
 
-/**
- * 스낵바 지속 시간 정의
- */
+
 enum class SnackbarDuration(val millis: Long) {
     Short(4000L),
     Medium(6000L),
@@ -104,9 +87,7 @@ enum class SnackbarDuration(val millis: Long) {
     Indefinite(-1L)
 }
 
-/**
- * 스낵바 액션 정의
- */
+
 data class SnackbarAction(
     val label: String,
     val action: () -> Unit,
@@ -117,9 +98,7 @@ enum class ActionStyle {
     Primary, Secondary, Destructive
 }
 
-/**
- * 스낵바 매니저 - 상태 관리 및 Queue 처리
- */
+
 @Stable
 class SnackbarManager(
     private val scope: CoroutineScope

@@ -64,6 +64,7 @@ import com.ddd.oi.presentation.core.designsystem.component.snackbar.AdvancedSnac
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.Snackbar
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarAction
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.ActionStyle
+import com.ddd.oi.presentation.core.designsystem.component.snackbar.SnackbarDuration
 import com.ddd.oi.presentation.core.designsystem.component.snackbar.rememberSnackbarManager
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.scheduledetail.content.ScheduleDetailContent
@@ -142,9 +143,10 @@ fun ScheduleDetailScreen(
             is ScheduleDetailSideEffect.RemoveSuccessToast -> {
                 snackbarManager.showSnackbar(
                     Snackbar.action(
-                        message = "성공적으로 처리되었습니다",
+                        message = "성공적으로 일정이 삭제되었습니다.",
                         primaryActionLabel = "실행취소",
-                        primaryAction = {}
+                        primaryAction = {},
+                        duration = SnackbarDuration.Short
                     )
                 )
             }

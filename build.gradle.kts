@@ -8,5 +8,6 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.dagger.hilt.root) apply false
     alias(libs.plugins.secrets.gradle.plugin) apply false
+    id("com.google.gms.google-services") version "4.4.2" apply false
 }
 

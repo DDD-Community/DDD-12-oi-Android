@@ -7,6 +7,7 @@
     <string name="add_schedule">일정 추가</string>
 
     <string name="next">다음</string>
+    <string name="upsert">등록하기</string>
 
     <string name="whole">전체</string>
 
@@ -86,4 +87,6 @@
 
     <string name="upsert_place">장소 수정하기</string>
     <string name="search_place_text_field_hint">장소나 키워드로 검색해보세요.</string>
+    <string name="contact_us">문의하기</string>
+
 </resources>
