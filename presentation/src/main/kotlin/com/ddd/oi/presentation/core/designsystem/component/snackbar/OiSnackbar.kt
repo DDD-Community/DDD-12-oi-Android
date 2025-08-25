@@ -13,6 +13,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -34,6 +35,8 @@ fun OiSnackbar(
     message: String,
     modifier: Modifier = Modifier,
     icon: Int? = null,
+    actionButtonDisabled: Boolean = false,
+    onActionButtonClick: () -> Unit = {},
     backgroundColor: Color = snackbarBackground,
     contentColor: Color = Color.White,
     shape: Shape = RoundedCornerShape(OiSnackBarDimen.cornerRadius),
@@ -50,7 +53,7 @@ fun OiSnackbar(
             contentAlignment = Alignment.Center
         ) {
             Row(
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = if (actionButtonDisabled) Arrangement.SpaceEvenly else Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -68,6 +71,11 @@ fun OiSnackbar(
                     color = contentColor,
                     textAlign = TextAlign.Center
                 )
+                if (actionButtonDisabled) {
+                    TextButton(onActionButtonClick) {
+                        Text("실행 취소")
+                    }
+                }
             }
         }
     }

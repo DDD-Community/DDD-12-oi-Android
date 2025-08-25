@@ -1,6 +1,7 @@
 package com.ddd.oi.data.core.datastore
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -71,15 +72,13 @@ class AuthDataStore @Inject constructor(
         return context.dataStore.data.first()[Keys.REFRESH_TOKEN]
     }
 
-    /**
-     * logout, 탈퇴시 모든 정보 제거
-     */
     suspend fun clear() {
         context.dataStore.edit { preferences ->
             val currentSocialType = preferences[Keys.CURRENT_SOCIAL]
             preferences.clear()
             currentSocialType?.let {
-                preferences[Keys.CURRENT_SOCIAL] = it
+                Log.d("currentSocialType 저장", it)
+                preferences[Keys.CURRENT_SOCIAL] = it 
             }
         }
     }

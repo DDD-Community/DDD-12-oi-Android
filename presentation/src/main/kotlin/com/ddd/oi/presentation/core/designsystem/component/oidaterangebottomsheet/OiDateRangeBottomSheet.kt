@@ -2,6 +2,7 @@ package com.ddd.oi.presentation.core.designsystem.component.oidaterangebottomshe
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -55,7 +56,10 @@ fun OiDateRangeBottomSheet(
     }
     Box {
         Column {
-            Crossfade(uiState.calendarMode) { mode ->
+            Crossfade(
+                uiState.calendarMode,
+                animationSpec = tween(100)
+            ) { mode ->
                 when (mode) {
                     CalendarMode.Range -> {
                         Column {

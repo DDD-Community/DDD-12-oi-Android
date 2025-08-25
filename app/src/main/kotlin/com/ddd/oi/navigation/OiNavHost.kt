@@ -55,8 +55,8 @@ fun OiNavHost(
             navigateToHome = {
                 val navOptions = navOptions {
                     popUpTo(Route.Login) {
-                        inclusive = true  // 로그인 화면도 스택에서 제거
-                        saveState = false // 로그인 화면 상태 저장하지 않음
+                        inclusive = true
+                        saveState = false
                     }
                     launchSingleTop = true
                 }
@@ -95,7 +95,8 @@ fun OiNavHost(
         )
         scheduleDetailNavGraph(
             onBackClick = { navigator.popBackStack() },
-            navigateToSearchPlace = { navigator.navigateToSearchPlace(it) }
+            navigateToSearchPlace = { navigator.navigateToSearchPlace(it) },
+            navigateToEditPlace = { navigator.navigateToUpsertPlace(it) }
         )
 
         searchPlaceNavGraph(

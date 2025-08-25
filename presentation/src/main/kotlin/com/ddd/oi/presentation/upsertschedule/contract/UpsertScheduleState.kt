@@ -3,7 +3,7 @@ package com.ddd.oi.presentation.upsertschedule.contract
 import androidx.compose.runtime.Stable
 import com.ddd.oi.domain.model.schedule.Category
 import com.ddd.oi.domain.model.schedule.Party
-import com.ddd.oi.domain.model.schedule.Place
+import com.ddd.oi.domain.model.schedule.SchedulePlace
 import com.ddd.oi.domain.model.schedule.Transportation
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
@@ -19,7 +19,7 @@ data class UpsertScheduleState(
     val endDate: Long,
     val transportation: Transportation?,
     val party: Set<Party>,
-    val placeList: List<Place>
+    val placeList: List<SchedulePlace>
 ) {
 
     companion object {

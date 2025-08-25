@@ -198,14 +198,14 @@ internal fun OiDay(
                 isSelected = oiDay.isSelected,
                 isRange = oiDay.isRange,
                 animate = oiDay.animateChecked
-            ).value,
+            ),
             contentColor = colors.dayContentColor(
                 isBlocked = oiDay.isBlockedAfterStart,
                 isToday = oiDay.isToday,
                 isSelected = oiDay.isSelected,
                 isRange = oiDay.isRange,
                 enabled = oiDay.isCurrentMonth,
-            ).value,
+            ),
         ) {
             Box(
                 contentAlignment = Alignment.Center

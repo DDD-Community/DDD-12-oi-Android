@@ -33,6 +33,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.ddd.oi.domain.model.Place
 import com.ddd.oi.presentation.R
 import com.ddd.oi.presentation.core.designsystem.component.common.OiButton
@@ -44,19 +47,34 @@ import com.ddd.oi.presentation.core.designsystem.component.common.OiSearchChip
 import com.ddd.oi.presentation.core.designsystem.component.common.OiSearchField
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
+import com.ddd.oi.presentation.upsertplace.SearchPlaceEvent
 
 @Composable
 fun SearchPlaceScreen(
     scheduleId: Long,
+    targetDate: String,
     onBack: () -> Unit,
     viewModel: SearchPlaceViewModel = hiltViewModel()
 ) {
     val query by viewModel.query.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
     val searchPlace by viewModel.searchPlace.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     LaunchedEffect(Unit) {
         viewModel.setScheduleId(scheduleId)
+    }
+
+    // TODO: Orbit SideEffect
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.eventFlow.collect { event ->
+                when (event) {
+                    SearchPlaceEvent.CompleteEditPlace -> onBack()
+                    is SearchPlaceEvent.ShowErrorMessage -> {}
+                }
+            }
+        }
     }
 
     SearchPlaceScreen(
@@ -72,8 +90,7 @@ fun SearchPlaceScreen(
         onRecentSearchItemClick = { viewModel.search(it) },
         onRecentSearchIconClick = { viewModel.removeQuery(it) },
         onUpdate = {
-            viewModel.insertPlace()
-            onBack()
+            viewModel.insertPlace(targetDate)
         }
     )
 }

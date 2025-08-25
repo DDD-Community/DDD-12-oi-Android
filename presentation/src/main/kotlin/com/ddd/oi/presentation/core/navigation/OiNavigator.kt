@@ -69,7 +69,6 @@ class OiNavigator(
             currentDestination?.hasRoute(Route.UpsertSchedule::class) == true -> Route.UpsertSchedule()
             currentDestination?.hasRoute(MainTabRoute.Schedule::class) == true -> MainTabRoute.Schedule
             currentDestination?.hasRoute(Route.Splash::class) == true -> Route.Splash
-            currentDestination?.hasRoute(Route.UpsertPlace::class) == true -> Route.UpsertPlace(0L, "")
             currentDestination?.hasRoute(Route.Setting::class) == true -> Route.Setting
             currentDestination?.hasRoute(Route.Profile::class) == true -> Route.Profile
             currentDestination?.hasRoute(Route.Announcement::class) == true -> Route.Announcement
@@ -107,7 +106,6 @@ class OiNavigator(
     }
 
 
-    fun navigateToSchedulePlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
 
     fun navigateToLogin() = navController.navigateToLogin()
 
@@ -115,9 +113,9 @@ class OiNavigator(
 
     fun navigateToScheduleDetail(scheduleId: Schedule) = navController.navigateToScheduleDetail(scheduleId)
 
-    fun navigateToSearchPlace(scheduleId: Long) = navController.navigateToSearchPlace(scheduleId)
+    fun navigateToSearchPlace(searchPlace: Route.SearchPlace) = navController.navigateToSearchPlace(searchPlace)
 
-    fun navigateToUpsertPlace(scheduleId: Long, placeName: String) = navController.navigateToUpsertPlace(scheduleId, placeName)
+    fun navigateToUpsertPlace(schedulePlace: Route.UpsertPlace) = navController.navigateToUpsertPlace(schedulePlace)
 
     fun navigateToWebView(url: String, title: String) = navController.navigateToWebView(url, title)
 
