@@ -134,7 +134,7 @@ fun OiNavHost(
         profileNavGraph(
             navigatePopBack = { navigator.popBackStack() },
             onLogout = { /* TODO: 로그아웃 처리 */ },
-            onWithdrawAccount = { navigator.navigateToWithdraw() }
+            navigateToWithdraw = { navigator.navigateToWithdraw() }
         )
 
         announcementNavGraph(
