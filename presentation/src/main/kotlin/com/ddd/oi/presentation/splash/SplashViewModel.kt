@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ddd.oi.domain.usecase.auth.GetCurrentSocialTypeUseCase
+import com.ddd.oi.domain.usecase.auth.GetUserIdUseCase
 import com.ddd.oi.presentation.splash.contract.SplashSideEffect
 import com.ddd.oi.presentation.splash.contract.SplashState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val getCurrentSocialTypeUseCase: GetCurrentSocialTypeUseCase
+    private val getUserIdUseCase: GetUserIdUseCase
 ) : ContainerHost<SplashState, SplashSideEffect>, ViewModel() {
     override val container = container<SplashState, SplashSideEffect>(SplashState())
 
@@ -29,14 +30,14 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val delayDeferred = async { delay(SPLASH_DELAY_MS) }
-                val authDeferred = async { getCurrentSocialTypeUseCase.invoke().first() }
+                val authDeferred = async { getUserIdUseCase.invoke().first() }
                 
                 delayDeferred.await()
-                val currentSocialType = authDeferred.await()
+                val currentSocialType: Long? = authDeferred.await()
                 
                 reduce { state.copy(isLoading = false) }
 
-                if (currentSocialType.isNullOrBlank()) {
+                if (currentSocialType == null) {
                     postSideEffect(SplashSideEffect.NavigateToLogin)
                 } else {
                     postSideEffect(SplashSideEffect.NavigateToMain)

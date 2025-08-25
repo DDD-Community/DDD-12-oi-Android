@@ -30,7 +30,12 @@ class AuthDataStore @Inject constructor(
         val CURRENT_SOCIAL = stringPreferencesKey("current_social")
     }
 
-    suspend fun saveAuthData(accessToken: String, refreshToken: String, userId: Long, socialType: SocialType) {
+    suspend fun saveAuthData(
+        accessToken: String,
+        refreshToken: String,
+        userId: Long,
+        socialType: SocialType
+    ) {
         context.dataStore.edit {
             it[Keys.ACCESS_TOKEN] = accessToken
             it[Keys.REFRESH_TOKEN] = refreshToken
@@ -70,6 +75,12 @@ class AuthDataStore @Inject constructor(
      * logout, 탈퇴시 모든 정보 제거
      */
     suspend fun clear() {
-        context.dataStore.edit { it.clear() }
+        context.dataStore.edit { preferences ->
+            val currentSocialType = preferences[Keys.CURRENT_SOCIAL]
+            preferences.clear()
+            currentSocialType?.let {
+                preferences[Keys.CURRENT_SOCIAL] = it
+            }
+        }
     }
 }
