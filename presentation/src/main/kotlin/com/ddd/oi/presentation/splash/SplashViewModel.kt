@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val getCurrentSocialTypeUseCase: GetCurrentSocialTypeUseCase
+    private val getUserIdUseCase: GetCurrentSocialTypeUseCase
 ) : ContainerHost<SplashState, SplashSideEffect>, ViewModel() {
     override val container = container<SplashState, SplashSideEffect>(SplashState())
 
@@ -29,7 +29,7 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val delayDeferred = async { delay(SPLASH_DELAY_MS) }
-                val authDeferred = async { getCurrentSocialTypeUseCase.invoke().first() }
+                val authDeferred = async { getUserIdUseCase.invoke().first() }
                 
                 delayDeferred.await()
                 val currentSocialType = authDeferred.await()

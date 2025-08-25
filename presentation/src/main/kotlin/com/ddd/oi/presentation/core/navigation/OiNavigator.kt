@@ -69,7 +69,6 @@ class OiNavigator(
             currentDestination?.hasRoute(Route.UpsertSchedule::class) == true -> Route.UpsertSchedule()
             currentDestination?.hasRoute(MainTabRoute.Schedule::class) == true -> MainTabRoute.Schedule
             currentDestination?.hasRoute(Route.Splash::class) == true -> Route.Splash
-            currentDestination?.hasRoute(Route.UpsertPlace::class) == true -> Route.UpsertPlace(0L, "")
             currentDestination?.hasRoute(Route.Setting::class) == true -> Route.Setting
             currentDestination?.hasRoute(Route.Profile::class) == true -> Route.Profile
             currentDestination?.hasRoute(Route.Announcement::class) == true -> Route.Announcement
