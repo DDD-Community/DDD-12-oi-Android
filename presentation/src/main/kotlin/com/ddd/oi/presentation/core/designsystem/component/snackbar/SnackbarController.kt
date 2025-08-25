@@ -15,10 +15,12 @@ class SnackbarController(
     var currentSnackbarData by mutableStateOf<OiSnackbarData?>(null)
         private set
 
-    suspend fun showSnackbar(data: OiSnackbarData) {
+    suspend fun showSnackbar(
+        data: OiSnackbarData,
+    ) {
         currentSnackbarData = data
         hostState.currentSnackbarData?.dismiss()
-        hostState.showSnackbar(data.message)
+        hostState.showSnackbar(data.message, )
     }
 }
 

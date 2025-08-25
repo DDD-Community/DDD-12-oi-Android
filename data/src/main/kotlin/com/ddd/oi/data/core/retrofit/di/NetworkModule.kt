@@ -8,6 +8,8 @@ import com.ddd.oi.data.core.retrofit.api.UserApiService
 import com.ddd.oi.data.place.remote.PlaceApi
 import com.ddd.oi.data.scheduledetail.remote.ScheduleDetailApi
 import com.ddd.oi.data.spot.remote.SpotApi
+import com.ddd.oi.data.core.retrofit.interceptor.TokenInterceptor
+import com.ddd.oi.data.core.retrofit.interceptor.TokenAuthenticator
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,9 +48,13 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         loggingInterceptor: HttpLoggingInterceptor,
+        tokenInterceptor: TokenInterceptor,
+        tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient =
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addInterceptor(tokenInterceptor)
+            .authenticator(tokenAuthenticator)
             .build()
 
     @Provides
@@ -56,12 +62,10 @@ object NetworkModule {
     @NonAuthRetrofit
     fun provideNonAuthRetrofit(
         json: Json,
-        okHttpClient: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .client(okHttpClient)
             .build()
     }
 
@@ -123,7 +127,7 @@ object NetworkModule {
     ): ContentApi {
         return retrofit.create(ContentApi::class.java)
     }
-    
+
     @Provides
     @Singleton
     fun provideUserApiService(

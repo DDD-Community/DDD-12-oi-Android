@@ -27,6 +27,7 @@ val TextTertiary = Color(0xFFA1A1A1)
 val TextDisabled = Color(0xFFD4D4D4)
 val TextOnPrimary = white
 val TextBrand = Color(0xFF039D58)
+val TextError = Color(0xFFFF6467)
 
 val BackgroundContents = Color(0xFFFAFAFA)
 val BackgroundDisabled = Color(0xFFE5E5E5)
@@ -66,6 +67,7 @@ data class OiColors(
     val textDisabled: Color,
     val textOnPrimary: Color,
     val textBrand: Color,
+    val textError: Color,
 
     val backgroundContents: Color,
     val backgroundDisabled: Color,

@@ -6,8 +6,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.ddd.oi.presentation.core.navigation.Route
 
-fun NavController.navigateToSearchPlace(scheduleId: Long) {
-    navigate(Route.SearchPlace(scheduleId))
+fun NavController.navigateToSearchPlace(searchPlace: Route.SearchPlace) {
+    navigate(searchPlace)
 }
 
 fun NavGraphBuilder.searchPlaceNavGraph(
@@ -17,7 +17,8 @@ fun NavGraphBuilder.searchPlaceNavGraph(
         val searchPlace = backStackEntry.toRoute<Route.SearchPlace>()
         SearchPlaceScreen(
             scheduleId = searchPlace.scheduleId,
-            onBack = navigatePopBack
+            onBack = navigatePopBack,
+            targetDate = searchPlace.targetDate
         )
     }
 }

@@ -19,13 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ddd.oi.presentation.R
-import com.ddd.oi.presentation.core.designsystem.component.common.rippleOrFallbackImplementation
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.schedule.OiAddButton
 
@@ -60,29 +58,28 @@ internal fun ScheduleDetailDragHandle(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = activeDate,
-                style = OiTheme.typography.bodyLargeSemibold
-            )
-            if (isMoreDateVisible) {
-                Box(
-                    modifier = Modifier
-                        .padding(start = 4.dp)
-                        .clickable(
-                            onClick = onMoreDateClick,
-                            role = Role.Button,
-                            interactionSource = null,
-                            indication =
-                                rippleOrFallbackImplementation(
-                                    bounded = false,
-                                    radius = 12.dp
-                                )
+            Row(
+                modifier = Modifier
+                    .clickable {
+                        if (isMoreDateVisible) onMoreDateClick()
+                        return@clickable
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = activeDate,
+                    style = OiTheme.typography.bodyLargeSemibold
+                )
+                if (isMoreDateVisible) {
+                    Box(
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowDown,
+                            contentDescription = "DateDropDown"
                         )
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.KeyboardArrowDown,
-                        contentDescription = "DateDropDown"
-                    )
+                    }
                 }
             }
             Spacer(modifier = Modifier.weight(1f))

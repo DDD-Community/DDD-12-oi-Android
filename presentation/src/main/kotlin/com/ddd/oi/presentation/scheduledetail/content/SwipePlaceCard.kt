@@ -7,8 +7,8 @@ import androidx.compose.foundation.gestures.AnchoredDraggableState
 import androidx.compose.foundation.gestures.DraggableAnchors
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.anchoredDraggable
+import androidx.compose.foundation.gestures.animateTo
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,9 +32,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.ddd.oi.domain.model.schedule.Place
+import com.ddd.oi.domain.model.schedule.SchedulePlace
 import com.ddd.oi.presentation.core.designsystem.theme.OiTheme
 import com.ddd.oi.presentation.core.designsystem.theme.white
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 private enum class SwipeState { DEFAULT, REVEALED }
@@ -41,7 +43,7 @@ private enum class SwipeState { DEFAULT, REVEALED }
 
 @Composable
 fun SwipePlaceCard(
-    place: Place,
+    place: SchedulePlace,
     order: Int,
     isSelected: Boolean,
     onClick: () -> Unit,
@@ -50,6 +52,7 @@ fun SwipePlaceCard(
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
     val density = LocalDensity.current
 
     val anchors = DraggableAnchors {
@@ -57,12 +60,14 @@ fun SwipePlaceCard(
         SwipeState.REVEALED at with(density) { -226.dp.toPx() }
     }
 
-    val anchorDraggableState = remember {
+    var anchorDraggableState = remember {
         AnchoredDraggableState(
             initialValue = SwipeState.DEFAULT,
             anchors = anchors,
         )
     }
+
+    val isVisibleTitle = anchorDraggableState.currentValue == SwipeState.DEFAULT
 
     Box(
         modifier = Modifier
@@ -71,7 +76,12 @@ fun SwipePlaceCard(
     ) {
         ActionButtons(
             modifier = Modifier.align(Alignment.CenterEnd).padding(end = 16.dp).height(50.dp),
-            onMemoClick = onMemoClick,
+            onMemoClick = {
+                scope.launch {
+                    onMemoClick()
+                    anchorDraggableState.animateTo(SwipeState.DEFAULT)
+                }
+            },
             onEditClick = onEditClick,
             onDeleteClick = onDeleteClick
         )
@@ -80,6 +90,7 @@ fun SwipePlaceCard(
             order = order,
             isSelected = isSelected,
             onClick = onClick,
+            isVisibleTitle = isVisibleTitle,
             editTimeClick = editTimeClick,
             modifier = Modifier
                 .offset { IntOffset(anchorDraggableState.requireOffset().roundToInt(), 0) }

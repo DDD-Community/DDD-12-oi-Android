@@ -9,7 +9,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.graphics.Color
 
 @Immutable
-class OiCalendarColors (
+class OiCalendarColors(
     val containerColor: Color,
     val weekdayContentColor: Color,
     private val dayContentColor: Color,
@@ -28,17 +28,15 @@ class OiCalendarColors (
         isRange: Boolean,
         isSelected: Boolean,
         enabled: Boolean
-    ): State<Color> {
-        val target =
-            when {
-                isBlocked -> disabledDayContentColor
-                isRangeModel && (isRange || isSelected) -> selectedDayContentColor
-                (isSelected && enabled) -> selectedDayContentColor
-                isToday -> todayContentColor
-                enabled -> dayContentColor
-                else -> disabledDayContentColor
-            }
-        return animateColorAsState(target, tween(durationMillis = 100))
+    ): Color {
+        return when {
+            isBlocked -> disabledDayContentColor
+            isRangeModel && (isRange || isSelected) -> selectedDayContentColor
+            (isSelected && enabled) -> selectedDayContentColor
+            isToday -> todayContentColor
+            enabled -> dayContentColor
+            else -> disabledDayContentColor
+        }
     }
 
     @Composable
@@ -48,8 +46,8 @@ class OiCalendarColors (
         isSelected: Boolean,
         isRange: Boolean,
         animate: Boolean
-    ): State<Color> {
-        val target = when {
+    ): Color {
+       return when {
             isBlocked -> Color.Transparent
             isRangeModel && isRange -> Color.Transparent
             isRangeModel && isSelected -> rangeBackgroundColor
@@ -57,10 +55,10 @@ class OiCalendarColors (
             isToday -> todayContainerColor
             else -> Color.Transparent
         }
-        return if (animate) {
-            animateColorAsState(target, tween(durationMillis = 100))
-        } else {
-            rememberUpdatedState(target)
-        }
+//        return if (animate) {
+//            animateColorAsState(target, tween(durationMillis = 100))
+//        } else {
+//            rememberUpdatedState(target)
+//        }
     }
 }
