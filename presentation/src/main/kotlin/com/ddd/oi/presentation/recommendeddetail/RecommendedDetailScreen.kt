@@ -42,6 +42,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.clickable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -287,11 +289,12 @@ private fun RecommendedDetailPlaceContent(
                     }
                 }
 
-
+            var color by remember { mutableStateOf(Color.Gray) }
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFFFAFAFA))
+                        .background(color)
+                        .clickable { color = if (color == Color.Gray) Color.Red else Color.Gray }
                         .padding(vertical = 8.dp),
                     contentAlignment = Alignment.Center
                 ) {

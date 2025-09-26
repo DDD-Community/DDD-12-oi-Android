@@ -1,5 +1,6 @@
 package com.ddd.oi.presentation.core.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
@@ -79,6 +80,7 @@ class OiNavigator(
 
     @Composable
     fun shouldShowBottomBar(): Boolean = MainTab.contains {
+        Log.d("shouldShowBottomBar", it.toString())
         currentDestination?.hasRoute(it::class) == true
     }
 
